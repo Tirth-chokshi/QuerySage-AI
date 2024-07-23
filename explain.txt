@@ -85,7 +85,7 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { query } = req.body;
     const groq = new Groq({
-      apiKey: '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',
+      apiKey: process.env.LLM_API,
     });
 
     try {
