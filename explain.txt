@@ -1,0 +1,144 @@
+Before 
+"use client"
+import React, { useState } from 'react';
+
+export default function Home() {
+  const [input, setInput] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setMessages([...messages, { text: input, sender: 'user' }]);
+
+    try {
+      const response = await fetch('/api/query', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: input }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessages(prevMessages => [...prevMessages, { text: data.response, sender: 'bot' }]);
+      } else {
+        setMessages(prevMessages => [...prevMessages, { text: `Error: ${data.error}`, sender: 'bot' }]);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages(prevMessages => [...prevMessages, { text: `Error: ${error.message}`, sender: 'bot' }]);
+    }
+
+    setInput('');
+    setIsLoading(false);
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Chat with DB</h1>
+      <div className="bg-gray-100 p-4 h-96 overflow-y-auto mb-4">
+        {messages.map((message, index) => (
+          <div key={index} className={`mb-2 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>
+            <span className={`inline-block p-2 rounded ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}>
+              {message.text}
+            </span>
+          </div>
+        ))}
+      </div>
+      <form onSubmit={handleSubmit} className="flex">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="flex-grow p-2 border rounded-l"
+          placeholder="Ask a question about your database..."
+          disabled={isLoading}
+        />
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded-r" disabled={isLoading}>
+          {isLoading ? 'Sending...' : 'Send'}
+        </button>
+      </form>
+    </div>
+  );
+}
+
+After Data sturcutre
+The error you're encountering ("Request Entity Too Large") suggests that the amount of data you're sending to the Groq API is exceeding their size limits. This is likely because you're sending the entire contents of your database to the API, which may be too large for a single request.
+To fix this issue, you'll need to modify your approach. Here are a few strategies you can consider:
+
+Chunk the data:
+Instead of sending the entire database at once, you could send smaller chunks of data. This would require modifying your backend to process the query in parts.
+Summarize the database structure:
+Instead of sending all the data, send a summary of the database structure and some sample data. This could be enough for many queries.
+Use a vector database:
+Implement a vector database like Pinecone or Weaviate to store embeddings of your database content. Then, for each query, you can retrieve only the most relevant information.
+Use a different API or self-host:
+If possible, consider using a different API that allows larger requests, or self-host an open-source language model that you can fine-tune on your data.
+
+Here's an example of how you might implement the second approach (summarizing the database structure):
+javascriptCopyimport { Groq } from 'groq-sdk';
+import mysql from 'mysql2/promise';
+
+export default async function handler(req, res) {
+  if (req.method === 'POST') {
+    const { query } = req.body;
+    const groq = new Groq({
+      apiKey: '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',
+    });
+
+    try {
+      const connection = await mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "dbconnect",
+        database: "chinook",
+      });
+
+      // Fetch all table names
+      const [tables] = await connection.query('SHOW TABLES');
+      let databaseStructure = '';
+
+      // Fetch structure and sample data of each table
+      for (const table of tables) {
+        const tableName = Object.values(table)[0];
+        const [columns] = await connection.query(`DESCRIBE ${tableName}`);
+        const [sampleData] = await connection.query(`SELECT * FROM ${tableName} LIMIT 5`);
+        
+        databaseStructure += `Table: ${tableName}\n`;
+        databaseStructure += `Columns: ${columns.map(col => col.Field).join(', ')}\n`;
+        databaseStructure += `Sample data: ${JSON.stringify(sampleData, null, 2)}\n\n`;
+      }
+
+      await connection.end();
+
+      // Use Groq to interpret the natural language query
+      const completion = await groq.chat.completions.create({
+        messages: [
+          {
+            role: 'system',
+            content: `You are an AI assistant that answers questions based on the following database structure:\n\n${databaseStructure}`
+          },
+          {
+            role: 'user',
+            content: query,
+          }
+        ],
+        model: 'mixtral-8x7b-32768',
+      });
+
+      let response = completion.choices[0]?.message?.content;
+
+      res.status(200).json({ response });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'An error occurred while processing your request.', details: error.message });
+    }
+  } else {
+    res.setHeader('Allow', ['POST']);
+    res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+}
+This approach sends a summary of the database structure and a small sample of data from each table, which should be much smaller than the entire database content. The LLM can use this information to answer many types of questions about the database structure and content.
+Remember to adjust the amount of sample data based on your specific needs and the size limits of the API you're using.
