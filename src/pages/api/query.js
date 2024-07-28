@@ -3,17 +3,18 @@ import mysql from 'mysql2/promise';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { query } = req.body;
+    const { query, dbCredentials } = req.body;
     const groq = new Groq({
       apiKey: process.env.LLM_API,
     });
 
     try {
+      // Use the credentials provided by the user
       const connection = await mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "dbconnect",
-        database: "atliq_tshirts",
+        host: dbCredentials.host,
+        user: dbCredentials.user,
+        password: dbCredentials.password,
+        database: dbCredentials.database,
       });
 
       // Fetch all table names
