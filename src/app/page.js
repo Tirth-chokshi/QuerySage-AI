@@ -1,4 +1,7 @@
 "use client"
+import { ModeToggle } from '@/components/ModeToggle';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown'
 
@@ -71,59 +74,56 @@ export default function Home() {
 
   return (
     <div className="container mx-auto p-4">
+      <ModeToggle/>
       <h1 className="text-2xl font-bold mb-4">Chat with DB</h1>
       
       {!isConnected ? (
         <form onSubmit={handleCredentialsSubmit} className="mb-4">
-          <input
+          <Input
             type="text"
             value={dbCredentials.host}
             onChange={(e) => setDbCredentials({...dbCredentials, host: e.target.value})}
-            className="p-2 border rounded mb-2 w-full"
             placeholder="Host"
             required
           />
-          <input
+          <Input
             type="text"
             value={dbCredentials.user}
             onChange={(e) => setDbCredentials({...dbCredentials, user: e.target.value})}
-            className="p-2 border rounded mb-2 w-full"
             placeholder="User"
             required
           />
-          <input
+          <Input
             type="password"
             value={dbCredentials.password}
             onChange={(e) => setDbCredentials({...dbCredentials, password: e.target.value})}
-            className="p-2 border rounded mb-2 w-full"
             placeholder="Password"
             required
           />
-          <input
+          <Input
             type="text"
             value={dbCredentials.database}
             onChange={(e) => setDbCredentials({...dbCredentials, database: e.target.value})}
-            className="p-2 border rounded mb-2 w-full"
             placeholder="Database"
             required
           />
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded w-full" disabled={isLoading}>
+          <Button type="submit" disabled={isLoading}>
             {isLoading ? 'Connecting...' : 'Connect to Database'}
-          </button>
+          </Button>
         </form>
       ) : (
         <>
-          <div className="bg-gray-100 p-4 h-96 overflow-y-auto mb-4">
+          <div className="bg-100 p-4 h-96 overflow-y-auto mb-4">
             {messages.map((message, index) => (
               <div key={index} className={`mb-2 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>
-                <span className={`inline-block p-2 rounded ${message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}>
+                <span>
                   <ReactMarkdown>{message.text}</ReactMarkdown>
                 </span>
               </div>
             ))}
           </div>
           <form onSubmit={handleSubmit} className="flex">
-            <input
+            <Input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -131,9 +131,9 @@ export default function Home() {
               placeholder="Ask a question about your database..."
               disabled={isLoading}
             />
-            <button type="submit" className="bg-blue-500 text-white p-2 rounded-r" disabled={isLoading}>
+            <Button type="submit" className="bg-blue-500 text-white p-2 rounded-r" disabled={isLoading}>
               {isLoading ? 'Sending...' : 'Send'}
-            </button>
+            </Button>
           </form>
         </>
       )}

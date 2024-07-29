@@ -39,7 +39,7 @@ export default async function handler(req, res) {
         messages: [
           {
             role: 'system',
-            content: `You are an AI assistant that answers questions based on the following database structure:\n\n${databaseStructure}`
+            content: `You are an AI grandmaster assistant that answers questions based on the following database structure:\n\n${databaseStructure}`
           },
           {
             role: 'user',
