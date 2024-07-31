@@ -1,30 +1,61 @@
 import mysql from 'mysql2/promise';
+import sqlite3 from 'sqlite3';
+import { open } from 'sqlite';
+import path from 'path';
+import { MongoClient } from 'mongodb';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { host, user, password, database } = req.body;
+    const { dbType, host, user, password, database,uri } = req.body;
 
-    if (!host || !user || !password || !database) {
-      return res.status(400).json({ error: 'Missing required database credentials' });
-    }
+    if (dbType === 'mysql') {
+      if (!host || !user || !password || !database) {
+        return res.status(400).json({ error: 'Missing required MySQL credentials' });
+      }
 
-    try {
-      // Attempt to create a connection
-      const connection = await mysql.createConnection({
-        host,
-        user,
-        password,
-        database,
-      });
+      try {
+        const connection = await mysql.createConnection({
+          host,
+          user,
+          password,
+          database,
+        });
+        await connection.end();
+        res.status(200).json({ message: 'MySQL connection successful' });
+      } catch (error) {
+        console.error('MySQL connection error:', error);
+        res.status(500).json({ error: 'Failed to connect to MySQL database', details: error.message });
+      }
+    } else if (dbType === 'sqlite') {
+      try {
+        const dbPath = path.join(process.cwd(), 'tmp', 'database.sqlite');
+        const db = await open({
+          filename: dbPath,
+          driver: sqlite3.Database,
+        });
+        await db.close();
+        res.status(200).json({ message: 'SQLite connection successful' });
+      } catch (error) {
+        console.error('SQLite connection error:', error);
+        res.status(500).json({ error: 'Failed to connect to SQLite database', details: error.message });
+      }
+    } else if (dbType === 'mongodb') {
+      if (!uri) {
+        return res.status(400).json({ error: 'Missing required MongoDB URI' });
+      }
 
-      // If connection is successful, close it immediately
-      await connection.end();
-
-      // Return success response
-      res.status(200).json({ message: 'Database connection successful' });
-    } catch (error) {
-      console.error('Database connection error:', error);
-      res.status(500).json({ error: 'Failed to connect to the database', details: error.message });
+      try {
+        const client = new MongoClient(uri);
+        await client.connect();
+        await client.db().command({ ping: 1 });
+        await client.close();
+        res.status(200).json({ message: 'MongoDB connection successful' });
+      } catch (error) {
+        console.error('MongoDB connection error:', error);
+        res.status(500).json({ error: 'Failed to connect to MongoDB', details: error.message });
+      }
+    } else {
+      res.status(400).json({ error: 'Invalid database type' });
     }
   } else {
     res.setHeader('Allow', ['POST']);
