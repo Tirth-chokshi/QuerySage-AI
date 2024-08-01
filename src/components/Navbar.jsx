@@ -19,7 +19,8 @@ import { useTheme } from "next-themes";
 
 
 const logo = '/logo.svg';
-const Navbar =async () => {
+const Navbar = () => {
+  const { data: session } = useSession();
   const { theme, setTheme } = useTheme();
 
   const handleSignIn = useCallback(() => {
@@ -30,6 +31,7 @@ const Navbar =async () => {
     await signOut({ redirect: false });
     window.location.href = '/';
   }, []);
+
 
   return (
     <nav className="border-b mb-4">
