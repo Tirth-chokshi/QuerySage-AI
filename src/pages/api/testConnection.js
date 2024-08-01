@@ -5,12 +5,6 @@ import path from 'path';
 import { MongoClient } from 'mongodb';
 
 export default async function handler(req, res) {
-  const session = await getServerSession(req, res, authOptions)
-
-  if (!session) {
-    res.status(401).json({ error: 'Unauthorized' })
-    return
-  }
 
   if (req.method === 'POST') {
     const { dbType, host, user, password, database,uri } = req.body;

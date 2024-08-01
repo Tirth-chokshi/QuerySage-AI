@@ -1,12 +1,15 @@
 "use client"
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import ReactMarkdown from 'react-markdown'
 import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern'
 import { cn } from '@/lib/utils'
-
+import { useSession } from 'next-auth/react'   
+import { redirect } from 'next/navigation' 
 export default function Page() {
+    const { data: session,status } = useSession()
+
     const [input, setInput] = useState('')
     const [messages, setMessages] = useState([])
     const [isLoading, setIsLoading] = useState(false)
@@ -69,6 +72,19 @@ export default function Page() {
         setIsLoading(false)
     }
 
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            redirect('/login')
+        }
+    }, [status])
+
+    if (status === "loading") {
+        return <div>Loading...</div>
+    }
+
+    if (!session) {
+        return null
+    }
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Chat with DB</h1>
