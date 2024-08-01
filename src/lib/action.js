@@ -1,30 +1,59 @@
-import dbConnect from '@/lib/dbConnect';
-import User from '@/lib/model'
 
-export const saveUser = async (user) => {
-    await dbConnect();
+"use server";
 
+import dbConnect from "@/lib/dbConnect";
+import { User } from "@/models/User";
+import { redirect } from "next/navigation";
+import { hash } from "bcryptjs";
+import { CredentialsSignin } from "next-auth";
+import { signIn } from "@/auth";
+
+const login = async (formData) => {
+    const email = formData.get("email");
+    const password = formData.get("password");
+  
     try {
-        const existingUser = await User.findOne({ email: user.email });
-
-        if (existingUser) {
-            // Update existing user
-            existingUser.name = user.name;
-            existingUser.image = user.image;
-            await existingUser.save();
-            return existingUser;
-        } else {
-            // Create new user
-            const newUser = new User({
-                name: user.name,
-                email: user.email,
-                image: user.image,
-            });
-            await newUser.save();
-            return newUser;
-        }
+      await signIn("credentials", {
+        redirect: false,
+        callbackUrl: "/",
+        email,
+        password,
+      });
     } catch (error) {
-        console.error('Error saving user:', error);
-        throw new Error('Error saving user');
+      const someError = error;
+      return someError.cause;
     }
+    redirect("/");
+  };
+  
+
+  const register = async (formData) => {
+    const firstName = formData.get("firstname");
+    const lastName = formData.get("lastname");
+    const email = formData.get("email");
+    const password = formData.get("password");
+  
+    if (!firstName || !lastName || !email || !password) {
+      throw new Error("Please fill all fields");
+    }
+  
+    await dbConnect();
+  
+    // existing user
+    const existingUser = await User.findOne({ email });
+    if (existingUser) throw new Error("User already exists");
+  
+    const hashedPassword = await hash(password, 12);
+  
+    await User.create({ firstName, lastName, email, password: hashedPassword });
+    console.log(`User created successfully 🥂`);
+    redirect("/login");
+  };
+  
+const fetchAllUsers = async () => {
+  await dbConnect();
+  const users = await User.find({});
+  return users;
 };
+
+export { register, login, fetchAllUsers };

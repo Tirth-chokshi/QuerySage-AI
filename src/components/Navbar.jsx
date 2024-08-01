@@ -3,6 +3,7 @@
 import { useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { signOut, useSession } from 'next-auth/react';
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,13 +17,18 @@ import { MoonIcon, SunIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 
-const logo = '/logo.svg'; // Adjust the path as needed
 
-const Navbar = () => {
+const logo = '/logo.svg';
+const Navbar =async () => {
   const { theme, setTheme } = useTheme();
 
   const handleSignIn = useCallback(() => {
     window.location.href = '/login';
+  }, []);
+
+  const handleSignOut = useCallback(async () => {
+    await signOut({ redirect: false });
+    window.location.href = '/';
   }, []);
 
   return (
@@ -31,6 +37,7 @@ const Navbar = () => {
         <div className="w-1/3">
           <Link href="/" className="flex items-center">
             <Image src={logo} alt="Logo" width={32} height={32} />
+            <span className="ml-2 text-xl font-bold">QuerySage</span>
           </Link>
         </div>
         <div className="w-1/3 flex justify-center">
@@ -39,7 +46,7 @@ const Navbar = () => {
               <NavigationMenuItem>
                 <Link href="/" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    QuerySage
+                    Home
                   </NavigationMenuLink>
                 </Link>
               </NavigationMenuItem>
@@ -48,38 +55,58 @@ const Navbar = () => {
                 <NavigationMenuContent>
                   <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                     <li className="row-span-3">
-                      <Link href="/" className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md">
-                        <div className="mb-2 mt-4 text-lg font-medium">
-                          Connect Database
-                        </div>
-                        <p className="text-sm leading-tight text-muted-foreground">
-                          Connect to your MySQL, SQLite, or MongoDB database.
-                        </p>
-                      </Link>
+                      <NavigationMenuLink asChild>
+                        <a
+                          className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                          href="/"
+                        >
+                          <div className="mb-2 mt-4 text-lg font-medium">
+                            Connect Database
+                          </div>
+                          <p className="text-sm leading-tight text-muted-foreground">
+                            Connect to your MySQL, SQLite, or MongoDB database.
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
                     </li>
                     <li>
-                      <Link href="/" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                        <div className="text-sm font-medium leading-none">MySQL</div>
-                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Connect to your MySQL database
-                        </p>
-                      </Link>
+                      <NavigationMenuLink asChild>
+                        <a
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          href="/"
+                        >
+                          <div className="text-sm font-medium leading-none">MySQL</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Connect to your MySQL database
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
                     </li>
                     <li>
-                      <Link href="/" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                        <div className="text-sm font-medium leading-none">SQLite</div>
-                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Upload and connect to your SQLite database
-                        </p>
-                      </Link>
+                      <NavigationMenuLink asChild>
+                        <a
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          href="/"
+                        >
+                          <div className="text-sm font-medium leading-none">SQLite</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Upload and connect to your SQLite database
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
                     </li>
                     <li>
-                      <Link href="/" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
-                        <div className="text-sm font-medium leading-none">MongoDB</div>
-                        <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                          Connect to your MongoDB database
-                        </p>
-                      </Link>
+                      <NavigationMenuLink asChild>
+                        <a
+                          className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          href="/"
+                        >
+                          <div className="text-sm font-medium leading-none">MongoDB</div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            Connect to your MongoDB database
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
                     </li>
                   </ul>
                 </NavigationMenuContent>
@@ -94,10 +121,10 @@ const Navbar = () => {
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className="w-1/3 flex justify-end">
-          <Button variant="outline" onClick={handleSignIn}>
-            Log in
-          </Button>
+        <div className="w-1/3 flex justify-end items-center space-x-2">
+            <Button variant="outline" onClick={handleSignIn}>
+              Log in
+            </Button>          
           <Button
             variant="ghost"
             size="icon"
