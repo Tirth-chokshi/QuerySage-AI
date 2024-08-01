@@ -22,7 +22,6 @@ export default function Home() {
     uri: ''
   })
   const [file, setFile] = useState(null)
-
   const handleCredentialsSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
@@ -107,9 +106,9 @@ export default function Home() {
 
   return (
     <div className="container mx-auto p-4">
-       <Navbar /> 
-      
-      <ContainerScroll titleComponent={"querysage"}/>
+      <Navbar />
+
+      <ContainerScroll titleComponent={"querysage"} />
     </div>
   )
 }
