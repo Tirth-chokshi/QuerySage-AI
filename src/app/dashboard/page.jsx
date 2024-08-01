@@ -101,7 +101,7 @@ export default function Page() {
             {!isConnected ? (
                 <div>
                     <select value={dbType} onChange={(e) => setDbType(e.target.value)} className="mb-4">
-                        <option value="">select Type of Database</option>
+                        <option value="select">select Type of Database</option>
                         <option value="mysql">MySQL</option>
                         <option value="mongodb">MongoDB</option>
                     </select>
