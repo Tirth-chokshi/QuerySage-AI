@@ -1,9 +1,11 @@
-// "use client"
 import NextAuth from 'next-auth'
 import GitHubProvider from 'next-auth/providers/github'
 import GoogleProvider from 'next-auth/providers/google'
+import { MongoDBAdapter } from "@auth/mongodb-adapter"
+import clientPromise from '@/lib/mongodb'
+import User from '@/lib/model'
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_ID,
@@ -14,10 +16,35 @@ const handler = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET
     })
   ],
-  session: {
-    strategy: "jwt",
+  pages: {
+    signIn: '/login',
   },
-  secret: process.env.AUTH_SECRET,
-})
+  async signIn({ user, account, profile }) {
+    if (account.provider === "google" || account.provider === "github") {
+      const { name, email } = user;
+      try {
+        await User.findOneAndUpdate(
+          { email },
+          { 
+            firstName: name.split(' ')[0],
+            lastName: name.split(' ').slice(1).join(' '),
+            email,
+            authProviderId: account.providerAccountId
+          },
+          { upsert: true, new: true, runValidators: true }
+        );
+        return true;
+      } catch (error) {
+        console.error("Error saving user:", error);
+        return false;
+      }
+    }
+    return true;
+  },
+  adapter: MongoDBAdapter(clientPromise),
+  secret: process.env.NEXTAUTH_SECRET,
+}
+
+const handler = NextAuth(authOptions)
 
 export { handler as GET, handler as POST }

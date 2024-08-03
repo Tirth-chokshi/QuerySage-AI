@@ -3,6 +3,13 @@ import { ContainerScroll } from '@/components/ui/container-scroll-animation'
 import Navbar from '@/components/Navbar'
 import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern'
 import { cn } from '@/lib/utils'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import { AnimatedBeam } from '@/components/magicui/animated-beam'
 export default function Home() {
   return (
     <div className="container mx-auto p-4">
@@ -18,6 +25,34 @@ export default function Home() {
       />
       <Navbar />
       <ContainerScroll titleComponent={"querysage"} />
+{/*       
+      <div className='container'>
+      <AnimatedBeam/>
+      </div> */}
+
+      <div className='container flex justify-center'>
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="item-1">
+            <AccordionTrigger>Is it Safe?</AccordionTrigger>
+            <AccordionContent>
+              YYes it is safe.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-2">
+            <AccordionTrigger>Is it styled?</AccordionTrigger>
+            <AccordionContent>
+              Yes. It comes with default styles that matches the other
+              components aesthetic.
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="item-3">
+            <AccordionTrigger>Is it animated?</AccordionTrigger>
+            <AccordionContent>
+              Yes. Its animated by default, but you can disable it if you prefer.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
     </div>
   )
 }
