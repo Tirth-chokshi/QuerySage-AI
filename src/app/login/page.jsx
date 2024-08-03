@@ -23,7 +23,7 @@ export default function Component() {
         )}
       /> */}
       Not signed in <br />
-      <button onClick={() => signIn('google')}>Sign in</button>
+      <button onClick={() => signIn()}>Sign in</button>
     {/* </div> */}
   </>
 }
