@@ -8,11 +8,11 @@ import DotPattern from "@/components/magicui/dot-pattern"
 export default function Component() {
   const { data: session, status } = useSession()
 
-  useEffect(() => {
-    if (status === "authenticated") {
-      redirect('/dashboard')
-    }
-  }, [status])
+  // useEffect(() => {
+  //   if (status === "authenticated") {
+  //     redirect('/dashboard')
+  //   }
+  // }, [status])
   if (session) {
     return <>
       Signed in as {session.user.email} <br />
@@ -20,23 +20,14 @@ export default function Component() {
     </>
   }
   return <>
-    {/* <div className="flex items-center justify-center min-h-screen bg-gray-100"> */}
-    {/* <AnimatedGridPattern
-        numSquares={30}
-        maxOpacity={0.1}
-        duration={3}
-        repeatDelay={1}
-        className={cn(
-          "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
-          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12",
-        )}
-      /> */}
     Not signed in <br />
-    <button onClick={() => signIn('google')}>Sign in</button>
+    <button onClick={() => signIn('google')}>Sign in with google</button>
+    <br />
+    <button onClick={() => signIn('github')}>Sign in with github</button>
     {/* </div> */}
     <DotPattern
       className={cn(
-        "[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]",
+        "[mask-image:radial-gradient(400px_circle_at_center,white,transparent)]",
       )}
     />
   </>
