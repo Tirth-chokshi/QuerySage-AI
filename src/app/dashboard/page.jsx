@@ -7,7 +7,6 @@ import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern'
 import { cn } from '@/lib/utils'
 import { useSession } from 'next-auth/react'   
 import { redirect } from 'next/navigation' 
-import { saveChatHistory } from '@/lib/action'
 
 export default function Page() {
     const { data: session, status } = useSession()
@@ -68,9 +67,6 @@ export default function Page() {
                 botMessage = { text: `Error: ${data.error}`, sender: 'bot' }
             }
             setMessages(prevMessages => [...prevMessages, botMessage])
-
-            // Save chat history
-            await saveChatHistory([...messages, newMessage, botMessage])
         } catch (error) {
             console.error('Error:', error)
             setMessages(prevMessages => [...prevMessages, { text: `Error: ${error.message}`, sender: 'bot' }])

@@ -5,6 +5,22 @@ import { cn } from "@/lib/utils"
 import { redirect } from 'next/navigation'
 import { useEffect } from "react"
 import DotPattern from "@/components/magicui/dot-pattern"
+import { Icons } from "@/components/icons"
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { BackgroundBeams } from "@/components/ui/background-beams"
+import { LampContainer } from "@/components/ui/lamp"
+import { motion } from "framer-motion"
+import { AuroraBackground } from "@/components/ui/aurora-background"
 export default function Component() {
   const { data: session, status } = useSession()
 
@@ -20,63 +36,38 @@ export default function Component() {
     </>
   }
   return <>
-    Not signed in <br />
-    <button onClick={() => signIn('google')}>Sign in with google</button>
-    <br />
-    <button onClick={() => signIn('github')}>Sign in with github</button>
-    {/* </div> */}
-    <DotPattern
-      className={cn(
-        "[mask-image:radial-gradient(400px_circle_at_center,white,transparent)]",
-      )}
-    />
+      <div className="h-[40rem] w-full rounded-md bg-neutral-950 relative flex flex-col items-center justify-center antialiased">
+        <div className="max-w-2xl mx-auto p-4">
+          <h1 className="relative z-10 text-lg md:text-7xl  bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-600  text-center font-sans font-bold">
+            Hello, Human
+          </h1>
+          <p></p>
+          <p className="text-neutral-500 max-w-lg mx-auto my-2 text-sm text-center relative z-10">
+            Ask questions, get answers - leave the SQL to us.
+          </p>
+          <Card>
+            <CardHeader className="space-y-1">
+              <CardTitle className="text-2xl">Continue with </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4">
+              <div className="grid grid-cols-2 gap-6">
+                <Button variant="outline"
+                  onClick={() => signIn('github')}
+                >
+                  <Icons.gitHub className="mr-2 h-4 w-4" />
+                  Github
+                </Button>
+                <Button variant="outline"
+                  onClick={() => signIn('google')}
+                >
+                  <Icons.google className="mr-2 h-4 w-4" />
+                  Google
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        {/* <BackgroundBeams /> */}
+      </div>
   </>
 }
-
-
-// import { signIn } from 'next-auth/react'
-// import { Button } from '@/components/ui/button'
-// import { FaGoogle, FaGithub } from 'react-icons/fa'
-// import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern'
-// import { cn } from '@/lib/utils'
-
-// export default function Login() {
-//   const handleSocialLogin = (provider) => {
-//     signIn(provider, { callbackUrl: '/' })
-//   }
-
-//   return (
-//     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-//       <AnimatedGridPattern
-//         numSquares={30}
-//         maxOpacity={0.1}
-//         duration={3}
-//         repeatDelay={1}
-//         className={cn(
-//           "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
-//           "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12",
-//         )}
-//       />
-//       <div className="bg-white p-8 rounded-lg shadow-md w-96 z-10">
-//         <h1 className="text-2xl font-bold mb-6 text-center">Welcome to QuerySage</h1>
-//         <p className="text-center mb-6">Sign in or sign up to continue</p>
-//         <div className="space-y-4">
-//           <Button
-//             onClick={() => handleSocialLogin('google')}
-//             className="w-full flex items-center justify-center"
-//           >
-//             <FaGoogle className="mr-2" />
-//             Continue with Google
-//           </Button>
-//           <Button
-//             onClick={() => handleSocialLogin('github')}
-//             className="w-full flex items-center justify-center"
-//           >
-//             <FaGithub className="mr-2" />
-//             Continue with GitHub
-//           </Button>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
