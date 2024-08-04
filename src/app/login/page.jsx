@@ -2,8 +2,17 @@
 import { useSession, signIn, signOut } from "next-auth/react"
 import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern'
 import { cn } from "@/lib/utils"
+import { redirect } from 'next/navigation'
+import { useEffect } from "react"
+import DotPattern from "@/components/magicui/dot-pattern"
 export default function Component() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      redirect('/dashboard')
+    }
+  }, [status])
   if (session) {
     return <>
       Signed in as {session.user.email} <br />
@@ -12,7 +21,7 @@ export default function Component() {
   }
   return <>
     {/* <div className="flex items-center justify-center min-h-screen bg-gray-100"> */}
-      {/* <AnimatedGridPattern
+    {/* <AnimatedGridPattern
         numSquares={30}
         maxOpacity={0.1}
         duration={3}
@@ -22,9 +31,14 @@ export default function Component() {
           "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12",
         )}
       /> */}
-      Not signed in <br />
-      <button onClick={() => signIn('google')}>Sign in</button>
+    Not signed in <br />
+    <button onClick={() => signIn('google')}>Sign in</button>
     {/* </div> */}
+    <DotPattern
+      className={cn(
+        "[mask-image:radial-gradient(600px_circle_at_center,white,transparent)]",
+      )}
+    />
   </>
 }
 

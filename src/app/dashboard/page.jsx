@@ -1,5 +1,5 @@
 "use client"
-import { useState,useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import ReactMarkdown from 'react-markdown'
@@ -7,8 +7,10 @@ import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern'
 import { cn } from '@/lib/utils'
 import { useSession } from 'next-auth/react'   
 import { redirect } from 'next/navigation' 
+import { saveChatHistory } from '@/lib/action'
+
 export default function Page() {
-    const { data: session,status } = useSession()
+    const { data: session, status } = useSession()
 
     const [input, setInput] = useState('')
     const [messages, setMessages] = useState([])
@@ -50,7 +52,8 @@ export default function Page() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setIsLoading(true)
-        setMessages([...messages, { text: input, sender: 'user' }])
+        const newMessage = { text: input, sender: 'user' }
+        setMessages(prevMessages => [...prevMessages, newMessage])
         try {
             const response = await fetch('/api/query', {
                 method: 'POST',
@@ -58,11 +61,16 @@ export default function Page() {
                 body: JSON.stringify({ query: input, dbCredentials, dbType })
             })
             const data = await response.json()
+            let botMessage
             if (response.ok) {
-                setMessages(prevMessages => [...prevMessages, { text: data.response, sender: 'bot' }])
+                botMessage = { text: data.response, sender: 'bot' }
             } else {
-                setMessages(prevMessages => [...prevMessages, { text: `Error: ${data.error}`, sender: 'bot' }])
+                botMessage = { text: `Error: ${data.error}`, sender: 'bot' }
             }
+            setMessages(prevMessages => [...prevMessages, botMessage])
+
+            // Save chat history
+            await saveChatHistory([...messages, newMessage, botMessage])
         } catch (error) {
             console.error('Error:', error)
             setMessages(prevMessages => [...prevMessages, { text: `Error: ${error.message}`, sender: 'bot' }])
@@ -77,10 +85,10 @@ export default function Page() {
             redirect('/login')
         }
     }, [status])
-
     if (status === "loading") {
         return <div>Loading...</div>
     }
+    
 
     if (!session) {
         return null
