@@ -1,6 +1,5 @@
 "use client"
 import { useSession, signIn, signOut } from "next-auth/react"
-import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern'
 import { cn } from "@/lib/utils"
 import { redirect } from 'next/navigation'
 import { useEffect } from "react"
@@ -10,25 +9,17 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { BackgroundBeams } from "@/components/ui/background-beams"
-import { LampContainer } from "@/components/ui/lamp"
-import { motion } from "framer-motion"
-import { AuroraBackground } from "@/components/ui/aurora-background"
 export default function Component() {
   const { data: session, status } = useSession()
 
-  // useEffect(() => {
-  //   if (status === "authenticated") {
-  //     redirect('/dashboard')
-  //   }
-  // }, [status])
+  useEffect(() => {
+    if (status === "authenticated") {
+      redirect('/dashboard')
+    }
+  }, [status])
   if (session) {
     return <>
       Signed in as {session.user.email} <br />

@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import ReactMarkdown from 'react-markdown'
 import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern'
 import { cn } from '@/lib/utils'
-import { useSession } from 'next-auth/react'   
+import { useSession,signOut } from 'next-auth/react'   
 import { redirect } from 'next/navigation' 
 
 export default function Page() {
@@ -89,9 +89,15 @@ export default function Page() {
     if (!session) {
         return null
     }
+    const handleLogout = () => {
+        signOut({ callbackUrl: '/login' });
+    };
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Chat with DB</h1>
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="text-2xl font-bold">Chat with DB</h1>
+                <Button onClick={handleLogout}>Logout</Button>
+            </div>
             <AnimatedGridPattern
                 numSquares={30}
                 maxOpacity={0.1}
