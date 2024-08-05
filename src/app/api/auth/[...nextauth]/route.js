@@ -19,27 +19,35 @@ export const authOptions = {
   pages: {
     signIn: '/login',
   },
-  async signIn({ user, account, profile }) {
-    if (account.provider === "google" || account.provider === "github") {
-      const { name, email } = user;
-      try {
-        await User.findOneAndUpdate(
-          { email },
-          { 
-            firstName: name.split(' ')[0],
-            lastName: name.split(' ').slice(1).join(' '),
-            email,
-            authProviderId: account.providerAccountId
-          },
-          { upsert: true, new: true, runValidators: true }
-        );
-        return true;
-      } catch (error) {
-        console.error("Error saving user:", error);
-        return false;
+  callbacks: {
+    async session({ session, user }) {
+      if (session?.user) {
+        session.user.id = user.id;
       }
-    }
-    return true;
+      return session;
+    },
+    async signIn({ user, account, profile }) {
+      if (account.provider === "google" || account.provider === "github") {
+        const { name, email } = user;
+        try {
+          await User.findOneAndUpdate(
+            { email },
+            { 
+              firstName: name.split(' ')[0],
+              lastName: name.split(' ').slice(1).join(' '),
+              email,
+              authProviderId: account.providerAccountId
+            },
+            { upsert: true, new: true, runValidators: true }
+          );
+          return true;
+        } catch (error) {
+          console.error("Error saving user:", error);
+          return false;
+        }
+      }
+      return true;
+    },
   },
   adapter: MongoDBAdapter(clientPromise),
   secret: process.env.AUTH_SECRET,

@@ -1,6 +1,9 @@
 import { Groq } from 'groq-sdk';
 import { MongoClient } from 'mongodb';
 import mysql from 'mysql2/promise';
+import dbConnect from '@/lib/dbConnect';
+import Message from '@/models/Message';
+import Chat from '@/models/Chat';
 
 const MAX_TOKENS = 8000;
 const TOKENS_PER_CHAR = 0.25;
@@ -64,10 +67,11 @@ async function* generateMongoDBChunks(db) {
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { query, dbCredentials, dbType } = req.body;
+    const { query, dbCredentials, dbType, chatId } = req.body;
     const groq = new Groq({ apiKey: process.env.LLM_API });
 
     try {
+      await dbConnect();
       let fullResponse = '';
 
       if (dbType === 'mysql') {
@@ -134,6 +138,22 @@ export default async function handler(req, res) {
       } else {
         throw new Error(`Unsupported database type: ${dbType}`);
       }
+
+      // Save the user's message
+      const userMessage = new Message({
+        chatId,
+        text: query,
+        sender: 'user',
+      });
+      await userMessage.save();
+
+      // Save the bot's response
+      const botMessage = new Message({
+        chatId,
+        text: fullResponse.trim(),
+        sender: 'bot',
+      });
+      await botMessage.save();
 
       res.status(200).json({ response: fullResponse.trim() });
     } catch (error) {

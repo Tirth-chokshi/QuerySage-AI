@@ -1,34 +1,18 @@
 "use server";
 
 import dbConnect from "@/lib/dbConnect";
-import User from "@/lib/model";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import Chat from "@/models/Chat";
 
-export async function saveChatHistory(messages) {
-  await dbConnect();
-  const session = await getServerSession(authOptions);
+export const chatCreate = async (req, res) => {
+    const { userId ,chatName ,dbType ,dbInfo ,createdAt ,lastActiveAt } = req.body
+    try {
+        dbConnect()
+        const newChat = new Chat({
+            userId ,chatName ,dbType ,dbInfo ,createdAt ,lastActiveAt
+        })
+        await newChat.save()
+    } catch (err) {
+        console.log(err)
 
-  if (!session) {
-    console.error("No session found when trying to save chat history");
-    return { success: false, error: "You must be signed in to save chat history." };
-  }
-
-  const userEmail = session.user.email;
-
-  try {
-    const user = await User.findOne({ email: userEmail });
-    if (!user) {
-      console.error(`User not found for email: ${userEmail}`);
-      return { success: false, error: "User not found" };
     }
-
-    user.chats.push({ messages });
-    await user.save();
-
-    return { success: true };
-  } catch (error) {
-    console.error("Error saving chat history:", error);
-    return { success: false, error: error.message };
-  }
 }
