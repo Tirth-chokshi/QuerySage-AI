@@ -5,7 +5,10 @@ if (!process.env.MONGO_URI) {
 }
 
 const uri = process.env.MONGO_URI
-const options = {}
+const options = {
+  serverSelectionTimeoutMS: 20000, // Increase timeout to 20 seconds
+  socketTimeoutMS: 45000, // Increase socket timeout to 45 seconds
+}
 
 let client
 let clientPromise

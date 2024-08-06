@@ -19,7 +19,6 @@ export const authOptions = {
   pages: {
     signIn: '/login',
   },
-  callbacks: {
     async session({ session, user }) {
       if (session?.user) {
         session.user.id = user.id;
@@ -43,11 +42,10 @@ export const authOptions = {
           return true;
         } catch (error) {
           console.error("Error saving user:", error);
-          return false;
+          return false; // or return true if you want to allow sign-in despite the error
         }
       }
       return true;
-    },
   },
   adapter: MongoDBAdapter(clientPromise),
   secret: process.env.AUTH_SECRET,
