@@ -19,12 +19,12 @@ export const authOptions = {
   pages: {
     signIn: '/login',
   },
-    async session({ session, user }) {
-      if (session?.user) {
-        session.user.id = user.id;
-      }
-      return session;
-    },
+  session: async ({ session, user }) => {
+    if (session?.user) {
+      session.user.id = user.id || user._id;
+    }
+    return session;
+  },
     async signIn({ user, account, profile }) {
       if (account.provider === "google" || account.provider === "github") {
         const { name, email } = user;

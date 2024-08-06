@@ -13,9 +13,10 @@ export default async function handler(req, res) {
     }
 
     const { chatName, dbType } = req.body;
-    const userId = session.user.id;
+    const userId = session.user.email
 
     if (!userId) {
+      console.log('Missing userId:', userId);
       return res.status(400).json({ error: 'User ID is required' });
     }
 
