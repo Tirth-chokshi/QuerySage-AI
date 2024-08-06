@@ -114,15 +114,15 @@ export default function Page() {
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Chat with DB</h1>
-        <Button onClick={handleLogout}>Logout</Button>
+        <Button variant={"destructive"} onClick={handleLogout}>Logout</Button>
       </div>
       <AnimatedGridPattern
         numSquares={30}
         maxOpacity={0.1}
-        duration={3}
+        duration={0.5}
         repeatDelay={1}
         className={cn(
-          "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
+          "[mask-image:radial-gradient(900px_circle_at_center,white,transparent)]",
           "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12",
         )}
       />
