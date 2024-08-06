@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ReactMarkdown from 'react-markdown';
 import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern';
 import { cn } from '@/lib/utils';
@@ -15,15 +16,13 @@ export default function Page() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
-  const [dbType, setDbType] = useState('mysql');
+  const [dbType, setDbType] = useState('');
   const [dbCredentials, setDbCredentials] = useState({
     host: '',
     user: '',
     password: '',
     database: '',
     uri: '',
-    type: '' // Add type field here
   });
   const [chatId, setChatId] = useState(null);
   const [chats, setChats] = useState([]);
@@ -53,6 +52,7 @@ export default function Page() {
         setChatId(data.chatId);
         setChats([...chats, { id: data.chatId, name: chatData.chatName, dbType: chatData.dbType }]);
         setDbCredentials(chatData.dbInfo);
+        setDbType(chatData.dbType);
         setShowNewChatForm(false);
       } else {
         const data = await response.json();
@@ -98,12 +98,6 @@ export default function Page() {
     }
   }, [status])
 
-  useEffect(() => {
-    if (isConnected) {
-      handleCreateChat()
-    }
-  }, [isConnected])
-
   if (status === "loading") {
     return <div>Loading...</div>
   }
@@ -138,13 +132,27 @@ export default function Page() {
           <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
         )}
         {chats.map((chat) => (
-          <div key={chat.id} onClick={() => setChatId(chat.id)}>
+          <div key={chat.id} onClick={() => {
+            setChatId(chat.id);
+            setDbType(chat.dbType);
+          }}>
             {chat.name} ({chat.dbType})
           </div>
         ))}
       </div>
       {chatId && (
         <>
+          <div className="mb-4">
+            <Select value={dbType} onValueChange={setDbType}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select database type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="mongodb">MongoDB</SelectItem>
+                <SelectItem value="mysql">MySQL</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div className="bg-100 p-4 h-96 overflow-y-auto mb-4">
             {messages.map((message, index) => (
               <div key={index} className={`mb-2 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>
