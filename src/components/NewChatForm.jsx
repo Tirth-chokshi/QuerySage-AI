@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 export default function NewChatForm({ onSubmit, onCancel }) {
   const [chatName, setChatName] = useState('');
   const [dbType, setDbType] = useState('');
@@ -14,10 +15,26 @@ export default function NewChatForm({ onSubmit, onCancel }) {
     uri: '',
     type: ''
   });
+  const [file, setFile] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ chatName, dbType, dbInfo });
+    let fileData = null;
+    
+    if (dbType === 'files' && file) {
+      fileData = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          resolve({
+            name: file.name,
+            content: e.target.result
+          });
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    onSubmit({ chatName, dbType, dbInfo, file: fileData });
   };
 
   return (
@@ -29,19 +46,19 @@ export default function NewChatForm({ onSubmit, onCancel }) {
         placeholder="Chat Name"
         required
       />
-          <div className="mb-4">
-            <Select value={dbType} onValueChange={setDbType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select database type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="mongodb">MongoDB</SelectItem>
-                <SelectItem value="mysql">MySQL</SelectItem>
-                <SelectItem value="files">files</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-      {dbType === 'mysql' ? (
+      <div className="mb-4">
+        <Select value={dbType} onValueChange={setDbType}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select database type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="mongodb">MongoDB</SelectItem>
+            <SelectItem value="mysql">MySQL</SelectItem>
+            <SelectItem value="files">Files</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      {dbType === 'mysql' && (
         <>
           <Input
             type="text"
@@ -79,7 +96,8 @@ export default function NewChatForm({ onSubmit, onCancel }) {
             required
           />
         </>
-      ) : (
+      )}
+      {dbType === 'mongodb' && (
         <>
           <Input
             type="text"
@@ -96,6 +114,14 @@ export default function NewChatForm({ onSubmit, onCancel }) {
             required
           />
         </>
+      )}
+      {dbType === 'files' && (
+        <Input
+          type="file"
+          accept=".csv"
+          onChange={(e) => setFile(e.target.files[0])}
+          required
+        />
       )}
       <div className="flex justify-end space-x-2">
         <Button type="button" onClick={onCancel}>Cancel</Button>

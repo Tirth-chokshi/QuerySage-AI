@@ -26,6 +26,7 @@ export default function Page() {
   const [chatId, setChatId] = useState(null);
   const [chats, setChats] = useState([]);
   const [showNewChatForm, setShowNewChatForm] = useState(false);
+  const [fileData, setFileData] = useState(null);  // Add this line
 
   const handleCreateChat = async (chatData) => {
     if (!session || !session.user) {
@@ -42,7 +43,8 @@ export default function Page() {
           userId: session.user.id,
           chatName: chatData.chatName,
           dbType: chatData.dbType,
-          dbInfo: chatData.dbInfo
+          dbInfo: chatData.dbInfo,
+          fileData: chatData.file
         })
       });
 
@@ -52,6 +54,9 @@ export default function Page() {
         setChats([...chats, { id: data.chatId, name: chatData.chatName, dbType: chatData.dbType }]);
         setDbCredentials(chatData.dbInfo);
         setDbType(chatData.dbType);
+        if (chatData.file) {
+          setFileData(chatData.file);
+        }
         setShowNewChatForm(false);
       } else {
         const data = await response.json();
@@ -72,7 +77,7 @@ export default function Page() {
       const response = await fetch('/api/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chatId, query: input, dbCredentials, dbType })
+        body: JSON.stringify({ chatId, query: input, dbCredentials, dbType, fileData })
       });
       const data = await response.json();
       let botMessage;
