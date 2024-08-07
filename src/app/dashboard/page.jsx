@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ReactMarkdown from 'react-markdown';
 import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern';
 import { cn } from '@/lib/utils';
@@ -131,28 +130,9 @@ export default function Page() {
         {showNewChatForm && (
           <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
         )}
-        {chats.map((chat) => (
-          <div key={chat.id} onClick={() => {
-            setChatId(chat.id);
-            setDbType(chat.dbType);
-          }}>
-            {chat.name} ({chat.dbType})
-          </div>
-        ))}
       </div>
       {chatId && (
         <>
-          <div className="mb-4">
-            <Select value={dbType} onValueChange={setDbType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select database type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="mongodb">MongoDB</SelectItem>
-                <SelectItem value="mysql">MySQL</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
           <div className="bg-100 p-4 h-96 overflow-y-auto mb-4">
             {messages.map((message, index) => (
               <div key={index} className={`mb-2 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>

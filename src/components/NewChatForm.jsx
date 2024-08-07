@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 export default function NewChatForm({ onSubmit, onCancel }) {
   const [chatName, setChatName] = useState('');
   const [dbType, setDbType] = useState('');
@@ -29,11 +29,18 @@ export default function NewChatForm({ onSubmit, onCancel }) {
         placeholder="Chat Name"
         required
       />
-      <select value={dbType} onChange={(e) => setDbType(e.target.value)} className="w-full p-2 border rounded">
-        <option value="select">select Type of Database</option>
-        <option value="mongodb">MongoDB</option>
-        <option value="mysql">MySQL</option>
-      </select>
+          <div className="mb-4">
+            <Select value={dbType} onValueChange={setDbType}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select database type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="mongodb">MongoDB</SelectItem>
+                <SelectItem value="mysql">MySQL</SelectItem>
+                <SelectItem value="files">files</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
       {dbType === 'mysql' ? (
         <>
           <Input
