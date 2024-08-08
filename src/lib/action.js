@@ -70,44 +70,20 @@ export async function* generateMongoDBChunks(db) {
 export async function* generateCSVChunks(content) {
     let currentChunk = '';
     let header = '';
-  
+
     const rows = content.split('\n');
     header = rows[0] + '\n';
-  
+
     for (let i = 1; i < rows.length; i++) {
-      const row = rows[i];
-      if ((currentChunk + row + '\n').length * TOKENS_PER_CHAR > MAX_TOKENS) {
-        yield header + currentChunk;
-        currentChunk = '';
-      }
-      currentChunk += row + '\n';
+        const row = rows[i];
+        if ((currentChunk + row + '\n').length * TOKENS_PER_CHAR > MAX_TOKENS) {
+            yield header + currentChunk;
+            currentChunk = '';
+        }
+        currentChunk += row + '\n';
     }
-  
+
     if (currentChunk) {
-      yield header + currentChunk;
+        yield header + currentChunk;
     }
-  }
-
-// export async function* generateSQLCSVChunks(connectionOrSchema) {
-//     let schema;
-//     if (typeof connectionOrSchema === 'string') {
-//         schema = connectionOrSchema;
-//     } else {
-//         schema = await getMySQLDatabaseSchema(connectionOrSchema);
-//     }
-
-//     let currentChunk = '';
-//     const lines = schema.split('\n');
-
-//     for (const line of lines) {
-//         if ((currentChunk + line + '\n').length * TOKENS_PER_CHAR > MAX_TOKENS) {
-//             yield currentChunk;
-//             currentChunk = '';
-//         }
-//         currentChunk += line + '\n';
-//     }
-
-//     if (currentChunk) {
-//         yield currentChunk;
-//     }
-// }
+}

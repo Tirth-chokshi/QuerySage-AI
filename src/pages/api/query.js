@@ -12,19 +12,6 @@ import { generateMongoDBChunks } from '@/lib/action';
 const MAX_TOKENS = 8000;
 const TOKENS_PER_CHAR = 0.25;
 
-function convertCSVToSQLSchema(csvContent) {
-  const lines = csvContent.split('\n');
-  const headers = lines[0].split(',').map(header => header.trim());
-  
-  // Assume all columns are VARCHAR(255) for simplicity
-  const columnDefinitions = headers.map(header => `${header} VARCHAR(255)`).join(', ');
-  
-  const tableName = 'csv_data';
-  const sqlSchema = `CREATE TABLE ${tableName} (${columnDefinitions});`;
-  
-  return { sqlSchema, tableName };
-}
-
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { query, dbCredentials, dbType, chatId, fileData } = req.body;
