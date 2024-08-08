@@ -22,11 +22,12 @@ export default function Page() {
     password: '',
     database: '',
     uri: '',
+    filename: '',
   });
   const [chatId, setChatId] = useState(null);
   const [chats, setChats] = useState([]);
   const [showNewChatForm, setShowNewChatForm] = useState(false);
-  const [fileData, setFileData] = useState(null);  // Add this line
+  const [fileData, setFileData] = useState(null);
 
   const handleCreateChat = async (chatData) => {
     if (!session || !session.user) {

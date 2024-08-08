@@ -87,3 +87,22 @@ export async function* generateCSVChunks(content) {
         yield header + currentChunk;
     }
 }
+export async function* generateSQLiteChunks(connection) {
+    const [tables] = await connection.all("SELECT name FROM sqlite_master WHERE type='table'");
+    let currentChunk = '';
+  
+    for (const { name: tableName } of tables) {
+      const [columns] = await connection.all(`PRAGMA table_info(${tableName})`);
+      const schema = `Table: ${tableName}\nColumns: ${columns.map(col => `${col.name} (${col.type})`).join(', ')}\n\n`;
+  
+      if ((currentChunk + schema).length * TOKENS_PER_CHAR > MAX_TOKENS) {
+        yield currentChunk;
+        currentChunk = '';
+      }
+      currentChunk += schema;
+    }
+  
+    if (currentChunk) {
+      yield currentChunk;
+    }
+  }

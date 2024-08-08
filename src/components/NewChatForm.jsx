@@ -13,6 +13,7 @@ export default function NewChatForm({ onSubmit, onCancel }) {
     password: '',
     database: '',
     uri: '',
+    filename: '',
     type: ''
   });
   const [file, setFile] = useState(null);
@@ -54,6 +55,7 @@ export default function NewChatForm({ onSubmit, onCancel }) {
           <SelectContent>
             <SelectItem value="mongodb">MongoDB</SelectItem>
             <SelectItem value="mysql">MySQL</SelectItem>
+            <SelectItem value="sqlite">SQLite</SelectItem>
             <SelectItem value="files">Files</SelectItem>
           </SelectContent>
         </Select>
@@ -104,6 +106,24 @@ export default function NewChatForm({ onSubmit, onCancel }) {
             value={dbInfo.uri}
             onChange={(e) => setDbInfo({ ...dbInfo, uri: e.target.value })}
             placeholder="MongoDB URI"
+            required
+          />
+          <Input
+            type="text"
+            value={dbInfo.type}
+            onChange={(e) => setDbInfo({ ...dbInfo, type: e.target.value })}
+            placeholder="Database Type"
+            required
+          />
+        </>
+      )}
+      {dbType === 'sqlite' && (
+        <>
+          <Input
+            type="text"
+            value={dbInfo.filename}
+            onChange={(e) => setDbInfo({ ...dbInfo, filename: e.target.value })}
+            placeholder="SQLite File Path"
             required
           />
           <Input
