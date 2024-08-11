@@ -1,15 +1,17 @@
 "use client"
 import React, { useState, useEffect } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ReactMarkdown from 'react-markdown';
 import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern';
 import { cn } from '@/lib/utils';
-import { useSession, signOut } from 'next-auth/react';
-import { redirect } from 'next/navigation';
 import NewChatForm from '@/components/NewChatForm';
+import Sidebar from '@/components/Sidebar';
+import ChatArea from '@/components/ChatArea';
 
-export default function Page() {
+export default function Dashboard() {
   const { data: session, status } = useSession();
 
   const [input, setInput] = useState('');
@@ -28,6 +30,20 @@ export default function Page() {
   const [chats, setChats] = useState([]);
   const [showNewChatForm, setShowNewChatForm] = useState(false);
   const [fileData, setFileData] = useState(null);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      redirect('/login')
+    }
+  }, [status])
+
+  if (status === "loading") {
+    return <div>Loading...</div>
+  }
+
+  if (!session) {
+    return null
+  }
 
   const handleCreateChat = async (chatData) => {
     if (!session || !session.user) {
@@ -97,30 +113,12 @@ export default function Page() {
     setIsLoading(false);
   };
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      redirect('/login')
-    }
-  }, [status])
-
-  if (status === "loading") {
-    return <div>Loading...</div>
-  }
-
-  if (!session) {
-    return null
-  }
-
   const handleLogout = () => {
     signOut({ callbackUrl: '/login' });
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Chat with DB</h1>
-        <Button variant={"destructive"} onClick={handleLogout}>Logout</Button>
-      </div>
+    <div className="grid h-screen w-full pl-[56px]">
       <AnimatedGridPattern
         numSquares={30}
         maxOpacity={0.1}
@@ -131,36 +129,30 @@ export default function Page() {
           "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12",
         )}
       />
-      <div>
-        <Button onClick={() => setShowNewChatForm(true)}>New Chat</Button>
-        {showNewChatForm && (
-          <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
-        )}
-      </div>
-      {chatId && (
-        <>
-          <div className="bg-100 p-4 h-96 overflow-y-auto mb-4">
-            {messages.map((message, index) => (
-              <div key={index} className={`mb-2 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}>
-                <ReactMarkdown>{message.text}</ReactMarkdown>
-              </div>
-            ))}
-          </div>
-          <form onSubmit={handleSubmit} className="flex">
-            <Input
-              type="text"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="flex-grow p-2 border rounded-l"
-              placeholder="Ask a question about your database..."
-              disabled={isLoading}
+      <Sidebar />
+      <div className="flex flex-col">
+        <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
+          <h1 className="text-xl font-semibold">Chat with DB</h1>
+          <Button variant="outline" size="sm" className="ml-auto" onClick={() => setShowNewChatForm(true)}>
+            New Chat
+          </Button>
+          <Button variant="destructive" size="sm" onClick={handleLogout}>Logout</Button>
+        </header>
+        <main className="flex-1 overflow-hidden">
+          {showNewChatForm ? (
+            <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
+          ) : (
+            <ChatArea
+              chatId={chatId}
+              messages={messages}
+              isLoading={isLoading}
+              input={input}
+              setInput={setInput}
+              handleSubmit={handleSubmit}
             />
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Sending...' : 'Send'}
-            </Button>
-          </form>
-        </>
-      )}
+          )}
+        </main>
+      </div>
     </div>
   );
 }

@@ -39,7 +39,7 @@ export default function NewChatForm({ onSubmit, onCancel }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 p-4">
       <Input
         type="text"
         value={chatName}
@@ -47,19 +47,17 @@ export default function NewChatForm({ onSubmit, onCancel }) {
         placeholder="Chat Name"
         required
       />
-      <div className="mb-4">
-        <Select value={dbType} onValueChange={setDbType}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select database type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="mongodb">MongoDB</SelectItem>
-            <SelectItem value="mysql">MySQL</SelectItem>
-            <SelectItem value="sqlite">SQLite</SelectItem>
-            <SelectItem value="files">Files</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <Select value={dbType} onValueChange={setDbType}>
+        <SelectTrigger>
+          <SelectValue placeholder="Select database type" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="mongodb">MongoDB</SelectItem>
+          <SelectItem value="mysql">MySQL</SelectItem>
+          <SelectItem value="sqlite">SQLite</SelectItem>
+          <SelectItem value="files">Files</SelectItem>
+        </SelectContent>
+      </Select>
       {dbType === 'mysql' && (
         <>
           <Input
@@ -90,50 +88,25 @@ export default function NewChatForm({ onSubmit, onCancel }) {
             placeholder="Database"
             required
           />
-          <Input
-            type="text"
-            value={dbInfo.type}
-            onChange={(e) => setDbInfo({ ...dbInfo, type: e.target.value })}
-            placeholder="Database Type"
-            required
-          />
         </>
       )}
       {dbType === 'mongodb' && (
-        <>
-          <Input
-            type="text"
-            value={dbInfo.uri}
-            onChange={(e) => setDbInfo({ ...dbInfo, uri: e.target.value })}
-            placeholder="MongoDB URI"
-            required
-          />
-          <Input
-            type="text"
-            value={dbInfo.type}
-            onChange={(e) => setDbInfo({ ...dbInfo, type: e.target.value })}
-            placeholder="Database Type"
-            required
-          />
-        </>
+        <Input
+          type="text"
+          value={dbInfo.uri}
+          onChange={(e) => setDbInfo({ ...dbInfo, uri: e.target.value })}
+          placeholder="MongoDB URI"
+          required
+        />
       )}
       {dbType === 'sqlite' && (
-        <>
-          <Input
-            type="text"
-            value={dbInfo.filename}
-            onChange={(e) => setDbInfo({ ...dbInfo, filename: e.target.value })}
-            placeholder="SQLite File Path"
-            required
-          />
-          <Input
-            type="text"
-            value={dbInfo.type}
-            onChange={(e) => setDbInfo({ ...dbInfo, type: e.target.value })}
-            placeholder="Database Type"
-            required
-          />
-        </>
+        <Input
+          type="text"
+          value={dbInfo.filename}
+          onChange={(e) => setDbInfo({ ...dbInfo, filename: e.target.value })}
+          placeholder="SQLite File Path"
+          required
+        />
       )}
       {dbType === 'files' && (
         <Input

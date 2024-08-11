@@ -10,9 +10,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { AnimatedBeam } from '@/components/magicui/animated-beam'
 import { redirect } from 'next/navigation'
 import { useSession } from 'next-auth/react'
+import FeaturesSectionDemo from '@/components/blocks/features-section-demo-2'
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -39,7 +39,7 @@ export default function Home() {
       <div className='container'>
       <AnimatedBeam/>
       </div> */}
-
+      <FeaturesSectionDemo/>
         <div className='container flex justify-center'>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">
