@@ -13,7 +13,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { MoonIcon, SunIcon } from "lucide-react";
+import { MoonIcon, SunIcon,LogInIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 
@@ -124,8 +124,11 @@ const Navbar = () => {
           </NavigationMenu>
         </div>
         <div className="w-1/3 flex justify-end items-center space-x-2">
+        
             <Button variant="outline" onClick={handleSignIn}>
               Log in
+            <LogInIcon className='ml-2'/>
+
             </Button>          
           <Button
             variant="ghost"

@@ -19,6 +19,7 @@ module.exports = {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },
       animation: {
+        meteor: "meteor 5s linear infinite",
         aurora: "aurora 60s linear infinite",
       },
     },
@@ -71,6 +72,14 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        meteor: {
+          "0%": { transform: "rotate(215deg) translateX(0)", opacity: 1 },
+          "70%": { opacity: 1 },
+          "100%": {
+            transform: "rotate(215deg) translateX(-500px)",
+            opacity: 0,
+          },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
