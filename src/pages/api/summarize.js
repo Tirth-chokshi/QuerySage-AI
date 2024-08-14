@@ -1,15 +1,22 @@
 import { IncomingForm } from 'formidable';
-import { promises as fs } from 'fs';
+import { createReadStream } from 'fs';
+import fetch from 'node-fetch';
+import FormData from 'form-data';
 
 export const config = {
   api: {
     bodyParser: false,
+    responseLimit: false,
   },
 };
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const form = new IncomingForm();
+    const form = new IncomingForm({
+      // maxFileSize: 100 * 1024 * 1024, // 100MB limit
+      keepExtensions: true,
+    });
+
     form.parse(req, async (err, fields, files) => {
       if (err) {
         console.error('Error', err);
@@ -21,17 +28,19 @@ export default async function handler(req, res) {
       const formData = new FormData();
 
       try {
-        // Read file content
-        const fileContent = await fs.readFile(file.filepath);
+        // Create a read stream from the file
+        const fileStream = createReadStream(file.filepath);
         
-        // Create a Blob from the file content
-        const blob = new Blob([fileContent], { type: file.mimetype });
-        
-        formData.append('file', blob, file.originalFilename);
+        // Append the file stream to formData
+        formData.append('file', fileStream, {
+          filename: file.originalFilename,
+          contentType: file.mimetype,
+        });
 
         const response = await fetch('https://backendcsv.onrender.com/summarize', {
           method: 'POST',
           body: formData,
+          headers: formData.getHeaders(),
         });
 
         if (!response.ok) {
@@ -43,9 +52,6 @@ export default async function handler(req, res) {
       } catch (error) {
         console.error('Error', error);
         res.status(500).json({ error: 'Error processing request: ' + error.message });
-      } finally {
-        // Clean up the temp file
-        await fs.unlink(file.filepath).catch(console.error);
       }
     });
   } else {
