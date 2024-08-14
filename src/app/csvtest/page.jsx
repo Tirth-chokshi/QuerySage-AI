@@ -160,19 +160,16 @@ export default function Home() {
         <ReactMarkdown className="bg-gray-100 p-4 rounded-lg">{summary}</ReactMarkdown>
 
         <h2 className="text-2xl font-semibold mt-6">Goals</h2>
-        <Select onChange={(e) => setSelectedGoal(e.target.value)} className="mb-4">
+        <select onChange={(e) => setSelectedGoal(e.target.value)} className="mb-4">
           <option value="">Select a goal</option>
           {goals.map((goal, index) => (
             <option key={index} value={goal}>
               {goal}
             </option>
           ))}
-        </Select>
-        <Button onClick={handleVisualize} disabled={loading}>
-          Generate Visualization
-        </Button>
-
-        {image && <img src={`data:image/pngbase64,${image}`} alt="Visualization" className="mt-4" />}
+        </select>
+        <Button onClick={handleVisualize}>Generate Visualization</Button>
+        {image && <img src={`data:image/png;base64,${image}`} alt="Visualization" />}
       </div>
 
       <div>
