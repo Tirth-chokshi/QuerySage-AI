@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     const form = new IncomingForm();
     form.parse(req, async (err, fields, files) => {
       if (err) {
-        console.error('Error', err);
+        console.error('Error parsing form:', err);
         res.status(500).json({ error: 'Error parsing form data' });
         return;
       }
@@ -25,19 +25,19 @@ export default async function handler(req, res) {
         formData.append('file', new Blob([fs.readFileSync(file.filepath)]), file.originalFilename);
         formData.append('question', question);
 
-        const response = await fetch('http://localhost:8000/chat', {
+        const response = await fetch('https://backendcsv.onrender.com/chat', {
           method: 'POST',
           body: formData,
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`Backend HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
         res.status(200).json(data);
       } catch (error) {
-        console.error('Error', error);
+        console.error('Error processing request:', error);
         res.status(500).json({ error: 'Error processing request' });
       }
     });
