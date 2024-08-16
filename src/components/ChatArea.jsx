@@ -1,7 +1,6 @@
 "use client"
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import ReactMarkdown from 'react-markdown';
 import { CornerDownLeft} from 'lucide-react';
 import { Textarea } from './ui/textarea';
