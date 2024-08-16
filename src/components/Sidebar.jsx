@@ -1,7 +1,8 @@
 "use client"
 import React from 'react';
+import { signOut } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
-import {LucideSettings,LogOutIcon,HistoryIcon,MessageCirclePlusIcon } from 'lucide-react';
+import { Settings, LogOut, History, MessageCirclePlus } from 'lucide-react';
 import {
   Tooltip,
   TooltipContent,
@@ -10,30 +11,40 @@ import {
 } from "@/components/ui/tooltip";
 import Image from 'next/image';
 import Link from 'next/link';
+
+const handleLogout = () => {
+  signOut({ callbackUrl: '/' });
+};
+
 const logo = '/logo.svg';
+
 export default function Sidebar() {
   return (
     <aside className="inset-y fixed left-0 z-20 flex h-full flex-col border-r">
       <div className="border-b p-2">
-      <Link href="/" className="flex items-center">
-            <Image src={logo} alt="Logo" width={32} height={32} />
-          </Link>
+        <Link href="/" className="flex items-center">
+          <Image src={logo} alt="Logo" width={32} height={32} />
+        </Link>
       </div>
       <TooltipProvider>
         <nav className="grid gap-1 p-2">
-          <SidebarButton icon={<MessageCirclePlusIcon className="size-5" />} label="New Chat" />
-          <SidebarButton icon={<HistoryIcon className="size-5" />} label="History" />
+          <SidebarButton icon={<MessageCirclePlus className="size-5" />} label="New Chat" />
+          <SidebarButton icon={<History className="size-5" />} label="History" />
         </nav>
         <nav className="mt-auto grid gap-1 p-2">
-          <SidebarButton icon={<LucideSettings className="size-5" />} label="Settings" />
-          <SidebarButton icon={<LogOutIcon className="size-5" />} label="Logout" />
+          <SidebarButton icon={<Settings className="size-5" />} label="Settings" />
+          <SidebarButton
+            icon={<LogOut className="size-5" />}
+            label="Logout"
+            onClick={handleLogout}
+          />
         </nav>
       </TooltipProvider>
     </aside>
   );
 }
 
-function SidebarButton({ icon, label }) {
+function SidebarButton({ icon, label, onClick }) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -42,6 +53,7 @@ function SidebarButton({ icon, label }) {
           size="icon"
           className="rounded-lg"
           aria-label={label}
+          onClick={onClick}
         >
           {icon}
         </Button>

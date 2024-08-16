@@ -113,16 +113,12 @@ export default function Dashboard() {
     setIsLoading(false);
   };
 
-  const handleLogout = () => {
-    signOut({ callbackUrl: '/login' });
-  };
-
   return (
-    <div className="grid h-screen w-full pl-[56px]">
+    <div className="grid h-screen w-full pl-[56px] bg-muted/40">
       <AnimatedGridPattern
-        numSquares={30}
-        maxOpacity={0.1}
-        duration={0.5}
+        numSquares={100}
+        maxOpacity={0.5}
+        duration={0.5}x 
         repeatDelay={1}
         className={cn(
           "[mask-image:radial-gradient(900px_circle_at_center,white,transparent)]",
@@ -135,8 +131,7 @@ export default function Dashboard() {
           <h1 className="text-xl font-semibold">Chat with DB</h1>
           <Button variant="outline" size="sm" className="ml-auto" onClick={() => setShowNewChatForm(true)}>
             New Chat
-          </Button>
-          <Button variant="destructive" size="sm" onClick={handleLogout}>Logout</Button>
+          </Button>  
         </header>
         <main className="flex-1 overflow-hidden">
           {showNewChatForm ? (
