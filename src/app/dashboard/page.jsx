@@ -1,23 +1,22 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import ReactMarkdown from 'react-markdown';
-import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern';
-import { cn } from '@/lib/utils';
-import NewChatForm from '@/components/NewChatForm';
 import Sidebar from '@/components/Sidebar';
 import ChatArea from '@/components/ChatArea';
+import NewChatForm from '@/components/NewChatForm';
+import NewChatDialog from '@/components/NewChatDialog'
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
-
-  const [input, setInput] = useState('');
+  const [chatId, setChatId] = useState(null);
+  const [chats, setChats] = useState([]);
   const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showNewChatForm, setShowNewChatForm] = useState(false);
   const [dbType, setDbType] = useState('');
+  const [isNewChatDialogOpen, setIsNewChatDialogOpen] = useState(false);
   const [dbCredentials, setDbCredentials] = useState({
     host: '',
     user: '',
@@ -26,9 +25,6 @@ export default function Dashboard() {
     uri: '',
     filename: '',
   });
-  const [chatId, setChatId] = useState(null);
-  const [chats, setChats] = useState([]);
-  const [showNewChatForm, setShowNewChatForm] = useState(false);
   const [fileData, setFileData] = useState(null);
 
   useEffect(() => {
@@ -53,17 +49,29 @@ export default function Dashboard() {
     }
 
     try {
-      const response = await fetch('/api/createChat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: session.user.id,
-          chatName: chatData.chatName,
-          dbType: chatData.dbType,
-          dbInfo: chatData.dbInfo,
-          fileData: chatData.file
-        })
-      });
+      let response;
+      if (chatData.dbType === 'csv') {
+        const formData = new FormData();
+        formData.append('file', new Blob([chatData.dbInfo.file.content]), chatData.dbInfo.file.name);
+        formData.append('question', chatData.chatName);
+
+        response = await fetch('/api/chat', {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        response = await fetch('/api/createChat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: session.user.id,
+            chatName: chatData.chatName,
+            dbType: chatData.dbType,
+            dbInfo: chatData.dbInfo,
+            fileData: chatData.file
+          })
+        });
+      }
 
       if (response.ok) {
         const data = await response.json();
@@ -75,6 +83,10 @@ export default function Dashboard() {
           setFileData(chatData.file);
         }
         setShowNewChatForm(false);
+        
+        if (chatData.dbType === 'csv') {
+          setMessages([{ text: data.response, sender: 'bot' }]);
+        }
       } else {
         const data = await response.json();
         setMessages([{ text: `Error: ${data.error}`, sender: 'bot' }]);
@@ -83,7 +95,7 @@ export default function Dashboard() {
       console.error('Error:', error);
       setMessages([{ text: `Error: ${error.message}`, sender: 'bot' }]);
     }
-  };
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -114,40 +126,34 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="grid h-screen w-full pl-[56px] bg-muted/40">
-      <AnimatedGridPattern
-        numSquares={100}
-        maxOpacity={0.5}
-        duration={0.5}x 
-        repeatDelay={1}
-        className={cn(
-          "[mask-image:radial-gradient(900px_circle_at_center,white,transparent)]",
-          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12",
-        )}
+    <div className="flex h-screen bg-background">
+      <Sidebar
+        onNewChat={() => setIsNewChatDialogOpen(true)}
+        chats={chats}
+        activeChatId={chatId}
+        onChatSelect={(id) => setChatId(id)}
+        className={"mr-4"}
       />
-      <Sidebar />
-      <div className="flex flex-col">
-        <header className="sticky top-0 z-10 flex h-[57px] items-center gap-1 border-b bg-background px-4">
-          <h1 className="text-xl font-semibold">Chat with DB</h1>
-          <Button variant="outline" size="sm" className="ml-auto" onClick={() => setShowNewChatForm(true)}>
-            New Chat
-          </Button>  
-        </header>
-        <main className="flex-1 overflow-hidden">
-          {showNewChatForm ? (
-            <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
-          ) : (
-            <ChatArea
-              chatId={chatId}
-              messages={messages}
-              isLoading={isLoading}
-              input={input}
-              setInput={setInput}
-              handleSubmit={handleSubmit}
-            />
-          )}
-        </main>
-      </div>
+      <NewChatDialog
+        isOpen={isNewChatDialogOpen}
+        onClose={() => setIsNewChatDialogOpen(false)}
+        onSubmit={handleCreateChat}
+      />
+      <main className="flex-1 flex flex-col">
+        {showNewChatForm ? (
+          <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
+        ) : (
+          <ChatArea
+            chatId={chatId}
+            messages={messages}
+            isLoading={isLoading}
+            input={input}
+            setInput={setInput}
+            handleSubmit={handleSubmit}
+            className="m-10"
+          />
+        )}
+      </main>
     </div>
   );
 }

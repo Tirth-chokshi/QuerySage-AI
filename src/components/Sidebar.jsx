@@ -11,14 +11,14 @@ import {
 } from "@/components/ui/tooltip";
 import Image from 'next/image';
 import Link from 'next/link';
-
+import { useState } from 'react';
 const handleLogout = () => {
   signOut({ callbackUrl: '/' });
 };
 
 const logo = '/logo.svg';
 
-export default function Sidebar() {
+export default function Sidebar({onNewChat, chats, activeChatId, onChatSelect}) {
   return (
     <aside className="inset-y fixed left-0 z-20 flex h-full flex-col border-r">
       <div className="border-b p-2">
@@ -27,8 +27,12 @@ export default function Sidebar() {
         </Link>
       </div>
       <TooltipProvider>
-        <nav className="grid gap-1 p-2">
-          <SidebarButton icon={<MessageCirclePlus className="size-5" />} label="New Chat" />
+      <nav className="grid gap-1 p-2">
+        <SidebarButton
+          icon={<MessageCirclePlus className="size-5" />}
+          label="New Chat"
+          onClick={onNewChat}
+        />
           <SidebarButton icon={<History className="size-5" />} label="History" />
         </nav>
         <nav className="mt-auto grid gap-1 p-2">
