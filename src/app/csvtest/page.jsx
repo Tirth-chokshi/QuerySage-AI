@@ -135,8 +135,7 @@ export default function Home() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">Data Analysis App with Chat (using Groq)</h1>
-
+      {/* <h1 className="text-3xl font-bold mb-6 text-center">Data Analysis App with Chat (using Groq)</h1> */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Upload File</CardTitle>
@@ -192,18 +191,6 @@ export default function Home() {
               <CardTitle>Visualization</CardTitle>
             </CardHeader>
             <CardContent>
-              {/* <Select
-                value={selectedGoal}
-                onValueChange={setSelectedGoal}
-                className="mb-4"
-              >
-                <option value="">Select a goal</option>
-                {goals.map((goal, index) => (
-                  <option key={index} value={goal}>
-                    {goal}
-                  </option>
-                ))}
-              </Select> */}
               <select onChange={(e) => setSelectedGoal(e.target.value)} className="mb-4">
               <option value="">Select a goal</option>
               {goals.map((goal, index) => (
