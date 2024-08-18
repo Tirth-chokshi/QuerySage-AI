@@ -18,6 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 export default function NewChatDialog({ isOpen, onClose, onSubmit }) {
     const [chatName, setChatName] = useState('');
@@ -29,24 +30,34 @@ export default function NewChatDialog({ isOpen, onClose, onSubmit }) {
         database: '',
         uri: '',
         filename: '',
-    })
+    });
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        onSubmit({ chatName, dbType, dbInfo });
-        onClose();
-        setChatName('');
-        setDbType('');
-        setDbInfo({
-            host: '',
-            user: '',
-            password: '',
-            database: '',
-            uri: '',
-            filename: '',
-        });
-    };
+        setIsLoading(true);
+        setError('');
 
+        try {
+            await onSubmit({ chatName, dbType, dbInfo });
+            onClose();
+            setChatName('');
+            setDbType('');
+            setDbInfo({
+                host: '',
+                user: '',
+                password: '',
+                database: '',
+                uri: '',
+                filename: '',
+            });
+        } catch (error) {
+            setError(error.message || 'An error occurred while creating the chat.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
     const renderDbFields = () => {
         switch (dbType) {
             case 'mysql':
@@ -118,7 +129,6 @@ export default function NewChatDialog({ isOpen, onClose, onSubmit }) {
                 return null;
         }
     };
-
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-[425px]">
@@ -160,8 +170,15 @@ export default function NewChatDialog({ isOpen, onClose, onSubmit }) {
                         </div>
                         {renderDbFields()}
                     </div>
+                    {error && (
+                        <Alert variant="destructive">
+                            <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                    )}
                     <DialogFooter>
-                        <Button type="submit">Create Chat</Button>
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? 'Creating...' : 'Create Chat'}
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>
