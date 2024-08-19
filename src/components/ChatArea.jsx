@@ -33,7 +33,6 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
             className="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
           />
           <Button type="submit" disabled={isLoading}>
-          Send Message
             {isLoading ? 'Sending...' : <CornerDownLeft className="h-4 w-4" />}
           </Button>
         </div>

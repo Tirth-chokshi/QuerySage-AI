@@ -127,6 +127,9 @@ export default function Dashboard() {
 
   return (
     <div className="flex h-screen bg-background">
+      <h1
+        className='flex justify-center iteams-center'
+      >{session.user.name}</h1>
       <Sidebar
         onNewChat={() => setIsNewChatDialogOpen(true)}
         chats={chats}

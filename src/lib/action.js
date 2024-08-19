@@ -1,14 +1,3 @@
-
-import Chat from "@/models/Chat";
-import User from "@/models/User";
-import { Groq } from 'groq-sdk';
-import { MongoClient } from 'mongodb';
-import mysql from 'mysql2/promise';
-import dbConnect from '@/lib/dbConnect';
-import Message from '@/models/Message';
-import fs from 'fs'
-import csv from 'csv-parser'
-
 const MAX_TOKENS = 8000;
 const TOKENS_PER_CHAR = 0.25;
 
@@ -87,22 +76,49 @@ export async function* generateCSVChunks(content) {
         yield header + currentChunk;
     }
 }
+
+export async function getSQLiteSchema(connection) {
+    let tables
+    try {
+        tables = await connection.all("SELECT name FROM sqlite_master WHERE type='table'")
+    } catch {
+        tables = await new Promise((resolve, reject) => {
+            connection.all("SELECT name FROM sqlite_master WHERE type='table'", (err, rows) => {
+                if (err) {
+                    reject(err)
+                } else {
+                    resolve(rows)
+                }
+            })
+        })
+    }
+
+    let schema = ''
+
+    for (const table of tables) {
+        const tableName = table.name || table['name']
+        const columnInfo = await connection.all(`PRAGMA table_info(${tableName})`)
+        const columns = columnInfo.map(col => `${col.name} (${col.type})`)
+        schema += `Table: ${tableName}\nColumns: ${columns.join(', ')}\n\n`
+    }
+
+    return schema
+}
+
 export async function* generateSQLiteChunks(connection) {
-    const [tables] = await connection.all("SELECT name FROM sqlite_master WHERE type='table'");
-    let currentChunk = '';
-  
-    for (const { name: tableName } of tables) {
-      const [columns] = await connection.all(`PRAGMA table_info(${tableName})`);
-      const schema = `Table: ${tableName}\nColumns: ${columns.map(col => `${col.name} (${col.type})`).join(', ')}\n\n`;
-  
-      if ((currentChunk + schema).length * TOKENS_PER_CHAR > MAX_TOKENS) {
-        yield currentChunk;
-        currentChunk = '';
-      }
-      currentChunk += schema;
+    const schema = await getSQLiteSchema(connection)
+    let currentChunk = ''
+
+    const lines = schema.split('\n')
+    for (const line of lines) {
+        if ((currentChunk + line + '\n').length * TOKENS_PER_CHAR > MAX_TOKENS) {
+            yield currentChunk
+            currentChunk = ''
+        }
+        currentChunk += line + '\n'
     }
-  
+
     if (currentChunk) {
-      yield currentChunk;
+        yield currentChunk
     }
-  }
+}

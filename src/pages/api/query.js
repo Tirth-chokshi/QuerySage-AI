@@ -9,55 +9,7 @@ import path from 'path'
 import { generateCSVChunks } from '@/lib/action'
 import { generateMySQLDatabaseChunks } from '@/lib/action'
 import { generateMongoDBChunks } from '@/lib/action'
-
-const MAX_TOKENS = 8000
-const TOKENS_PER_CHAR = 0.25
-
-export async function getSQLiteSchema(connection) {
-  let tables
-  try {
-    tables = await connection.all("SELECT name FROM sqlite_master WHERE type='table'")
-  } catch {
-    tables = await new Promise((resolve, reject) => {
-      connection.all("SELECT name FROM sqlite_master WHERE type='table'", (err, rows) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(rows)
-        }
-      })
-    })
-  }
-
-  let schema = ''
-
-  for (const table of tables) {
-    const tableName = table.name || table['name']
-    const columnInfo = await connection.all(`PRAGMA table_info(${tableName})`)
-    const columns = columnInfo.map(col => `${col.name} (${col.type})`)
-    schema += `Table: ${tableName}\nColumns: ${columns.join(', ')}\n\n`
-  }
-
-  return schema
-}
-
-export async function* generateSQLiteChunks(connection) {
-  const schema = await getSQLiteSchema(connection)
-  let currentChunk = ''
-
-  const lines = schema.split('\n')
-  for (const line of lines) {
-    if ((currentChunk + line + '\n').length * TOKENS_PER_CHAR > MAX_TOKENS) {
-      yield currentChunk
-      currentChunk = ''
-    }
-    currentChunk += line + '\n'
-  }
-
-  if (currentChunk) {
-    yield currentChunk
-  }
-}
+import { generateSQLiteChunks } from '@/lib/action'
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
