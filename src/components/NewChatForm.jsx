@@ -15,12 +15,33 @@ export default function NewChatForm({ onSubmit, onCancel }) {
     uri: '',
     type: ''
   });
-  const [file, setFile] = useState(null);
+  
+  const [testingConnection, setTestingConnection] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let fileData = null;
-    onSubmit({ chatName, dbType, dbInfo });
+    setTestingConnection(true);
+
+    try {
+      const response = await fetch('/api/testConnection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dbType, dbInfo }),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(data.message);
+        onSubmit({ chatName, dbType, dbInfo });
+      } else {
+        alert(`Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Error testing connection:', error);
+      alert(`Error testing connection: ${error.message}`);
+    } finally {
+      setTestingConnection(false);
+    }
   };
 
   return (
@@ -82,9 +103,11 @@ export default function NewChatForm({ onSubmit, onCancel }) {
           required
         />
       )}
-      <div className="flex justify-end space-x-2">
+     <div className="flex justify-end space-x-2">
         <Button variant="ghost" type="button" onClick={onCancel}>Cancel</Button>
-        <Button variant="outline" type="submit">Create Chat</Button>
+        <Button variant="outline" type="submit" disabled={testingConnection}>
+          {testingConnection ? 'Testing connection...' : 'Connect'}
+        </Button>
       </div>
     </form>
   );
