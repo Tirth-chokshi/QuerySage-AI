@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import ChatArea from '@/components/ChatArea'
 import NewChatForm from '@/components/NewChatForm'
-import NewChatDialog from '@/components/NewChatDialog'
 
 export default function Dashboard() {
   const { data: session, status } = useSession()
@@ -16,7 +15,6 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(false)
   const [showNewChatForm, setShowNewChatForm] = useState(false)
   const [dbType, setDbType] = useState('')
-  const [isNewChatDialogOpen, setIsNewChatDialogOpen] = useState(false)
   const [dbCredentials, setDbCredentials] = useState({
     host: '',
     user: '',
@@ -25,8 +23,6 @@ export default function Dashboard() {
     uri: '',
     filename: '',
   })
-  const [fileData, setFileData] = useState(null)
-
   useEffect(() => {
     if (status === "unauthenticated") {
       redirect('/login')
@@ -50,16 +46,6 @@ export default function Dashboard() {
 
     try {
       let response
-      if (chatData.dbType === 'csv') {
-        const formData = new FormData()
-        formData.append('file', new Blob([chatData.dbInfo.file.content]), chatData.dbInfo.file.name)
-        formData.append('question', chatData.chatName)
-
-        response = await fetch('/api/chat', {
-          method: 'POST',
-          body: formData,
-        })
-      } else {
         response = await fetch('/api/createChat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -71,7 +57,6 @@ export default function Dashboard() {
             fileData: chatData.file
           })
         })
-      }
 
       if (response.ok) {
         const data = await response.json()
@@ -83,10 +68,6 @@ export default function Dashboard() {
           setFileData(chatData.file)
         }
         setShowNewChatForm(false)
-        
-        if (chatData.dbType === 'csv') {
-          setMessages([{ text: data.response, sender: 'bot' }])
-        }
       } else {
         const data = await response.json()
         setMessages([{ text: `Error: ${data.error}`, sender: 'bot' }])
@@ -106,7 +87,7 @@ export default function Dashboard() {
       const response = await fetch('/api/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chatId, query: input, dbCredentials, dbType, fileData })
+        body: JSON.stringify({ chatId, query: input, dbCredentials, dbType })
       })
       const data = await response.json()
       let botMessage
@@ -131,16 +112,11 @@ export default function Dashboard() {
         className='flex justify-center iteams-center'
       >{session.user.name}</h1>
       <Sidebar
-        onNewChat={() => setIsNewChatDialogOpen(true)}
+        onNewChat={() => setShowNewChatForm(true)}
         chats={chats}
         activeChatId={chatId}
         onChatSelect={(id) => setChatId(id)}
         className={"mr-4"}
-      />
-      <NewChatDialog
-        isOpen={isNewChatDialogOpen}
-        onClose={() => setIsNewChatDialogOpen(false)}
-        onSubmit={handleCreateChat}
       />
       <main className="flex-1 flex flex-col">
         {showNewChatForm ? (

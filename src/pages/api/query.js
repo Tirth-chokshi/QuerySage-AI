@@ -5,7 +5,6 @@ import sqlite3 from 'sqlite3'
 import { open } from 'sqlite'
 import dbConnect from '@/lib/dbConnect'
 import Message from '@/models/Message'
-import path from 'path'
 import { generateCSVChunks } from '@/lib/action'
 import { generateMySQLDatabaseChunks } from '@/lib/action'
 import { generateMongoDBChunks } from '@/lib/action'
@@ -40,18 +39,8 @@ export default async function handler(req, res) {
           driver: sqlite3.Database
         })
         chunkGenerator = generateSQLiteChunks(connection)
-      } else if (dbType === 'files') {
-        if (!fileData || !fileData.name || !fileData.content) {
-          throw new Error('Invalid file data')
-        }
-        const fileExtension = path.extname(fileData.name).toLowerCase()
-
-        if (fileExtension === '.csv') {
-          chunkGenerator = generateCSVChunks(fileData.content)
-        } else {
-          throw new Error(`Unsupported file type: ${fileExtension}`)
-        }
-      } else {
+      }
+      else {
         throw new Error(`Unsupported database type: ${dbType}`)
       }
 
@@ -65,7 +54,7 @@ export default async function handler(req, res) {
             { role: 'user', content: query },
           ],
           model: 'llama3-8b-8192',
-          max_tokens: 4096,
+          // max_tokens: 4096,
         })
 
         const chunkResponse = completion.choices[0]?.message?.content
