@@ -13,7 +13,6 @@ export default function NewChatForm({ onSubmit, onCancel }) {
     password: '',
     database: '',
     uri: '',
-    filename: '',
     type: ''
   });
   const [file, setFile] = useState(null);
@@ -21,21 +20,7 @@ export default function NewChatForm({ onSubmit, onCancel }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let fileData = null;
-    
-    if (dbType === 'files' && file) {
-      fileData = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          resolve({
-            name: file.name,
-            content: e.target.result
-          });
-        };
-        reader.readAsText(file);
-      });
-    }
-
-    onSubmit({ chatName, dbType, dbInfo, file: fileData });
+    onSubmit({ chatName, dbType, dbInfo });
   };
 
   return (
@@ -54,8 +39,6 @@ export default function NewChatForm({ onSubmit, onCancel }) {
         <SelectContent>
           <SelectItem value="mongodb">MongoDB</SelectItem>
           <SelectItem value="mysql">MySQL</SelectItem>
-          <SelectItem value="sqlite">SQLite</SelectItem>
-          <SelectItem value="files">Files</SelectItem>
         </SelectContent>
       </Select>
       {dbType === 'mysql' && (
@@ -99,26 +82,9 @@ export default function NewChatForm({ onSubmit, onCancel }) {
           required
         />
       )}
-      {dbType === 'sqlite' && (
-        <Input
-          type="text"
-          value={dbInfo.filename}
-          onChange={(e) => setDbInfo({ ...dbInfo, filename: e.target.value })}
-          placeholder="SQLite File Path"
-          required
-        />
-      )}
-      {dbType === 'files' && (
-        <Input
-          type="file"
-          accept=".csv"
-          onChange={(e) => setFile(e.target.files[0])}
-          required
-        />
-      )}
       <div className="flex justify-end space-x-2">
-        <Button type="button" onClick={onCancel}>Cancel</Button>
-        <Button type="submit">Create Chat</Button>
+        <Button variant="ghost" type="button" onClick={onCancel}>Cancel</Button>
+        <Button variant="outline" type="submit">Create Chat</Button>
       </div>
     </form>
   );

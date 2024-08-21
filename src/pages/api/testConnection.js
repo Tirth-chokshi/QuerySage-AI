@@ -1,7 +1,4 @@
 import mysql from 'mysql2/promise';
-import sqlite3 from 'sqlite3';
-import { open } from 'sqlite';
-import path from 'path';
 import { MongoClient } from 'mongodb';
 
 export default async function handler(req, res) {
@@ -26,19 +23,6 @@ export default async function handler(req, res) {
       } catch (error) {
         console.error('MySQL connection error:', error);
         res.status(500).json({ error: 'Failed to connect to MySQL database', details: error.message });
-      }
-    } else if (dbType === 'sqlite') {
-      try {
-        const dbPath = path.join(process.cwd(), 'tmp', 'database.sqlite');
-        const db = await open({
-          filename: dbPath,
-          driver: sqlite3.Database,
-        });
-        await db.close();
-        res.status(200).json({ message: 'SQLite connection successful' });
-      } catch (error) {
-        console.error('SQLite connection error:', error);
-        res.status(500).json({ error: 'Failed to connect to SQLite database', details: error.message });
       }
     } else if (dbType === 'mongodb') {
       if (!uri) {

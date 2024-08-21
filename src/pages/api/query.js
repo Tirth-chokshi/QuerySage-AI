@@ -5,14 +5,13 @@ import sqlite3 from 'sqlite3'
 import { open } from 'sqlite'
 import dbConnect from '@/lib/dbConnect'
 import Message from '@/models/Message'
-import { generateCSVChunks } from '@/lib/action'
 import { generateMySQLDatabaseChunks } from '@/lib/action'
 import { generateMongoDBChunks } from '@/lib/action'
 import { generateSQLiteChunks } from '@/lib/action'
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    const { query, dbCredentials, dbType, chatId, fileData } = req.body
+    const { query, dbCredentials, dbType, chatId } = req.body
     const groq = new Groq({ apiKey: process.env.LLM_API })
 
     try {
