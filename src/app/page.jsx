@@ -45,7 +45,7 @@ export default function Home() {
             <AccordionItem value="item-1">
               <AccordionTrigger>Is it Safe?</AccordionTrigger>
               <AccordionContent>
-                YYes it is safe.
+                Yes it is safe.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
