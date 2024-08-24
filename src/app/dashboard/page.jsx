@@ -5,8 +5,11 @@ import { redirect } from 'next/navigation'
 import Sidebar from '@/components/Sidebar'
 import ChatArea from '@/components/ChatArea'
 import NewChatForm from '@/components/NewChatForm'
+import { useToast } from "@/components/ui/use-toast"
+import { Toaster } from "@/components/ui/toaster"
 
 export default function Dashboard() {
+  const { toast } = useToast()
   const { data: session, status } = useSession()
   const [chatId, setChatId] = useState(null)
   const [chats, setChats] = useState([])
@@ -45,8 +48,25 @@ export default function Dashboard() {
     }
 
     try {
-      let response
-        response = await fetch('/api/createChat', {
+      // Test the database connection
+      const connectionResponse = await fetch('/api/testConnection', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          dbType: chatData.dbType,
+          dbInfo: chatData.dbInfo
+        })
+      })
+
+      if (connectionResponse.ok) {
+        toast({
+          title: "Success",
+          description: "Database connection successful!",
+          variant: "default",
+        })
+
+        // Proceed with chat creation
+        const response = await fetch('/api/createChat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -58,23 +78,45 @@ export default function Dashboard() {
           })
         })
 
-      if (response.ok) {
-        const data = await response.json()
-        setChatId(data.chatId)
-        setChats([...chats, { id: data.chatId, name: chatData.chatName, dbType: chatData.dbType }])
-        setDbCredentials(chatData.dbInfo)
-        setDbType(chatData.dbType)
-        if (chatData.file) {
-          setFileData(chatData.file)
+        if (response.ok) {
+          const data = await response.json()
+          setChatId(data.chatId)
+          setChats([...chats, { id: data.chatId, name: chatData.chatName, dbType: chatData.dbType }])
+          setDbCredentials(chatData.dbInfo)
+          setDbType(chatData.dbType)
+          if (chatData.file) {
+            setFileData(chatData.file)
+          }
+          setShowNewChatForm(false)
+          toast({
+            title: "Success",
+            description: "Chat created successfully!",
+            variant: "default",
+          })
+
+        } else {
+          const data = await response.json()
+          toast({
+            title: "Error",
+            description: `Error creating chat: ${data.error}`,
+            variant: "destructive",
+          })
         }
-        setShowNewChatForm(false)
       } else {
-        const data = await response.json()
-        setMessages([{ text: `Error: ${data.error}`, sender: 'bot' }])
+        const errorData = await connectionResponse.json()
+        toast({
+          title: "Error",
+          description: `Database connection failed: ${errorData.error}`,
+          variant: "destructive",
+        })
       }
     } catch (error) {
       console.error('Error:', error)
-      setMessages([{ text: `Error: ${error.message}`, sender: 'bot' }])
+      toast({
+        title: "Error",
+        description: `Error: ${error.message}`,
+        variant: "destructive",
+      })
     }
   }
 
@@ -106,11 +148,13 @@ export default function Dashboard() {
     setIsLoading(false)
   }
 
+ 
   return (
     <div className="flex h-screen bg-background">
-      <h1
-        className='flex justify-center iteams-center'
-      >{session.user.name}</h1>
+      <Toaster />
+      <h1 className='flex justify-center items-center'>
+        {session.user.name}
+        </h1>
       <Sidebar
         onNewChat={() => setShowNewChatForm(true)}
         chats={chats}

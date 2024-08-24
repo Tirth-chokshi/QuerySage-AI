@@ -25,7 +25,8 @@ export default async function handler(req, res) {
         formData.append('file', new Blob([fs.readFileSync(file.filepath)]), file.originalFilename)
         formData.append('question', question)
 
-        const response = await fetch('https://backendcsv.onrender.com/chat', {
+        // const response = await fetch('https://backendcsv.onrender.com/chat', {
+          const response = await fetch('https://localhost:8000/chat', {
           method: 'POST',
           body: formData,
         })
