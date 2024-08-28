@@ -13,7 +13,7 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { query, dbCredentials, dbType, chatId } = req.body
     const groq = new Groq({ apiKey: process.env.LLM_API })
-
+//comment
     try {
       await dbConnect()
       let fullResponse = ''
