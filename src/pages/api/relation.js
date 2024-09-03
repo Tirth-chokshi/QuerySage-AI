@@ -21,18 +21,16 @@ export default async function handler(req, res) {
 
       try {
         const file = files.file[0];
-        const xAxis = fields.xAxis[0];
-        const yAxis = fields.yAxis[0];
+        const goal = fields.goal[0];
 
         const formData = new FormData();
         formData.append('file', fs.createReadStream(file.filepath), {
           filename: file.originalFilename,
           contentType: file.mimetype,
         });
-        formData.append('x_axis', xAxis);
-        formData.append('y_axis', yAxis);
+        formData.append('goal', goal);
 
-        const response = await fetch('http://localhost:8000/query_graph', {
+        const response = await fetch('http://localhost:8000/visualize', {
           method: 'POST',
           body: formData,
           headers: formData.getHeaders(),

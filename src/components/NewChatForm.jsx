@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label'
+import { Loader2 } from 'lucide-react';
 
 export default function NewChatForm({ onSubmit, onCancel }) {
   const [chatName, setChatName] = useState('');
@@ -47,13 +48,13 @@ export default function NewChatForm({ onSubmit, onCancel }) {
   };
 
   return (
-    <Card>
+    <Card className="w-full max-w-md mx-auto mt-8">
       <CardHeader>
-        <h2 className="text-2xl font-bold">New Chat</h2>
+        <h2 className="text-2xl font-bold text-center">New Chat</h2>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
             <Label htmlFor="chatName">Chat Name</Label>
             <Input
               id="chatName"
@@ -62,12 +63,13 @@ export default function NewChatForm({ onSubmit, onCancel }) {
               onChange={(e) => setChatName(e.target.value)}
               placeholder="Enter a chat name"
               required
+              className="w-full"
             />
           </div>
-          <div>
+          <div className="space-y-2">
             <Label htmlFor="dbType">Database Type</Label>
             <Select id="dbType" value={dbType} onValueChange={setDbType}>
-              <SelectTrigger>
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select database type" />
               </SelectTrigger>
               <SelectContent>
@@ -77,65 +79,45 @@ export default function NewChatForm({ onSubmit, onCancel }) {
             </Select>
           </div>
           {dbType === 'mysql' && (
-            <>
-              <div>
-                <Label htmlFor="mysqlHost">Host</Label>
-                <Input
-                  id="mysqlHost"
-                  type="text"
-                  value={dbInfo.host}
-                  onChange={(e) => setDbInfo({ ...dbInfo, host: e.target.value })}
-                  placeholder="Enter MySQL host"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="mysqlUser">User</Label>
-                <Input
-                  id="mysqlUser"
-                  type="text"
-                  value={dbInfo.user}
-                  onChange={(e) => setDbInfo({ ...dbInfo, user: e.target.value })}
-                  placeholder="Enter MySQL user"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="mysqlPassword">Password</Label>
-                <Input
-                  id="mysqlPassword"
-                  type="password"
-                  value={dbInfo.password}
-                  onChange={(e) => setDbInfo({ ...dbInfo, password: e.target.value })}
-                  placeholder="Enter MySQL password"
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="mysqlDatabase">Database</Label>
-                <Input
-                  id="mysqlDatabase"
-                  type="text"
-                  value={dbInfo.database}
-                  onChange={(e) => setDbInfo({ ...dbInfo, database: e.target.value })}
-                  placeholder="Enter MySQL database"
-                  required
-                />
-              </div>
-            </>
-          )}
-          {dbType === 'mongodb' && (
-            <div>
-              <Label htmlFor="mongodbUri">MongoDB URI</Label>
+            <div className="space-y-4">
               <Input
-                id="mongodbUri"
                 type="text"
-                value={dbInfo.uri}
-                onChange={(e) => setDbInfo({ ...dbInfo, uri: e.target.value })}
-                placeholder="Enter MongoDB URI"
+                value={dbInfo.host}
+                onChange={(e) => setDbInfo({ ...dbInfo, host: e.target.value })}
+                placeholder="MySQL Host"
+                required
+              />
+              <Input
+                type="text"
+                value={dbInfo.user}
+                onChange={(e) => setDbInfo({ ...dbInfo, user: e.target.value })}
+                placeholder="MySQL User"
+                required
+              />
+              <Input
+                type="password"
+                value={dbInfo.password}
+                onChange={(e) => setDbInfo({ ...dbInfo, password: e.target.value })}
+                placeholder="MySQL Password"
+                required
+              />
+              <Input
+                type="text"
+                value={dbInfo.database}
+                onChange={(e) => setDbInfo({ ...dbInfo, database: e.target.value })}
+                placeholder="MySQL Database"
                 required
               />
             </div>
+          )}
+          {dbType === 'mongodb' && (
+            <Input
+              type="text"
+              value={dbInfo.uri}
+              onChange={(e) => setDbInfo({ ...dbInfo, uri: e.target.value })}
+              placeholder="MongoDB URI"
+              required
+            />
           )}
         </form>
       </CardContent>
@@ -144,12 +126,20 @@ export default function NewChatForm({ onSubmit, onCancel }) {
           Cancel
         </Button>
         <Button
-          variant="outline"
+          variant="default"
           type="submit"
           disabled={testingConnection}
           onClick={handleSubmit}
+          className="w-32"
         >
-          {testingConnection ? 'Testing connection...' : 'Connect'}
+          {testingConnection ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Connecting
+            </>
+          ) : (
+            'Connect'
+          )}
         </Button>
       </CardFooter>
     </Card>

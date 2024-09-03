@@ -2,31 +2,61 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Select } from '@/components/ui/select'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Upload, FileText, BarChart2, MessageSquare } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ReactMarkdown from 'react-markdown'
 
 const Spinner = () => (
   <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-gray-900"></div>
 )
-
 export default function Home() {
   const [file, setFile] = useState(null)
   const [summary, setSummary] = useState('')
-  const [goals, setGoals] = useState([])
   const [selectedGoal, setSelectedGoal] = useState('')
   const [image, setImage] = useState('')
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [columns, setColumns] = useState([])
+  const [xAxis, setXAxis] = useState('')
+  const [yAxis, setYAxis] = useState('')
+  const [goal, setGoal] = useState('')
+  const [goals, setGoals] = useState([])
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0])
+
+  const fetchColumns = async (file) => {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const response = await fetch('/api/columns', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      setColumns(data.columns)
+    } catch (error) {
+      console.error('Error fetching columns:', error)
+      setError('Failed to fetch columns. Please try again.')
+    }
+  }
+
+  const handleFileChange = async (e) => {
+    const selectedFile = e.target.files[0]
+    setFile(selectedFile)
     setError('')
+    if (selectedFile) {
+      await fetchColumns(selectedFile)
+    }
   }
 
   const handleSummarize = async () => {
@@ -51,7 +81,7 @@ export default function Home() {
 
       const data = await response.json()
       setSummary(data.summary)
-      setGoals(data.goals)
+      setGoals(data.goals || [])
       setError('')
     } catch (error) {
       console.error('Error in summarize:', error)
@@ -60,20 +90,55 @@ export default function Home() {
       setLoading(false)
     }
   }
-
-  const handleVisualize = async () => {
+  const handleRelation = async () => {
     if (!file) {
       setError('Please select a file first')
       return
     }
-    if (!selectedGoal) {
-      setError('Please select a goal first')
+    if (!goal) {
+      setError('Please select a goal')
       return
     }
 
     const formData = new FormData()
     formData.append('file', file)
-    formData.append('goal', selectedGoal)
+    formData.append('goal', goal)
+
+    setLoading(true)
+    try {
+      const response = await fetch('/api/relation', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      setImage(data.image)
+      setError('')
+    } catch (error) {
+      console.error('Error in visualize:', error)
+      setError('Failed to generate visualization. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+  const handleVisualize = async () => {
+    if (!file) {
+      setError('Please select a file first')
+      return
+    }
+    if (!xAxis || !yAxis) {
+      setError('Please select both X and Y axes')
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('xAxis', xAxis)
+    formData.append('yAxis', yAxis)
 
     setLoading(true)
     try {
@@ -135,7 +200,6 @@ export default function Home() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
-      {/* <h1 className="text-3xl font-bold mb-6 text-center">Data Analysis App with Chat (using Groq)</h1> */}
       <Card className="mb-6">
         <CardHeader>
           <CardTitle>Upload File</CardTitle>
@@ -164,6 +228,10 @@ export default function Home() {
             <FileText className="mr-2 h-4 w-4" />
             Summary
           </TabsTrigger>
+          <TabsTrigger value="relation">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Relation
+          </TabsTrigger>
           <TabsTrigger value="visualization">
             <BarChart2 className="mr-2 h-4 w-4" />
             Visualization
@@ -185,59 +253,117 @@ export default function Home() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="relation">
+          <Card>
+            <CardHeader>
+              <CardTitle>Relation</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center space-x-4 mb-4">
+                <Select value={goal} onValueChange={setGoal}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a goal" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {goals && goals.length > 0 ? (
+                      goals.map((g, index) => (
+                        <SelectItem key={index} value={g}>
+                          {g}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="no-goals" disabled>
+                        No goals available
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+                <Button
+                  onClick={handleRelation}
+                  disabled={loading || !goal || goals.length === 0}
+                >
+                  Generate Visualization
+                </Button>
+              </div>
+              {image && <img src={`data:image/png;base64,${image}`} alt="Visualization" className="mt-4 w-auto h-auto" />}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="visualization">
           <Card>
             <CardHeader>
               <CardTitle>Visualization</CardTitle>
             </CardHeader>
             <CardContent>
-              <select onChange={(e) => setSelectedGoal(e.target.value)} className="mb-4">
-              <option value="">Select a goal</option>
-              {goals.map((goal, index) => (
-                <option key={index} value={goal}>
-                  {goal}
-                </option>
-              ))}
-            </select>
-            <Button onClick={handleVisualize} disabled={loading || !selectedGoal}>
-              Generate Visualization
-            </Button>
-            {image && <img src={`data:image/png;base64,${image}`} alt="Visualization" 
-            className="mt-4 w-auto h-auto"
-            />}
-          </CardContent>
-        </Card>
-      </TabsContent>
+              <div className="flex items-center space-x-4 mb-4">
+                <Select value={xAxis} onValueChange={setXAxis}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select X-axis" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {columns.map((column) => (
+                      <SelectItem key={column} value={column}>
+                        {column}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={yAxis} onValueChange={setYAxis}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Y-axis" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {columns.map((column) => (
+                      <SelectItem key={column} value={column}>
+                        {column}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button
+                  onClick={handleVisualize}
+                  disabled={loading || !xAxis || !yAxis}
+                >
+                  Generate Visualization
+                </Button>
+              </div>
+              {image && <img src={`data:image/png;base64,${image}`} alt="Visualization"
+                className="mt-4 w-auto h-auto"
+              />}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      <TabsContent value="chat">
-        <Card>
-          <CardHeader>
-            <CardTitle>Chat with CSV</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-4 mb-4">
-              <Input
-                type="text"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-                placeholder="Ask a question"
-                className="flex-grow"
-              />
-              <Button onClick={handleChat} disabled={loading || !question}>
-                Ask
-              </Button>
-            </div>
-            {answer && (
-              <Card>
-                <CardContent>
-                  <ReactMarkdown className="prose max-w-none">{answer}</ReactMarkdown>
-                </CardContent>
-              </Card>
-            )}
-          </CardContent>
-        </Card>
-      </TabsContent>
-    </Tabs>
+        <TabsContent value="chat">
+          <Card>
+            <CardHeader>
+              <CardTitle>Chat with CSV</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center space-x-4 mb-4">
+                <Input
+                  type="text"
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  placeholder="Ask a question"
+                  className="flex-grow"
+                />
+                <Button onClick={handleChat} disabled={loading || !question}>
+                  Ask
+                </Button>
+              </div>
+              {answer && (
+                <Card>
+                  <CardContent>
+                    <ReactMarkdown className="prose max-w-none">{answer}</ReactMarkdown>
+                  </CardContent>
+                </Card>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div >
   )
 }
