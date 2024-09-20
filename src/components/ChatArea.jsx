@@ -3,8 +3,9 @@ import React, { useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import ReactMarkdown from 'react-markdown'
 import { Send, Bot, User } from 'lucide-react'
-import { Textarea } from './ui/textarea'
-import { ScrollArea } from './ui/scroll-area'
+import { Textarea } from '@/components/ui/textarea'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
 export default function ChatArea({ chatId, messages, isLoading, input, setInput, handleSubmit }) {
@@ -24,9 +25,6 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
 
   return (
     <div className="flex flex-col h-full">
-      <div className="border-b p-4">
-        <h3 className="font-bold text-lg">Chat #{chatId}</h3>
-      </div>
       <ScrollArea className="flex-1 h-[calc(100vh-200px)] p-4">
         {messages.map((message, index) => (
           <div
@@ -37,11 +35,8 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
               className={`
                 inline-block max-w-[70%] px-4 py-3 rounded-lg shadow-md
                 ${message.sender === 'user'
-                  ? 'bg-emerald-600 text-white ml-auto'
-                  : 'bg-amber-50 text-gray-800 mr-auto'}
-                transition-all duration-300 ease-in-out
-                hover:shadow-lg
-                ${message.sender === 'user' ? 'hover:bg-emerald-700' : 'hover:bg-amber-100'}
+                  ? 'bg-muted'
+                  : 'bg-muted'}                
               `}
             >
               <div className="flex items-center mb-2">
@@ -60,6 +55,18 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
             </div>
           </div>
         ))}
+        {isLoading && (
+          <div className="mb-4 flex justify-start">
+            <div className="inline-block max-w-[70%] px-4 py-3 rounded-lg shadow-md bg-amber-50 text-gray-800 mr-auto">
+              <div className="flex items-center mb-2">
+                <Bot className="h-5 w-5 mr-2 text-amber-400" />
+                <span className="font-semibold text-amber-600">AI</span>
+              </div>
+              <Skeleton className="h-4 w-3/4 mb-2" />
+              <Skeleton className="h-4 w-1/2" />
+            </div>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </ScrollArea>
       <div className="border-t p-4">
@@ -73,7 +80,7 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
               className="flex-1 min-h-[50px] max-h-[200px] resize-y"
             />
             <Button type="submit" disabled={isLoading} size="icon">
-              {isLoading ? <Spinner /> : <Send className="h-4 w-4" />}
+              <Send className="h-4 w-4" />
             </Button>
           </div>
         </form>
@@ -81,7 +88,3 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
     </div>
   )
 }
-
-const Spinner = () => (
-  <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-gray-600"></div>
-)
