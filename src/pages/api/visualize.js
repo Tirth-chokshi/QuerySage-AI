@@ -32,8 +32,8 @@ export default async function handler(req, res) {
         formData.append('x_axis', xAxis);
         formData.append('y_axis', yAxis);
 
-        const response = await fetch('http://localhost:8000/query_graph', {
-          // const response = await fetch('http://backendcsv.onrender.com/query_graph', {
+        // const response = await fetch('http://localhost:8000/query_graph', {
+          const response = await fetch('https://backendcsv.onrender.com/query_graph', {
           method: 'POST',
           body: formData,
           headers: formData.getHeaders(),

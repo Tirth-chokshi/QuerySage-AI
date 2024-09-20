@@ -30,7 +30,8 @@ export default async function handler(req, res) {
         });
         formData.append('goal', goal);
 
-        const response = await fetch('http://localhost:8000/visualize', {
+        // const response = await fetch('http://localhost:8000/visualize', {
+          const response = await fetch('https://backendcsv.onrender.com/visualize', {
           method: 'POST',
           body: formData,
           headers: formData.getHeaders(),

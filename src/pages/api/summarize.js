@@ -36,8 +36,8 @@ export default async function handler(req, res) {
           filename: file.originalFilename,
           contentType: file.mimetype,
         });
-        const response = await fetch('http://localhost:8000/summarize', {
-          // const response = await fetch('https://backendcsv.onrender.com/summarize', {
+        // const response = await fetch('http://localhost:8000/summarize', {
+          const response = await fetch('https://backendcsv.onrender.com/summarize', {
           method: 'POST',
           body: formData,
           headers: formData.getHeaders(),
