@@ -52,7 +52,7 @@ export default async function handler(req, res) {
             },
             { role: 'user', content: query },
           ],
-          model: 'gemma-7b-it',
+          model: 'llama3-8b-8192',
           // max_tokens: 4096,
         })
 

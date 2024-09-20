@@ -148,35 +148,39 @@ export default function Dashboard() {
     setIsLoading(false)
   }
 
- 
+
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background overflow-hidden">
       <Toaster />
       <h1 className='flex justify-center items-center'>
-        {session.user.name}
-        </h1>
-      <Sidebar
-        onNewChat={() => setShowNewChatForm(true)}
-        chats={chats}
-        activeChatId={chatId}
-        onChatSelect={(id) => setChatId(id)}
-        className={"mr-4"}
-      />
-      <main className="flex-1 flex flex-col">
-        {showNewChatForm ? (
-          <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
-        ) : (
-          <ChatArea
-            chatId={chatId}
-            messages={messages}
-            isLoading={isLoading}
-            input={input}
-            setInput={setInput}
-            handleSubmit={handleSubmit}
-            className="m-10"
-          />
-        )}
+        {/* {session.user.name} */}
+      </h1>
+      <div className="w-64 flex-shrink-0 border-r border-gray-200 dark:border-gray-700">
+        <Sidebar
+          onNewChat={() => setShowNewChatForm(true)}
+          chats={chats}
+          activeChatId={chatId}
+          onChatSelect={(id) => setChatId(id)}
+          className={"mr-4"}
+        />
+      </div>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto">
+          {showNewChatForm ? (
+            <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
+          ) : (
+            <ChatArea
+              chatId={chatId}
+              messages={messages}
+              isLoading={isLoading}
+              input={input}
+              setInput={setInput}
+              handleSubmit={handleSubmit}
+              className="p-6"
+            />
+          )}
       </main>
+      </div>
     </div>
   )
 }
