@@ -75,6 +75,8 @@ export default function NewChatForm({ onSubmit, onCancel }) {
               <SelectContent>
                 <SelectItem value="mongodb">MongoDB</SelectItem>
                 <SelectItem value="mysql">MySQL</SelectItem>
+                <SelectItem value="mongodb">PostgreSQL</SelectItem>
+                <SelectItem value="mysql">Sqlite</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -118,6 +120,70 @@ export default function NewChatForm({ onSubmit, onCancel }) {
               placeholder="MongoDB URI"
               required
             />
+          )}
+          {dbType === 'sqlite' && (
+            <div className="space-y-4">
+              <Input
+                type="text"
+                value={dbInfo.host}
+                onChange={(e) => setDbInfo({ ...dbInfo, host: e.target.value })}
+                placeholder="MySQL Host"
+                required
+              />
+              <Input
+                type="text"
+                value={dbInfo.user}
+                onChange={(e) => setDbInfo({ ...dbInfo, user: e.target.value })}
+                placeholder="MySQL User"
+                required
+              />
+              <Input
+                type="password"
+                value={dbInfo.password}
+                onChange={(e) => setDbInfo({ ...dbInfo, password: e.target.value })}
+                placeholder="MySQL Password"
+                required
+              />
+              <Input
+                type="text"
+                value={dbInfo.database}
+                onChange={(e) => setDbInfo({ ...dbInfo, database: e.target.value })}
+                placeholder="MySQL Database"
+                required
+              />
+            </div>
+          )}
+          {dbType === 'postgreSQL' && (
+            <div className="space-y-4">
+              <Input
+                type="text"
+                value={dbInfo.host}
+                onChange={(e) => setDbInfo({ ...dbInfo, host: e.target.value })}
+                placeholder="MySQL Host"
+                required
+              />
+              <Input
+                type="text"
+                value={dbInfo.user}
+                onChange={(e) => setDbInfo({ ...dbInfo, user: e.target.value })}
+                placeholder="MySQL User"
+                required
+              />
+              <Input
+                type="password"
+                value={dbInfo.password}
+                onChange={(e) => setDbInfo({ ...dbInfo, password: e.target.value })}
+                placeholder="MySQL Password"
+                required
+              />
+              <Input
+                type="text"
+                value={dbInfo.database}
+                onChange={(e) => setDbInfo({ ...dbInfo, database: e.target.value })}
+                placeholder="MySQL Database"
+                required
+              />
+            </div>
           )}
         </form>
       </CardContent>
