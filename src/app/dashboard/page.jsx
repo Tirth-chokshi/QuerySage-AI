@@ -47,9 +47,17 @@ export default function DashboardPage() {
   ];
 
   const { data: session, status } = useSession()
+  if (status === "loading") {
+    return <p>Loading...</p>;
+  }
+
+  if (!session) {
+    return <p>User not authenticated</p>;
+  }
+
   return (
     <div className="min-h-screen">
-      <nav className="fixed top-0 left-0 right-0 z-10 shadow-md">
+      <nav className="fixed top-0 left-0 right-0 z-10 ">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center">
@@ -85,7 +93,7 @@ export default function DashboardPage() {
             </div>
 
             {/* User Menu and Notifications */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden md:flex items-center space-x-4 ">
               <Button variant="ghost" size="icon" className="relative">
                 <Bell size={20} />
                 <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">3</span>
@@ -93,10 +101,12 @@ export default function DashboardPage() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8 transition-transform duration-300 hover:scale-110">
-                      <AvatarImage src={session.user.image} alt={session.user.name || "User"} />
-                      <AvatarFallback>{session.user.name ? session.user.name.charAt(0) : "U"}</AvatarFallback>
-                    </Avatar>
+                    {session.user && (
+                      <Avatar className="h-8 w-8 transition-transform duration-300 hover:scale-110">
+                        <AvatarImage src={session.user.image} alt={session.user.name || "User"} />
+                        <AvatarFallback>{session.user.name ? session.user.name.charAt(0) : "U"}</AvatarFallback>
+                      </Avatar>
+                    )}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -122,7 +132,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="md:hidden">
+            <div className="md:hidden ">
               <Button variant="ghost" size="icon" onClick={toggleMenu}>
                 {isMenuOpen ? <X /> : <Menu />}
               </Button>
