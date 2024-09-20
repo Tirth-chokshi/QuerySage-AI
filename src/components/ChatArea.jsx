@@ -1,7 +1,6 @@
 "use client"
 import React, { useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card'
 import ReactMarkdown from 'react-markdown'
 import { Send, Bot, User } from 'lucide-react'
 import { Textarea } from './ui/textarea'
@@ -17,58 +16,53 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
 
   if (!chatId) {
     return (
-      <Card className="flex items-center justify-center h-full">
-        <CardContent>
-          <p className="text-center text-gray-500">Select or create a chat to begin.</p>
-        </CardContent>
-      </Card>
+      <div className="flex items-center justify-center h-full">
+        <p className="text-center text-gray-500">Select or create a chat to begin.</p>
+      </div>
     )
   }
 
   return (
-    <Card className="flex flex-col h-full">
-      <CardHeader className="border-b">
+    <div className="flex flex-col h-full">
+      <div className="border-b p-4">
         <h3 className="font-bold text-lg">Chat #{chatId}</h3>
-      </CardHeader>
-      <CardContent className="flex-1 p-0">
-        <ScrollArea className="h-[calc(100vh-200px)] p-4">
-          {messages.map((message, index) => (
+      </div>
+      <ScrollArea className="flex-1 h-[calc(100vh-200px)] p-4">
+        {messages.map((message, index) => (
+          <div
+            key={index}
+            className={`mb-4 flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
             <div
-              key={index}
-              className={`mb-4 flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'
-                }`}
-            >
-              <div
-                className={`
+              className={`
                 inline-block max-w-[70%] px-4 py-3 rounded-lg shadow-md
                 ${message.sender === 'user'
-                    ? 'bg-emerald-600 text-white ml-auto'
-                    : 'bg-amber-50 text-gray-800 mr-auto'}
+                  ? 'bg-emerald-600 text-white ml-auto'
+                  : 'bg-amber-50 text-gray-800 mr-auto'}
                 transition-all duration-300 ease-in-out
                 hover:shadow-lg
                 ${message.sender === 'user' ? 'hover:bg-emerald-700' : 'hover:bg-amber-100'}
               `}
-              >
-                <div className="flex items-center mb-2">
-                  {message.sender === 'user' ? (
-                    <User className="h-5 w-5 mr-2 text-emerald-200" />
-                  ) : (
-                    <Bot className="h-5 w-5 mr-2 text-amber-400" />
-                  )}
-                  <span className={`font-semibold ${message.sender === 'user' ? 'text-emerald-200' : 'text-amber-600'}`}>
-                    {message.sender === 'user' ? 'You' : 'AI'}
-                  </span>
-                </div>
-                <div className={`prose prose-sm max-w-none ${message.sender === 'user' ? 'prose-invert' : ''}`}>
-                  <ReactMarkdown>{message.text}</ReactMarkdown>
-                </div>
+            >
+              <div className="flex items-center mb-2">
+                {message.sender === 'user' ? (
+                  <User className="h-5 w-5 mr-2 text-emerald-200" />
+                ) : (
+                  <Bot className="h-5 w-5 mr-2 text-amber-400" />
+                )}
+                <span className={`font-semibold ${message.sender === 'user' ? 'text-emerald-200' : 'text-amber-600'}`}>
+                  {message.sender === 'user' ? 'You' : 'AI'}
+                </span>
               </div>
-              <div ref={messagesEndRef} />
+              <div className={`prose prose-sm max-w-none ${message.sender === 'user' ? 'prose-invert' : ''}`}>
+                <ReactMarkdown>{message.text}</ReactMarkdown>
+              </div>
             </div>
-          ))}
-        </ScrollArea>
-      </CardContent>
-      <CardFooter className="border-t p-4">
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </ScrollArea>
+      <div className="border-t p-4">
         <form onSubmit={handleSubmit} className="w-full">
           <div className="flex items-center space-x-2">
             <Textarea
@@ -83,40 +77,11 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
             </Button>
           </div>
         </form>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   )
 }
 
 const Spinner = () => (
   <div className="animate-spin rounded-full h-4 w-4 border-2 border-gray-300 border-t-gray-600"></div>
 )
-
-
-
-
-{/* <div
-  className={`
-    inline-block max-w-[70%] px-4 py-3 rounded-lg shadow-md
-    ${message.sender === 'user'
-      ? 'bg-emerald-600 text-white ml-auto'
-      : 'bg-amber-50 text-gray-800 mr-auto'}
-    transition-all duration-300 ease-in-out
-    hover:shadow-lg
-    ${message.sender === 'user' ? 'hover:bg-emerald-700' : 'hover:bg-amber-100'}
-  `}
->
-  <div className="flex items-center mb-2">
-    {message.sender === 'user' ? (
-      <User className="h-5 w-5 mr-2 text-emerald-200" />
-    ) : (
-      <Bot className="h-5 w-5 mr-2 text-amber-400" />
-    )}
-    <span className={`font-semibold ${message.sender === 'user' ? 'text-emerald-200' : 'text-amber-600'}`}>
-      {message.sender === 'user' ? 'You' : 'AI'}
-    </span>
-  </div>
-  <div className={`prose prose-sm max-w-none ${message.sender === 'user' ? 'prose-invert' : ''}`}>
-    <ReactMarkdown>{message.text}</ReactMarkdown>
-  </div>
-</div> */}

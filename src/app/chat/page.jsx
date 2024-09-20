@@ -7,6 +7,17 @@ import ChatArea from '@/components/ChatArea'
 import NewChatForm from '@/components/NewChatForm'
 import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider
+} from "@/components/ui/tooltip";
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import Image from 'next/image'  
+import logo from '@/components/logo.svg'
+import { Settings, LogOut, History, MessageCirclePlus } from 'lucide-react';
 
 export default function Dashboard() {
   const { toast } = useToast()
@@ -119,7 +130,9 @@ export default function Dashboard() {
       })
     }
   }
-
+  const handleLogout = () => {
+    signOut({ callbackUrl: '/' });
+  }
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsLoading(true)
@@ -148,36 +161,74 @@ export default function Dashboard() {
     setIsLoading(false)
   }
 
+  function SidebarButton({ icon, label, onClick }) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-lg"
+            aria-label={label}
+            onClick={onClick}
+          >
+            {icon}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side="right" sideOffset={5}>
+          {label}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       <Toaster />
-      <div className="w-60 flex-shrink-0 border-r border-gray-200 dark:border-gray-700">
-        <Sidebar
-          onNewChat={() => setShowNewChatForm(true)}
-          chats={chats}
-          activeChatId={chatId}
-          onChatSelect={(id) => setChatId(id)}
-          className={"mr-4"}
-        />
-      </div>
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-x-hidden overflow-y-auto">
-          {showNewChatForm ? (
-            <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
-          ) : (
-            <ChatArea
-              chatId={chatId}
-              messages={messages}
-              isLoading={isLoading}
-              input={input}
-              setInput={setInput}
-              handleSubmit={handleSubmit}
-              className="p-6"
-            />
-          )}
+      <aside className="w-16 flex-shrink-0 border-r">
+        <div className="h-full flex flex-col">
+          <div className="border-b p-2">
+            <Link href="/" className="flex items-center justify-center">
+              <Image src={logo} alt="Logo" width={32} height={32} />
+            </Link>
+          </div>
+          <TooltipProvider>
+            <nav className="flex-1 flex flex-col justify-between p-2">
+              <div className="space-y-2">
+                <SidebarButton
+                  icon={<MessageCirclePlus className="size-5" />}
+                  label="New Chat"
+                  onClick={() => setShowNewChatForm(true)}
+                />
+                <SidebarButton icon={<History className="size-5" />} label="History" />
+              </div>
+              <div className="space-y-2">
+                <SidebarButton icon={<Settings className="size-5" />} label="Settings" />
+                <SidebarButton
+                  icon={<LogOut className="size-5" />}
+                  label="Logout"
+                  onClick={handleLogout}
+                />
+              </div>
+            </nav>
+          </TooltipProvider>
+        </div>
+      </aside>
+      <main className="flex-1 flex flex-col overflow-hidden">
+        {showNewChatForm ? (
+          <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
+        ) : (
+          <ChatArea
+            chatId={chatId}
+            messages={messages}
+            isLoading={isLoading}
+            input={input}
+            setInput={setInput}
+            handleSubmit={handleSubmit}
+            className="p-6 flex-1 overflow-y-auto"
+          />
+        )}
       </main>
-      </div>
     </div>
   )
 }
