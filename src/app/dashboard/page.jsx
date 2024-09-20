@@ -1,8 +1,7 @@
 "use client"
-
 import React, { useState } from "react";
 import Link from "next/link";
-import { Menu, X, User, LogOut, Search, Bell, Database, FileSpreadsheet, FileJson } from "lucide-react";
+import { Menu, X, User, LogOut, Search, Bell, Database, FileSpreadsheet, FileJson, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -46,6 +45,14 @@ export default function DashboardPage() {
     { name: "Interact with JSON", href: "/json", icon: FileJson },
   ];
 
+  // Dummy chat history data
+  const chatHistory = [
+    { id: 1, title: "Database Query Analysis", date: "2024-09-19", preview: "Analyzed user engagement trends..." },
+    { id: 2, title: "CSV Data Exploration", date: "2024-09-18", preview: "Explored sales data from Q3..." },
+    { id: 3, title: "JSON Structure Review", date: "2024-09-17", preview: "Reviewed API response structure..." },
+  ];
+
+
   const { data: session, status } = useSession()
   if (status === "loading") {
     return <p>Loading...</p>;
@@ -57,7 +64,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen">
-      <nav className="fixed top-0 left-0 right-0 z-10 ">
+      <nav className="fixed top-0 left-0 right-0 z-10 bg-muted">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center">
@@ -166,9 +173,9 @@ export default function DashboardPage() {
       <main className="pt-24 container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold mb-4 text-gray-800 dark:text-white">Welcome to QuerySage AI</h1>
         <p className="text-xl mb-8 text-gray-600 dark:text-gray-300">
-          Interact with your data seamlessly. Choose a feature to get started:
+          Interact with your data seamlessly. Choose a service to get started:
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
           {features.map((feature) => (
             <Link href={feature.href} key={feature.name}>
               <Card className="transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer">
@@ -189,6 +196,28 @@ export default function DashboardPage() {
                 </CardContent>
               </Card>
             </Link>
+          ))}
+        </div>
+
+        {/* Chat History Section */}
+        <h2 className="text-3xl font-bold mb-4 text-gray-800 dark:text-white">Recent Chat History</h2>
+        <div className="grid grid-cols-1 gap-4">
+          {chatHistory.map((chat) => (
+            <Card key={chat.id} className="transition-all duration-300 hover:shadow-md">
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span className="flex items-center">
+                    <MessageSquare className="mr-2" size={20} />
+                    {chat.title}
+                  </span>
+                  <span className="text-sm text-gray-500">{chat.date}</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600 dark:text-gray-300">{chat.preview}</p>
+                <Button variant="outline" className="mt-2">View Full Chat</Button>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </main>
