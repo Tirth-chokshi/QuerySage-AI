@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { redirect } from 'next/navigation'
-import Sidebar from '@/components/Sidebar'
 import ChatArea from '@/components/ChatArea'
 import NewChatForm from '@/components/NewChatForm'
 import { useToast } from "@/components/ui/use-toast"
