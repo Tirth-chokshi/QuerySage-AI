@@ -5,9 +5,7 @@
 |-----------|-----------|-------------|
 | UserID | Integer | Unique identifier for each user |
 | Username | String | User's login name |
-| Password | String (hashed) | User's encrypted password |
 | Email | String | User's email address |
-| Role | Enum (User, Admin) | User's role in the system |
 | CreatedAt | DateTime | Timestamp of account creation |
 | LastLogin | DateTime | Timestamp of last login |
 
