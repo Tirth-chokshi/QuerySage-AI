@@ -28,8 +28,8 @@ export default async function handler(req, res) {
           contentType: file.mimetype,
         });
 
-        // const response = await fetch('http://localhost:8000/columns', {
-          const response = await fetch('https://backendcsv.onrender.com/columns', {
+        const response = await fetch('http://localhost:8000/columns', {
+          // const response = await fetch('https://backendcsv.onrender.com/columns', {
           method: 'POST',
           body: formData,
           headers: formData.getHeaders(),
