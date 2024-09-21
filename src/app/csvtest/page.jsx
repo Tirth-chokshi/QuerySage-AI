@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Alert, AlertTitle } from '@/components/ui/alert'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Upload, FileText, BarChart2, MessageSquare } from 'lucide-react'
+import { Upload, FileText, BarChart2, MessageSquare, GitBranch } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ReactMarkdown from 'react-markdown'
 
@@ -198,45 +198,46 @@ export default function Home() {
     }
   }
 
+
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <Card className="mb-6">
+    <div className="max-w-6xl mx-auto p-6 space-y-8">
+      <Card>
         <CardHeader>
-          <CardTitle>Upload File</CardTitle>
+          <CardTitle className="text-2xl font-bold">CSV Analyzer</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-4">
             <Input type="file" onChange={handleFileChange} className="flex-grow" />
-            <Button onClick={handleSummarize} disabled={loading || !file}>
+            <Button onClick={handleSummarize} disabled={loading || !file} className="whitespace-nowrap">
               {loading ? <Spinner /> : <Upload className="mr-2 h-4 w-4" />}
-              Analyze
+              Analyze CSV
             </Button>
           </div>
         </CardContent>
       </Card>
 
       {error && (
-        <Alert variant="destructive" className="mb-6">
+        <Alert variant="destructive">
           <AlertTitle>Error</AlertTitle>
           {error}
         </Alert>
       )}
 
       <Tabs defaultValue="summary" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="summary">
+        <TabsList className="grid w-full grid-cols-4 gap-4">
+          <TabsTrigger value="summary" className="flex items-center justify-center">
             <FileText className="mr-2 h-4 w-4" />
             Summary
           </TabsTrigger>
-          <TabsTrigger value="relation">
-            <MessageSquare className="mr-2 h-4 w-4" />
+          <TabsTrigger value="relation" className="flex items-center justify-center">
+            <GitBranch className="mr-2 h-4 w-4" />
             Relation
           </TabsTrigger>
-          <TabsTrigger value="visualization">
+          <TabsTrigger value="visualization" className="flex items-center justify-center">
             <BarChart2 className="mr-2 h-4 w-4" />
             Visualization
           </TabsTrigger>
-          <TabsTrigger value="chat">
+          <TabsTrigger value="chat" className="flex items-center justify-center">
             <MessageSquare className="mr-2 h-4 w-4" />
             Chat
           </TabsTrigger>
@@ -248,7 +249,7 @@ export default function Home() {
               <CardTitle>Summary</CardTitle>
             </CardHeader>
             <CardContent>
-              <ReactMarkdown>{summary}</ReactMarkdown>
+              <ReactMarkdown className="prose max-w-none">{summary}</ReactMarkdown>
             </CardContent>
           </Card>
         </TabsContent>
@@ -256,11 +257,11 @@ export default function Home() {
         <TabsContent value="relation">
           <Card>
             <CardHeader>
-              <CardTitle>Relation</CardTitle>
+              <CardTitle>Relation Analysis</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-4 mb-4">
-                <Select value={goal} onValueChange={setGoal}>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <Select value={goal} onValueChange={setGoal} className="flex-grow">
                   <SelectTrigger>
                     <SelectValue placeholder="Select a goal" />
                   </SelectTrigger>
@@ -281,8 +282,9 @@ export default function Home() {
                 <Button
                   onClick={handleRelation}
                   disabled={loading || !goal || goals.length === 0}
+                  className="whitespace-nowrap"
                 >
-                  Generate Visualization
+                  {loading ? <Spinner /> : "Generate Visualization"}
                 </Button>
               </div>
               {image && <img src={`data:image/png;base64,${image}`} alt="Visualization" className="mt-4 w-auto h-auto" />}
@@ -293,11 +295,11 @@ export default function Home() {
         <TabsContent value="visualization">
           <Card>
             <CardHeader>
-              <CardTitle>Visualization</CardTitle>
+              <CardTitle>Custom Visualization</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-4 mb-4">
-                <Select value={xAxis} onValueChange={setXAxis}>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <Select value={xAxis} onValueChange={setXAxis} className="flex-grow">
                   <SelectTrigger>
                     <SelectValue placeholder="Select X-axis" />
                   </SelectTrigger>
@@ -309,7 +311,7 @@ export default function Home() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Select value={yAxis} onValueChange={setYAxis}>
+                <Select value={yAxis} onValueChange={setYAxis} className="flex-grow">
                   <SelectTrigger>
                     <SelectValue placeholder="Select Y-axis" />
                   </SelectTrigger>
@@ -324,10 +326,30 @@ export default function Home() {
                 <Button
                   onClick={handleVisualize}
                   disabled={loading || !xAxis || !yAxis}
+                  className="whitespace-nowrap"
                 >
-                  Generate Visualization
+                  {loading ? <Spinner /> : "Generate Visualization"}
                 </Button>
               </div>
+              {/* {image && (
+                <div className="mt-4 border rounded-lg overflow-hidden">
+                  <img src={`data:image/png;base64,${image}`} alt="Visualization" className="w-full h-auto" />
+                </div>
+              )} */}
+              {/* {image && (
+                <div className="mt-4 border rounded-lg overflow-hidden">
+                  <div
+                    style={{
+                      backgroundImage: `url(data:image/png;base64,${image})`,
+                      backgroundSize: 'contain',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat',
+                      width: '100%',
+                      height: '400px', // Adjust this value as needed
+                    }}
+                  />
+                </div>
+              )} */}
               {image && <img src={`data:image/png;base64,${image}`} alt="Visualization"
                 className="mt-4 w-auto h-auto"
               />}
@@ -340,17 +362,17 @@ export default function Home() {
             <CardHeader>
               <CardTitle>Chat with CSV</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-4 mb-4">
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-4">
                 <Input
                   type="text"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
-                  placeholder="Ask a question"
+                  placeholder="Ask a question about your CSV data"
                   className="flex-grow"
                 />
-                <Button onClick={handleChat} disabled={loading || !question}>
-                  Ask
+                <Button onClick={handleChat} disabled={loading || !question} className="whitespace-nowrap">
+                  {loading ? <Spinner /> : "Ask Question"}
                 </Button>
               </div>
               {answer && (
@@ -364,6 +386,6 @@ export default function Home() {
           </Card>
         </TabsContent>
       </Tabs>
-    </div >
+    </div>
   )
 }

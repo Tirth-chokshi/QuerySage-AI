@@ -75,8 +75,8 @@ export default function NewChatForm({ onSubmit, onCancel }) {
               <SelectContent>
                 <SelectItem value="mongodb">MongoDB</SelectItem>
                 <SelectItem value="mysql">MySQL</SelectItem>
-                <SelectItem value="mongodb">PostgreSQL</SelectItem>
-                <SelectItem value="mysql">Sqlite</SelectItem>
+                <SelectItem value="postgreSQL">PostgreSQL</SelectItem>
+                <SelectItem value="sqlite ">Sqlite</SelectItem>
               </SelectContent>
             </Select>
           </div>
