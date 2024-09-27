@@ -34,7 +34,7 @@ export default function Home() {
           )}
         />
         <Navbar />
-        <ContainerScroll titleComponent={"querysage"} />
+        <ContainerScroll titleComponent={"Querysage chat with your database in natural language"} />
         {/*       
       <div className='container'>
       <AnimatedBeam/>
