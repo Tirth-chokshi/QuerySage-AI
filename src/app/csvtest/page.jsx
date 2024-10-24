@@ -287,7 +287,7 @@ export default function Home() {
                   {loading ? <Spinner /> : "Generate Visualization"}
                 </Button>
               </div>
-              {image && <img src={`data:image/png;base64,${image}`} alt="Visualization" className="mt-4 w-auto h-auto" />}
+              {image && <img src={`data:image/png;base64,${image}`} alt="Visualization" />}
             </CardContent>
           </Card>
         </TabsContent>
