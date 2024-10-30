@@ -6,6 +6,11 @@ import SessionWrapper from "@/components/SessionWrapper";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
+export const Metadata = {
+  title: "QuerySage-AI",
+  description: "Created with 💓",
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
