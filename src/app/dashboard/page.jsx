@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
+import { signOut } from "next-auth/react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -61,6 +61,10 @@ export default function DashboardPage() {
 
   if (!session) {
     return <p>User not authenticated</p>;
+  }
+
+  const handleLogout = () => {
+    signOut({ callbackUrl: '/' });
   }
 
   return (
@@ -118,9 +122,13 @@ export default function DashboardPage() {
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
+                    <span>
+                      
+                        Log out
+                      
+                    </span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
