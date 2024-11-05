@@ -17,7 +17,8 @@ import { MoonIcon, SunIcon, LogInIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 
-
+import { Sheet, SheetTrigger, SheetContent } from './ui/sheet';
+import { Menu } from 'lucide-react';
 
 const logo = '/logo.svg';
 const Navbar = () => {
@@ -64,7 +65,57 @@ const Navbar = () => {
           ))}
         </div>
 
-        <div className="w-1/3 flex justify-end items-center space-x-2">
+
+        <div className="flex flex-1 items-center justify-end space-x-4">
+          <div className="hidden lg:flex lg:items-center lg:space-x-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Toggle Theme"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            >
+              <SunIcon className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <MoonIcon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Toggle Theme</span>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link href="/login">Login</Link>
+            </Button>
+            <Button asChild>
+              <Link href="/dashboard">Get Started</Link>
+            </Button>
+          </div>
+
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="lg:hidden">
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent>
+              <div className="flex flex-col space-y-4 mt-4">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="text-sm font-medium transition-colors hover:text-primary"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+                <hr className="my-4" />
+                <Button variant="outline" asChild className="w-full">
+                  <Link href="/login">Login</Link>
+                </Button>
+                <Button asChild className="w-full">
+                  <Link href="/dashboard">Get Started</Link>
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        {/* <div className="w-1/3 flex justify-end items-center space-x-2">
 
           <Button variant="outline" onClick={handleSignIn}>
             Log in
@@ -81,7 +132,7 @@ const Navbar = () => {
             <MoonIcon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle Theme</span>
           </Button>
-        </div>
+        </div> */}
       </nav>
     </header>
   );

@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
       <SessionWrapper>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
