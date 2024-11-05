@@ -7,9 +7,9 @@ import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
-export const Metadata = {
-  title: "QuerySage-AI",
-  description: "Created with 💓",
+export const metadata = {
+  title: 'QuerySage AI - Natural Language Database Queries',
+  description: 'Interact with your databases using natural language powered by AI',
 };
 
 export default function RootLayout({ children }) {
