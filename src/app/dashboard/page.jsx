@@ -26,6 +26,7 @@ import logo from '@/components/logo.svg';
 import { useSession } from "next-auth/react";
 
 export default function DashboardPage() {
+  const { data: session, status } = useSession()
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -53,8 +54,7 @@ export default function DashboardPage() {
     { id: 5, title: "Data Visualization", date: "2024-09-15", preview: "Created charts for monthly sales..." },
     // Add more items to see scrolling effect
   ];
-
-  const { data: session, status } = useSession()
+  
   if (status === "loading") {
     return <p>Loading...</p>;
   }
