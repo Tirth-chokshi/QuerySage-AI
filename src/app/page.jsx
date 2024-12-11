@@ -1,65 +1,212 @@
 "use client"
+
 import { useEffect } from 'react'
-import { ContainerScroll } from '@/components/ui/container-scroll-animation'
 import Navbar from '@/components/Navbar'
-import AnimatedGridPattern from '@/components/magicui/animated-grid-pattern'
-import { cn } from '@/lib/utils'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
 import { redirect } from 'next/navigation'
-import { useSession } from 'next-auth/react'
-import FeaturesSectionDemo from '@/components/blocks/features-section-demo-2'
-import ContainerScrollTitle from '@/components/Hero'
+import Image from 'next/image'
+
+const databases = [
+  { name: 'PostgreSQL', logo: '/logos/postgresql.svg' },
+  { name: 'MySQL', logo: '/logos/mysql.svg' },
+  { name: 'MongoDB', logo: '/logos/mongodb.svg' },
+  { name: 'SQLite', logo: '/logos/sqlite.svg' },
+  { name: 'Oracle', logo: '/logos/oracle.svg' },
+  { name: 'Microsoft SQL Server', logo: '/logos/sqlserver.svg' },
+  { name: 'Redis', logo: '/logos/redis.svg' },
+  { name: 'Cassandra', logo: '/logos/cassandra.svg' },
+];
 
 export default function Home() {
-  const { data: session, status } = useSession()
-  useEffect(() => {
-    if (status === 'authenticated') {
-      redirect('/dashboard')
-    }
-  }, [status])
   return (
-    <div className="p-4">
-      <AnimatedGridPattern
-        numSquares={30}
-        maxOpacity={0.1}
-        duration={3}
-        repeatDelay={1}
-        className={cn(
-          "[mask-image:radial-gradient(500px_circle_at_center,white,transparent)]",
-          "inset-x-0 inset-y-[-30%] h-[200%] skew-y-12",
-        )}
-      />
+    <div className="min-h-screen bg-[#0A0A0A] text-white">
       <Navbar />
-      <ContainerScrollTitle />
-      <FeaturesSectionDemo />
-      <div className='container flex justify-center'>
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="item-1">
-            <AccordionTrigger>Is it Safe?</AccordionTrigger>
-            <AccordionContent>
-              Yes it is safe.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-2">
-            <AccordionTrigger>Is it styled?</AccordionTrigger>
-            <AccordionContent>
-              Yes. It comes with default styles that matches the other
-              components aesthetic.
-            </AccordionContent>
-          </AccordionItem>
-          <AccordionItem value="item-3">
-            <AccordionTrigger>Is it animated?</AccordionTrigger>
-            <AccordionContent>
-              Yes. Its animated by default, but you can disable it if you prefer.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
+      
+      {/* Hero Section */}
+      
+      <section className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 blur-3xl"></div>
+        <div className="relative">
+          <div className="text-center">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+              Make Database Interactions Effortless
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+              QuerySage converts your natural language questions into SQL queries. Whether you're new to SQL or just want a simpler way to interact with your database, we've got you covered.
+            </p>
+            <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105">
+                Get Started Free
+              </button>
+              <button className="px-8 py-4 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-300 transform hover:scale-105">
+                Watch Demo ▶
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Database Logos Section */}
+      <section className="py-16 relative overflow-hidden border-t border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+          <h2 className="text-2xl md:text-3xl font-semibold text-center mb-2">
+            Works with Your Favorite Databases
+          </h2>
+          <p className="text-gray-400 text-center">
+            Seamlessly connect with all major databases
+          </p>
+        </div>
+        
+        {/* Animated logos container */}
+        <div className="relative">
+          {/* Gradient overlays */}
+          <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-[#0A0A0A] to-transparent z-10"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-[#0A0A0A] to-transparent z-10"></div>
+          
+          {/* First row - moving right */}
+          <div className="flex space-x-12 mb-8 animate-scroll">
+            {[...databases, ...databases].map((db, index) => (
+              <div key={index} className="flex-none w-32 h-32 bg-white/5 rounded-xl p-6 flex items-center justify-center group hover:bg-white/10 transition-all duration-300">
+                <div className="relative w-full h-full filter grayscale group-hover:grayscale-0 transition-all duration-300 transform group-hover:scale-110">
+                  <Image
+                    src={db.logo}
+                    alt={db.name}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Second row - moving left */}
+          <div className="flex space-x-12 animate-scroll-reverse">
+            {[...databases.reverse(), ...databases].map((db, index) => (
+              <div key={index} className="flex-none w-32 h-32 bg-white/5 rounded-xl p-6 flex items-center justify-center group hover:bg-white/10 transition-all duration-300">
+                <div className="relative w-full h-full filter grayscale group-hover:grayscale-0 transition-all duration-300 transform group-hover:scale-110">
+                  <Image
+                    src={db.logo}
+                    alt={db.name}
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-12 border-y border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            {[
+              { value: "10K+", label: "Active Users" },
+              { value: "1M+", label: "Queries Generated" },
+              { value: "99.9%", label: "Accuracy Rate" },
+              { value: "24/7", label: "Support" }
+            ].map((stat, index) => (
+              <div key={index} className="group">
+                <div className="text-3xl font-bold text-blue-500 mb-2 group-hover:scale-110 transition-transform duration-300">{stat.value}</div>
+                <div className="text-gray-400">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <h2 className="text-4xl font-bold text-center mb-4">Why Choose QuerySage?</h2>
+        <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">Experience the future of database interactions with our powerful features</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            {
+              title: "Enterprise Ready",
+              description: "Perfect for large enterprise databases with no size limits. Built for scale.",
+              icon: "🏢"
+            },
+            {
+              title: "100% Secure",
+              description: "Your data and credentials are never stored. Bank-grade encryption.",
+              icon: "🔒"
+            },
+            {
+              title: "Free & Open Source",
+              description: "Built with the belief that AI should empower humanity. Forever free.",
+              icon: "🌟"
+            }
+          ].map((feature, index) => (
+            <div key={index} className="p-8 rounded-xl bg-gradient-to-b from-white/5 to-white/[0.02] backdrop-blur-sm hover:from-white/10 hover:to-white/[0.05] transition-all duration-300 border border-white/10">
+              <div className="text-5xl mb-6 transform hover:scale-110 transition-transform duration-300">{feature.icon}</div>
+              <h3 className="text-2xl font-semibold mb-3">{feature.title}</h3>
+              <p className="text-gray-400 leading-relaxed">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* How it Works Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative">
+        <div className="absolute inset-0 bg-blue-600/5 blur-3xl rounded-full"></div>
+        <div className="relative">
+          <h2 className="text-4xl font-bold text-center mb-4">How It Works</h2>
+          <p className="text-gray-400 text-center mb-12 max-w-2xl mx-auto">Get started in three simple steps</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {[
+              {
+                step: "1",
+                title: "Login",
+                description: "Create an account or sign in securely to get started with QuerySage"
+              },
+              {
+                step: "2",
+                title: "Connect Database",
+                description: "Enter your database credentials securely using our encrypted connection"
+              },
+              {
+                step: "3",
+                title: "Start Chatting",
+                description: "Ask questions in natural language and get instant SQL queries"
+              }
+            ].map((step, index) => (
+              <div key={index} className="relative group">
+                <div className="flex flex-col items-center">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 text-white flex items-center justify-center text-2xl font-bold mb-6 group-hover:scale-110 transition-transform duration-300">
+                    {step.step}
+                  </div>
+                  <h3 className="text-2xl font-semibold mb-3">{step.title}</h3>
+                  <p className="text-gray-400 text-center leading-relaxed">{step.description}</p>
+                </div>
+                {index < 2 && (
+                  <div className="hidden md:block absolute top-8 left-[60%] w-[40%] border-t-2 border-dashed border-blue-600/30"></div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 blur-3xl"></div>
+        <div className="relative">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+            Ready to Transform Your Database Experience?
+          </h2>
+          <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+            Join thousands of developers and analysts who are making database interactions effortless with QuerySage.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105">
+              Get Started Free
+            </button>
+            <button className="px-8 py-4 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-300">
+              Schedule Demo
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
