@@ -22,7 +22,7 @@ export default function Home() {
       <Navbar />
       
       {/* Hero Section */}
-      
+
       <section className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 blur-3xl"></div>
         <div className="relative">
@@ -31,7 +31,7 @@ export default function Home() {
               Make Database Interactions Effortless
             </h1>
             <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
-              QuerySage converts your natural language questions into SQL queries. Whether you're new to SQL or just want a simpler way to interact with your database, we've got you covered.
+              QuerySage converts your natural language questions into SQL queries. Whether you&apos;re new to SQL or just want a simpler way to interact with your database, we&apos;ve got you covered.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105">
