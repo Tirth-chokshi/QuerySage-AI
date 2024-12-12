@@ -5,20 +5,9 @@ import Navbar from '@/components/Navbar'
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
 
-const databases = [
-  { name: 'PostgreSQL', logo: '/logos/postgresql.svg' },
-  { name: 'MySQL', logo: '/logos/mysql.svg' },
-  { name: 'MongoDB', logo: '/logos/mongodb.svg' },
-  { name: 'SQLite', logo: '/logos/sqlite.svg' },
-  { name: 'Oracle', logo: '/logos/oracle.svg' },
-  { name: 'Microsoft SQL Server', logo: '/logos/sqlserver.svg' },
-  { name: 'Redis', logo: '/logos/redis.svg' },
-  { name: 'Cassandra', logo: '/logos/cassandra.svg' },
-];
-
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       
       {/* Hero Section */}
@@ -30,7 +19,7 @@ export default function Home() {
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
               Make Database Interactions Effortless
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
               QuerySage converts your natural language questions into SQL queries. Whether you&apos;re new to SQL or just want a simpler way to interact with your database, we&apos;ve got you covered.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -46,12 +35,12 @@ export default function Home() {
       </section>
 
       {/* Database Logos Section */}
-      <section className="py-16 relative overflow-hidden border-t border-b border-white/10">
+      <section className="py-16 relative overflow-hidden border-t border-b border-border/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
           <h2 className="text-2xl md:text-3xl font-semibold text-center mb-2">
             Works with Your Favorite Databases
           </h2>
-          <p className="text-gray-400 text-center">
+          <p className="text-muted-foreground text-center">
             Seamlessly connect with all major databases
           </p>
         </div>
@@ -62,37 +51,9 @@ export default function Home() {
           <div className="absolute left-0 top-0 bottom-0 w-40 bg-gradient-to-r from-[#0A0A0A] to-transparent z-10"></div>
           <div className="absolute right-0 top-0 bottom-0 w-40 bg-gradient-to-l from-[#0A0A0A] to-transparent z-10"></div>
           
-          {/* First row - moving right */}
-          <div className="flex space-x-12 mb-8 animate-scroll">
-            {[...databases, ...databases].map((db, index) => (
-              <div key={index} className="flex-none w-32 h-32 bg-white/5 rounded-xl p-6 flex items-center justify-center group hover:bg-white/10 transition-all duration-300">
-                <div className="relative w-full h-full filter grayscale group-hover:grayscale-0 transition-all duration-300 transform group-hover:scale-110">
-                  <Image
-                    src={db.logo}
-                    alt={db.name}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+        </div>
+        <div>
           
-          {/* Second row - moving left */}
-          <div className="flex space-x-12 animate-scroll-reverse">
-            {[...databases.reverse(), ...databases].map((db, index) => (
-              <div key={index} className="flex-none w-32 h-32 bg-white/5 rounded-xl p-6 flex items-center justify-center group hover:bg-white/10 transition-all duration-300">
-                <div className="relative w-full h-full filter grayscale group-hover:grayscale-0 transition-all duration-300 transform group-hover:scale-110">
-                  <Image
-                    src={db.logo}
-                    alt={db.name}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
