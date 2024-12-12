@@ -1,9 +1,9 @@
 "use client";
 
-import { useCallback } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { signOut, useSession } from 'next-auth/react';
+import { useCallback } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -17,23 +17,23 @@ import { MoonIcon, SunIcon, LogInIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 
-import { Sheet, SheetTrigger, SheetContent } from './ui/sheet';
-import { Menu } from 'lucide-react';
-import { ModeToggle } from './ModeToggle';
-import { HoverBorderGradient } from './ui/hover-border-gradient';
+import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
+import { Menu } from "lucide-react";
+import { ModeToggle } from "./ModeToggle";
+import { HoverBorderGradient } from "./ui/hover-border-gradient";
 
-const logo = '/logo.svg';
+const logo = "/logo.svg";
 const Navbar = () => {
-  const { data: session,status } = useSession();
+  const { data: session, status } = useSession();
   const { theme, setTheme } = useTheme();
 
   const handleSignIn = useCallback(() => {
-    window.location.href = '/login';
+    window.location.href = "/login";
   }, []);
 
   const handleSignOut = useCallback(async () => {
     await signOut({ redirect: false });
-    window.location.href = '/';
+    window.location.href = "/";
   }, []);
 
   const navigation = [
@@ -69,12 +69,17 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <ModeToggle/>
+          <ModeToggle />
           <div className="hidden lg:flex items-center gap-3">
-            <Button variant="ghost" onClick={handleSignIn} className="font-medium">
+            <Button
+              variant="ghost"
+              onClick={handleSignIn}
+              className="font-medium"
+            >
               Sign in
             </Button>
             {status === "authenticated" ? (
+              <Link href={"/dashboard"}>
                 <HoverBorderGradient
                   containerClassName="rounded-full"
                   as="button"
@@ -82,15 +87,18 @@ const Navbar = () => {
                 >
                   Dashboard
                 </HoverBorderGradient>
-              ) : (
-                <HoverBorderGradient
-                  containerClassName="rounded-full"
-                  as="button"
-                  className=" flex  bg-gradient-to-r from-blue-500 to-purple-600 items-center space-x-2"
-                >
-                  Get Started Free
-                </HoverBorderGradient>
-              )}
+              </Link>
+            ) : (
+              <Link href={"/dashboard"}>
+              <HoverBorderGradient
+                containerClassName="rounded-full"
+                as="button"
+                className=" flex  bg-gradient-to-r from-blue-500 to-purple-600 items-center space-x-2"
+              >
+                Get Started Free
+              </HoverBorderGradient>
+              </Link>
+            )}
           </div>
 
           <Sheet>
@@ -124,7 +132,9 @@ const Navbar = () => {
                 >
                   <SunIcon className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                   <MoonIcon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                  <span className="ml-2">{theme === "dark" ? "Light" : "Dark"} mode</span>
+                  <span className="ml-2">
+                    {theme === "dark" ? "Light" : "Dark"} mode
+                  </span>
                 </Button>
                 <Button variant="ghost" asChild className="justify-start">
                   <Link href="/login">Sign in</Link>

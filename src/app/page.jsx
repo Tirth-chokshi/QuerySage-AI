@@ -9,7 +9,7 @@ import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import Footer from "@/components/footer";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-
+import { BackgroundLines } from "@/components/ui/background-lines";
 // Define logos as an array of objects with src and alt text
 const logos = [
   { src: "/logos/neonDB.png", alt: "Neon DB" },
@@ -35,11 +35,12 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-24 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative overflow-hidden">
+      <BackgroundLines>
+      <section className="relative overflow-hidden h-screen flex items-center justify-center">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 blur-3xl"></div>
         <div className="relative">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
               Make Database Interactions Effortless
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
@@ -70,7 +71,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-
+      </BackgroundLines>
       {/* Database Logos Section */}
       <section className="py-16 relative overflow-hidden border-t border-b border-border/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
