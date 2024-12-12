@@ -20,10 +20,11 @@ import { useTheme } from "next-themes";
 import { Sheet, SheetTrigger, SheetContent } from './ui/sheet';
 import { Menu } from 'lucide-react';
 import { ModeToggle } from './ModeToggle';
+import { HoverBorderGradient } from './ui/hover-border-gradient';
 
 const logo = '/logo.svg';
 const Navbar = () => {
-  const { data: session } = useSession();
+  const { data: session,status } = useSession();
   const { theme, setTheme } = useTheme();
 
   const handleSignIn = useCallback(() => {
@@ -73,9 +74,23 @@ const Navbar = () => {
             <Button variant="ghost" onClick={handleSignIn} className="font-medium">
               Sign in
             </Button>
-            <Button className="bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:opacity-90 transition-opacity">
-              <Link href="/dashboard">Get Started</Link>
-            </Button>
+            {status === "authenticated" ? (
+                <HoverBorderGradient
+                  containerClassName="rounded-full"
+                  as="button"
+                  className=" flex  bg-gradient-to-r from-blue-500 to-purple-600 items-center space-x-2"
+                >
+                  Dashboard
+                </HoverBorderGradient>
+              ) : (
+                <HoverBorderGradient
+                  containerClassName="rounded-full"
+                  as="button"
+                  className=" flex  bg-gradient-to-r from-blue-500 to-purple-600 items-center space-x-2"
+                >
+                  Get Started Free
+                </HoverBorderGradient>
+              )}
           </div>
 
           <Sheet>

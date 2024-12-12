@@ -37,6 +37,7 @@ import logo from "@/components/logo.svg";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation"
 import { ModeToggle } from "@/components/ModeToggle";
+import Footer from "@/components/footer";
 
 
 export default function DashboardPage() {
@@ -109,9 +110,9 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-screen flex-col">
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Navigation */}
         <header className="border-b border-border/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="flex items-center justify-between px-6 py-4">
@@ -147,12 +148,6 @@ export default function DashboardPage() {
             </div>
 
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="icon" className="relative hover:bg-blue-500/10">
-                <Bell size={20} />
-                <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-blue-500 rounded-full">
-                  3
-                </span>
-              </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -211,12 +206,12 @@ export default function DashboardPage() {
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {features.map((feature) => (
-                  <Link href={feature.href} key={feature.name}>
+                  <Link href={feature.href} key={feature.name} className="relative">
                     <Card className="group transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer border border-border/50 bg-background/50 backdrop-blur-sm hover:border-blue-500/50">
                       <CardHeader>
                         <CardTitle className="flex items-center">
                           <feature.icon className="mr-2 group-hover:text-blue-500 transition-colors" size={24} />
-                          <span className="group-hover:text-blue-500 transition-colors">{feature.name}</span>
+                          <span>{feature.name}</span>
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
@@ -228,38 +223,15 @@ export default function DashboardPage() {
                             : "Explore and manipulate JSON data effortlessly."}
                         </p>
                       </CardContent>
+                      {feature.name === "Interact with JSON" && (
+                        <div className="absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded bg-gradient-to-r from-yellow-500 to-orange-500 text-black">Coming Soon</div>
+                      )}
                     </Card>
                   </Link>
                 ))}
               </div>
             </div>
           </main>
-
-          {/* Chat History Sidebar (Right Side) */}
-          <aside className="w-72 border-l border-border/10 bg-background/50 backdrop-blur-sm">
-            <div className="p-4">
-              <h2 className="text-xl font-semibold mb-4 px-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
-                Recent Chats
-              </h2>
-              <ScrollArea className="h-[calc(100vh-150px)]">
-                {chatHistory.map((chat) => (
-                  <Button
-                    key={chat.id}
-                    variant="ghost"
-                    className="w-full justify-start mb-2 overflow-hidden text-left hover:bg-blue-500/10 transition-colors"
-                  >
-                    <MessageSquare className="mr-2 h-4 w-4 flex-shrink-0" />
-                    <div className="flex flex-col overflow-hidden">
-                      <span className="truncate font-medium">{chat.title}</span>
-                      <span className="text-xs text-muted-foreground truncate">
-                        {chat.preview}
-                      </span>
-                    </div>
-                  </Button>
-                ))}
-              </ScrollArea>
-            </div>
-          </aside>
         </div>
       </div>
     </div>

@@ -6,6 +6,9 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import Marquee from "@/components/ui/marquee";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import Footer from "@/components/footer";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 // Define logos as an array of objects with src and alt text
 const logos = [
@@ -21,6 +24,12 @@ const logos = [
 ];
 
 export default function Home() {
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+    }
+  }, [status]);
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
@@ -34,21 +43,29 @@ export default function Home() {
               Make Database Interactions Effortless
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
-              QuerySage converts your natural language questions into SQL
-              queries. Whether you&apos;re new to SQL or just want a simpler way
-              to interact with your database, we&apos;ve got you covered.
+              No SQL needed, connect your database and{" "}
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+                chat
+              </span>{" "}
+              with your data
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <HoverBorderGradient
-                containerClassName="rounded-full"
-                as="button"
-                className=" flex  bg-gradient-to-r from-blue-500 to-purple-600 items-center space-x-2"
-              >Get Started Free</HoverBorderGradient>
+              <Link href={'/dashboard'}>
+                <HoverBorderGradient
+                  containerClassName="rounded-full"
+                  as="button"
+                  className=" flex  bg-gradient-to-r from-blue-500 to-purple-600 items-center space-x-2"
+                >
+                  Get Started Free
+                </HoverBorderGradient>
+              </Link>
               <HoverBorderGradient
                 containerClassName="rounded-full"
                 as="button"
                 className=" flex  items-center space-x-2"
-              >Watch Demo ▶</HoverBorderGradient>
+              >
+                Watch Demo ▶
+              </HoverBorderGradient>
             </div>
           </div>
         </div>
@@ -224,6 +241,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 }
