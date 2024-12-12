@@ -42,7 +42,7 @@ export default function Home() {
             <HoverBorderGradient
                 containerClassName="rounded-full"
                 as="button"
-                className=" flex  items-center space-x-2"
+                className=" flex  bg-gradient-to-r from-blue-500 to-purple-600 items-center space-x-2"
               >Get Started Free</HoverBorderGradient>
               <HoverBorderGradient
                 containerClassName="rounded-full"
