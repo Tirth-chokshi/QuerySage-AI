@@ -185,27 +185,39 @@ export default function Dashboard() {
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       <Toaster />
-      <aside className="w-16 flex-shrink-0 border-r">
+      <aside className="w-16 flex-shrink-0 border-r border-border/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="h-full flex flex-col">
-          <div className="border-b p-2">
+          <div className="border-b border-border/10 p-2">
             <Link href="/" className="flex items-center justify-center">
-              <Image src={logo} alt="Logo" width={32} height={32} />
+              <Image 
+                src={logo} 
+                alt="Logo" 
+                width={32} 
+                height={32} 
+                className="transition-all duration-300 hover:scale-110"
+              />
             </Link>
           </div>
           <TooltipProvider>
             <nav className="flex-1 flex flex-col justify-between p-2">
               <div className="space-y-2">
                 <SidebarButton
-                  icon={<MessageCirclePlus className="size-5" />}
+                  icon={<MessageCirclePlus className="size-5 transition-colors group-hover:text-blue-500" />}
                   label="New Chat"
                   onClick={() => setShowNewChatForm(true)}
                 />
-                <SidebarButton icon={<History className="size-5" />} label="History" />
+                <SidebarButton 
+                  icon={<History className="size-5 transition-colors group-hover:text-blue-500" />} 
+                  label="History" 
+                />
               </div>
               <div className="space-y-2">
-                <SidebarButton icon={<Settings className="size-5" />} label="Settings" />
+                <SidebarButton 
+                  icon={<Settings className="size-5 transition-colors group-hover:text-blue-500" />} 
+                  label="Settings" 
+                />
                 <SidebarButton
-                  icon={<LogOut className="size-5" />}
+                  icon={<LogOut className="size-5 transition-colors group-hover:text-blue-500" />}
                   label="Logout"
                   onClick={handleLogout}
                 />
@@ -214,19 +226,24 @@ export default function Dashboard() {
           </TooltipProvider>
         </div>
       </aside>
-      <main className="flex-1 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col overflow-hidden bg-background relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 blur-3xl pointer-events-none"></div>
         {showNewChatForm ? (
-          <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
+          <div className="relative">
+            <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
+          </div>
         ) : (
-          <ChatArea
-            chatId={chatId}
-            messages={messages}
-            isLoading={isLoading}
-            input={input}
-            setInput={setInput}
-            handleSubmit={handleSubmit}
-            className="p-6 flex-1 overflow-y-auto"
-          />
+          <div className="relative flex-1">
+            <ChatArea
+              chatId={chatId}
+              messages={messages}
+              isLoading={isLoading}
+              input={input}
+              setInput={setInput}
+              handleSubmit={handleSubmit}
+              className="p-6 flex-1 overflow-y-auto"
+            />
+          </div>
         )}
       </main>
     </div>

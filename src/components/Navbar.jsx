@@ -19,6 +19,7 @@ import { useTheme } from "next-themes";
 
 import { Sheet, SheetTrigger, SheetContent } from './ui/sheet';
 import { Menu } from 'lucide-react';
+import { ModeToggle } from './ModeToggle';
 
 const logo = '/logo.svg';
 const Navbar = () => {
@@ -52,7 +53,7 @@ const Navbar = () => {
             </span>
           </Link>
 
-          <div className="hidden lg:flex lg:gap-x-8">
+          <div className="flex items-center justify-center lg:gap-x-8">
             {navigation.map((item) => (
               <Link
                 key={item.name}
@@ -67,18 +68,7 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Toggle Theme"
-            className="hidden lg:flex"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          >
-            <SunIcon className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <MoonIcon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle Theme</span>
-          </Button>
-
+          <ModeToggle/>
           <div className="hidden lg:flex items-center gap-3">
             <Button variant="ghost" onClick={handleSignIn} className="font-medium">
               Sign in

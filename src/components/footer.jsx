@@ -86,44 +86,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/careers" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Careers
-                </Link>
-              </li>
-              <li>
                 <Link href="/contact" className="text-sm text-muted-foreground hover:text-primary transition-colors">
                   Contact
-                </Link>
-              </li>
-              <li>
-                <Link href="/partners" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Partners
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Legal</h3>
-            <ul className="space-y-3">
-              <li>
-                <Link href="/privacy" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Terms of Service
-                </Link>
-              </li>
-              <li>
-                <Link href="/security" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Security
-                </Link>
-              </li>
-              <li>
-                <Link href="/cookies" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                  Cookie Policy
                 </Link>
               </li>
             </ul>

@@ -48,14 +48,14 @@ export default function NewChatForm({ onSubmit, onCancel }) {
   };
 
   return (
-    <Card className="w-full max-w-md mx-auto mt-8">
+    <Card className="w-full max-w-md mx-auto mt-8 border border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <CardHeader>
-        <h2 className="text-2xl font-bold text-center">New Chat</h2>
+        <h2 className="text-2xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">New Chat</h2>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="chatName">Chat Name</Label>
+            <Label htmlFor="chatName" className="text-foreground/90">Chat Name</Label>
             <Input
               id="chatName"
               type="text"
@@ -63,20 +63,20 @@ export default function NewChatForm({ onSubmit, onCancel }) {
               onChange={(e) => setChatName(e.target.value)}
               placeholder="Enter a chat name"
               required
-              className="w-full"
+              className="w-full transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="dbType">Database Type</Label>
+            <Label htmlFor="dbType" className="text-foreground/90">Database Type</Label>
             <Select id="dbType" value={dbType} onValueChange={setDbType}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30">
                 <SelectValue placeholder="Select database type" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="bg-background/95 backdrop-blur-sm border-border/50">
                 <SelectItem value="mongodb">MongoDB</SelectItem>
                 <SelectItem value="mysql">MySQL</SelectItem>
                 <SelectItem value="postgreSQL">PostgreSQL</SelectItem>
-                <SelectItem value="sqlite ">Sqlite</SelectItem>
+                <SelectItem value="sqlite">SQLite</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -88,6 +88,7 @@ export default function NewChatForm({ onSubmit, onCancel }) {
                 onChange={(e) => setDbInfo({ ...dbInfo, host: e.target.value })}
                 placeholder="MySQL Host"
                 required
+                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
               <Input
                 type="text"
@@ -95,6 +96,7 @@ export default function NewChatForm({ onSubmit, onCancel }) {
                 onChange={(e) => setDbInfo({ ...dbInfo, user: e.target.value })}
                 placeholder="MySQL User"
                 required
+                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
               <Input
                 type="password"
@@ -102,6 +104,7 @@ export default function NewChatForm({ onSubmit, onCancel }) {
                 onChange={(e) => setDbInfo({ ...dbInfo, password: e.target.value })}
                 placeholder="MySQL Password"
                 required
+                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
               <Input
                 type="text"
@@ -109,6 +112,7 @@ export default function NewChatForm({ onSubmit, onCancel }) {
                 onChange={(e) => setDbInfo({ ...dbInfo, database: e.target.value })}
                 placeholder="MySQL Database"
                 required
+                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
             </div>
           )}
@@ -119,6 +123,7 @@ export default function NewChatForm({ onSubmit, onCancel }) {
               onChange={(e) => setDbInfo({ ...dbInfo, uri: e.target.value })}
               placeholder="MongoDB URI"
               required
+              className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
             />
           )}
           {dbType === 'sqlite' && (
@@ -127,29 +132,9 @@ export default function NewChatForm({ onSubmit, onCancel }) {
                 type="text"
                 value={dbInfo.host}
                 onChange={(e) => setDbInfo({ ...dbInfo, host: e.target.value })}
-                placeholder="MySQL Host"
+                placeholder="SQLite Database Path"
                 required
-              />
-              <Input
-                type="text"
-                value={dbInfo.user}
-                onChange={(e) => setDbInfo({ ...dbInfo, user: e.target.value })}
-                placeholder="MySQL User"
-                required
-              />
-              <Input
-                type="password"
-                value={dbInfo.password}
-                onChange={(e) => setDbInfo({ ...dbInfo, password: e.target.value })}
-                placeholder="MySQL Password"
-                required
-              />
-              <Input
-                type="text"
-                value={dbInfo.database}
-                onChange={(e) => setDbInfo({ ...dbInfo, database: e.target.value })}
-                placeholder="MySQL Database"
-                required
+                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
             </div>
           )}
@@ -159,36 +144,45 @@ export default function NewChatForm({ onSubmit, onCancel }) {
                 type="text"
                 value={dbInfo.host}
                 onChange={(e) => setDbInfo({ ...dbInfo, host: e.target.value })}
-                placeholder="MySQL Host"
+                placeholder="PostgreSQL Host"
                 required
+                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
               <Input
                 type="text"
                 value={dbInfo.user}
                 onChange={(e) => setDbInfo({ ...dbInfo, user: e.target.value })}
-                placeholder="MySQL User"
+                placeholder="PostgreSQL User"
                 required
+                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
               <Input
                 type="password"
                 value={dbInfo.password}
                 onChange={(e) => setDbInfo({ ...dbInfo, password: e.target.value })}
-                placeholder="MySQL Password"
+                placeholder="PostgreSQL Password"
                 required
+                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
               <Input
                 type="text"
                 value={dbInfo.database}
                 onChange={(e) => setDbInfo({ ...dbInfo, database: e.target.value })}
-                placeholder="MySQL Database"
+                placeholder="PostgreSQL Database"
                 required
+                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
             </div>
           )}
         </form>
       </CardContent>
       <CardFooter className="flex justify-end space-x-2">
-        <Button variant="ghost" type="button" onClick={onCancel}>
+        <Button 
+          variant="ghost" 
+          type="button" 
+          onClick={onCancel}
+          className="hover:bg-blue-500/10"
+        >
           Cancel
         </Button>
         <Button
@@ -196,15 +190,15 @@ export default function NewChatForm({ onSubmit, onCancel }) {
           type="submit"
           disabled={testingConnection}
           onClick={handleSubmit}
-          className="w-32"
+          className="w-32 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105"
         >
           {testingConnection ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Connecting
+              Testing...
             </>
           ) : (
-            'Connect'
+            'Create Chat'
           )}
         </Button>
       </CardFooter>
