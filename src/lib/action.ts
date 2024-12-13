@@ -1,20 +1,43 @@
 const MAX_TOKENS = 8000;
 const TOKENS_PER_CHAR = 0.25;
 
-export async function getMySQLDatabaseSchema(connection) {
+// Type definitions
+type MySQLConnection = {
+    query: (sql: string) => Promise<any[]>;
+};
+
+type PostgreSQLClient = {
+    query: (sql: string) => Promise<{ rows: any[] }>;
+};
+
+type MongoDBCollection = {
+    findOne: () => Promise<Record<string, any> | null>;
+};
+
+type MongoDB = {
+    listCollections: () => { toArray: () => Promise<Array<{ name: string }>> };
+    collection: (name: string) => MongoDBCollection;
+};
+
+type SQLiteConnection = {
+    all: (sql: string, callback?: (err: Error | null, rows: any[]) => void) => Promise<any[]>;
+};
+
+export async function getMySQLDatabaseSchema(connection: MySQLConnection): Promise<string> {
     const [tables] = await connection.query('SHOW TABLES');
     let schema = '';
 
     for (const table of tables) {
         const tableName = Object.values(table)[0];
         const [columns] = await connection.query(`DESCRIBE ${tableName}`);
-        schema += `Table: ${tableName}\nColumns: ${columns.map(col => `${col.Field} (${col.Type})`).join(', ')}\n\n`;
+        schema += `Table: ${tableName}\nColumns: ${columns.map((col: { Field: string; Type: string }) => 
+            `${col.Field} (${col.Type})`).join(', ')}\n\n`;
     }
 
     return schema;
 }
 
-export async function* generateMySQLDatabaseChunks(connection) {
+export async function* generateMySQLDatabaseChunks(connection: MySQLConnection): AsyncGenerator<string> {
     const schema = await getMySQLDatabaseSchema(connection);
     let currentChunk = '';
 
@@ -32,7 +55,7 @@ export async function* generateMySQLDatabaseChunks(connection) {
     }
 }
 
-export async function getPostgreSQLSchema(client) {
+export async function getPostgreSQLSchema(client: PostgreSQLClient): Promise<string> {
     const schema = await client.query(`
         SELECT 
             table_name,
@@ -49,7 +72,7 @@ export async function getPostgreSQLSchema(client) {
     return schemaText;
 }
 
-export async function* generatePostgreSQLChunks(client) {
+export async function* generatePostgreSQLChunks(client: PostgreSQLClient): AsyncGenerator<string> {
     const schema = await getPostgreSQLSchema(client);
     let currentChunk = '';
 
@@ -67,12 +90,12 @@ export async function* generatePostgreSQLChunks(client) {
     }
 }
 
-export async function getMongoDBCollectionSchema(collection) {
+export async function getMongoDBCollectionSchema(collection: MongoDBCollection): Promise<string> {
     const sampleDoc = await collection.findOne();
     return Object.keys(sampleDoc || {}).join(', ');
 }
 
-export async function* generateMongoDBChunks(db) {
+export async function* generateMongoDBChunks(db: MongoDB): AsyncGenerator<string> {
     const collections = await db.listCollections().toArray();
     let currentChunk = '';
 
@@ -93,12 +116,11 @@ export async function* generateMongoDBChunks(db) {
     }
 }
 
-export async function* generateCSVChunks(content) {
+export async function* generateCSVChunks(content: string): AsyncGenerator<string> {
     let currentChunk = '';
-    let header = '';
+    const header = content.split('\n')[0] + '\n';
 
     const rows = content.split('\n');
-    header = rows[0] + '\n';
 
     for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
@@ -114,48 +136,48 @@ export async function* generateCSVChunks(content) {
     }
 }
 
-export async function getSQLiteSchema(connection) {
-    let tables
+export async function getSQLiteSchema(connection: SQLiteConnection): Promise<string> {
+    let tables: Array<{ name: string }>;
     try {
-        tables = await connection.all("SELECT name FROM sqlite_master WHERE type='table'")
+        tables = await connection.all("SELECT name FROM sqlite_master WHERE type='table'");
     } catch {
         tables = await new Promise((resolve, reject) => {
             connection.all("SELECT name FROM sqlite_master WHERE type='table'", (err, rows) => {
                 if (err) {
-                    reject(err)
+                    reject(err);
                 } else {
-                    resolve(rows)
+                    resolve(rows);
                 }
-            })
-        })
+            });
+        });
     }
 
-    let schema = ''
+    let schema = '';
 
     for (const table of tables) {
-        const tableName = table.name || table['name']
-        const columnInfo = await connection.all(`PRAGMA table_info(${tableName})`)
-        const columns = columnInfo.map(col => `${col.name} (${col.type})`)
-        schema += `Table: ${tableName}\nColumns: ${columns.join(', ')}\n\n`
+        const tableName = table.name;
+        const columnInfo = await connection.all(`PRAGMA table_info(${tableName})`);
+        const columns = columnInfo.map(col => `${col.name} (${col.type})`);
+        schema += `Table: ${tableName}\nColumns: ${columns.join(', ')}\n\n`;
     }
 
-    return schema
+    return schema;
 }
 
-export async function* generateSQLiteChunks(connection) {
-    const schema = await getSQLiteSchema(connection)
-    let currentChunk = ''
+export async function* generateSQLiteChunks(connection: SQLiteConnection): AsyncGenerator<string> {
+    const schema = await getSQLiteSchema(connection);
+    let currentChunk = '';
 
-    const lines = schema.split('\n')
+    const lines = schema.split('\n');
     for (const line of lines) {
         if ((currentChunk + line + '\n').length * TOKENS_PER_CHAR > MAX_TOKENS) {
-            yield currentChunk
-            currentChunk = ''
+            yield currentChunk;
+            currentChunk = '';
         }
-        currentChunk += line + '\n'
+        currentChunk += line + '\n';
     }
 
     if (currentChunk) {
-        yield currentChunk
+        yield currentChunk;
     }
 }
