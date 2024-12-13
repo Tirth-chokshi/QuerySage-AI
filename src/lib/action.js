@@ -31,6 +31,42 @@ export async function* generateMySQLDatabaseChunks(connection) {
         yield currentChunk;
     }
 }
+
+export async function getPostgreSQLSchema(client) {
+    const schema = await client.query(`
+        SELECT 
+            table_name,
+            string_agg(column_name || ' (' || data_type || ')', ', ') as columns
+        FROM information_schema.columns
+        WHERE table_schema = 'public'
+        GROUP BY table_name;
+    `);
+    
+    let schemaText = '';
+    for (const row of schema.rows) {
+        schemaText += `Table: ${row.table_name}\nColumns: ${row.columns}\n\n`;
+    }
+    return schemaText;
+}
+
+export async function* generatePostgreSQLChunks(client) {
+    const schema = await getPostgreSQLSchema(client);
+    let currentChunk = '';
+
+    const lines = schema.split('\n');
+    for (const line of lines) {
+        if ((currentChunk.length + line.length) * TOKENS_PER_CHAR > MAX_TOKENS) {
+            yield currentChunk;
+            currentChunk = '';
+        }
+        currentChunk += line + '\n';
+    }
+    
+    if (currentChunk) {
+        yield currentChunk;
+    }
+}
+
 export async function getMongoDBCollectionSchema(collection) {
     const sampleDoc = await collection.findOne();
     return Object.keys(sampleDoc || {}).join(', ');
@@ -56,6 +92,7 @@ export async function* generateMongoDBChunks(db) {
         yield currentChunk;
     }
 }
+
 export async function* generateCSVChunks(content) {
     let currentChunk = '';
     let header = '';

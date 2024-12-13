@@ -24,60 +24,64 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <ScrollArea className="flex-1 h-[calc(100vh-200px)] p-6">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`mb-6 flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div
-              className={cn(
-                "inline-block max-w-[70%] px-6 py-4 rounded-lg shadow-md transition-all duration-200",
-                message.sender === 'user' 
-                  ? "bg-blue-500/10 backdrop-blur-sm hover:bg-blue-500/15" 
-                  : "bg-background/80 backdrop-blur-sm border border-border/50 hover:border-blue-500/50"
-              )}
-            >
-              <div className="flex items-center mb-2">
-                {message.sender === 'user' ? (
-                  <User className="h-5 w-5 mr-2 text-blue-400" />
-                ) : (
-                  <Bot className="h-5 w-5 mr-2 text-purple-400" />
-                )}
-                <span className={cn(
-                  "font-semibold",
-                  message.sender === 'user' ? "text-blue-400" : "text-purple-400"
-                )}>
-                  {message.sender === 'user' ? 'You' : 'AI'}
-                </span>
+    <div className="flex flex-col h-full relative">
+      <div className="flex-1 overflow-hidden">
+        <ScrollArea className="h-[calc(100vh-140px)]">
+          <div className="flex flex-col gap-6 p-6">
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
+                <div
+                  className={cn(
+                    "inline-block max-w-[70%] px-6 py-4 rounded-lg shadow-md transition-all duration-200",
+                    message.sender === 'user' 
+                      ? "bg-blue-500/10 backdrop-blur-sm hover:bg-blue-500/15" 
+                      : "bg-background/80 backdrop-blur-sm border border-border/50 hover:border-blue-500/50"
+                  )}
+                >
+                  <div className="flex items-center mb-2">
+                    {message.sender === 'user' ? (
+                      <User className="h-5 w-5 mr-2 text-blue-400" />
+                    ) : (
+                      <Bot className="h-5 w-5 mr-2 text-purple-400" />
+                    )}
+                    <span className={cn(
+                      "font-semibold",
+                      message.sender === 'user' ? "text-blue-400" : "text-purple-400"
+                    )}>
+                      {message.sender === 'user' ? 'You' : 'AI'}
+                    </span>
+                  </div>
+                  <div className={cn(
+                    "prose prose-sm max-w-none",
+                    message.sender === 'user' ? "prose-blue" : "prose-purple"
+                  )}>
+                    <ReactMarkdown>{message.text}</ReactMarkdown>
+                  </div>
+                </div>
               </div>
-              <div className={cn(
-                "prose prose-sm max-w-none",
-                message.sender === 'user' ? "prose-blue" : "prose-purple"
-              )}>
-                <ReactMarkdown>{message.text}</ReactMarkdown>
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="inline-block max-w-[70%] px-6 py-4 rounded-lg shadow-md bg-background/80 backdrop-blur-sm border border-border/50">
+                  <div className="flex items-center mb-2">
+                    <Bot className="h-5 w-5 mr-2 text-purple-400" />
+                    <span className="font-semibold text-purple-400">AI</span>
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
-        ))}
-        {isLoading && (
-          <div className="mb-6 flex justify-start">
-            <div className="inline-block max-w-[70%] px-6 py-4 rounded-lg shadow-md bg-background/80 backdrop-blur-sm border border-border/50">
-              <div className="flex items-center mb-2">
-                <Bot className="h-5 w-5 mr-2 text-purple-400" />
-                <span className="font-semibold text-purple-400">AI</span>
-              </div>
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-              </div>
-            </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
-      </ScrollArea>
-      <div className="border-t border-border/10 bg-background/95 backdrop-blur p-4">
+        </ScrollArea>
+      </div>
+      <div className="border-t border-border/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 p-4">
         <form onSubmit={handleSubmit} className="w-full max-w-4xl mx-auto">
           <div className="flex items-center space-x-2">
             <Textarea

@@ -4,44 +4,100 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/card';
-import { Label } from '@/components/ui/label'
-import { Loader2 } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Loader2, XCircle } from 'lucide-react';
 
 export default function NewChatForm({ onSubmit, onCancel }) {
   const [chatName, setChatName] = useState('');
-  const [dbType, setDbType] = useState('')
+  const [dbType, setDbType] = useState('');
+  const [error, setError] = useState('');
   const [dbInfo, setDbInfo] = useState({
     host: '',
     user: '',
     password: '',
     database: '',
     uri: '',
-    type: ''
+    port: '',
+    filename: '' // Added to match Dashboard's expected format
   });
-
   const [testingConnection, setTestingConnection] = useState(false);
+
+  const validateForm = () => {
+    if (!chatName.trim()) {
+      setError('Please enter a chat name');
+      return false;
+    }
+    if (!dbType) {
+      setError('Please select a database type');
+      return false;
+    }
+
+    switch (dbType) {
+      case 'mongodb':
+        if (!dbInfo.uri) {
+          setError('Please enter MongoDB URI');
+          return false;
+        }
+        break;
+      case 'mysql':
+      case 'postgresql':
+        if (!dbInfo.host || !dbInfo.user || !dbInfo.password || !dbInfo.database) {
+          setError(`Please fill in all ${dbType.toUpperCase()} connection fields`);
+          return false;
+        }
+        break;
+      case 'sqlite':
+        if (!dbInfo.host) {
+          setError('Please enter SQLite database path');
+          return false;
+        }
+        break;
+      default:
+        setError('Invalid database type selected');
+        return false;
+    }
+    return true;
+  };
+
+  const formatDbInfo = () => {
+    const formattedInfo = { ...dbInfo };
+    
+    if (dbType === 'sqlite') {
+      // For SQLite, copy the host (path) to filename as expected by the Dashboard
+      formattedInfo.filename = dbInfo.host;
+    }
+    
+    // Ensure port is a number for MySQL and PostgreSQL
+    if ((dbType === 'mysql' || dbType === 'postgresql') && dbInfo.port) {
+      formattedInfo.port = parseInt(dbInfo.port, 10);
+    }
+
+    return formattedInfo;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
+    if (!validateForm()) {
+      return;
+    }
+
     setTestingConnection(true);
 
     try {
-      const response = await fetch('/api/testConnection', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ dbType, dbInfo }),
-      });
-      const data = await response.json();
+      // Format the database info according to the type
+      const formattedDbInfo = formatDbInfo();
 
-      if (response.ok) {
-        console.log(data.message);
-        onSubmit({ chatName, dbType, dbInfo });
-      } else {
-        alert(`Error: ${data.error}`);
-      }
+      // Submit the formatted data
+      onSubmit({
+        chatName,
+        dbType,
+        dbInfo: formattedDbInfo
+      });
     } catch (error) {
-      console.error('Error testing connection:', error);
-      alert(`Error testing connection: ${error.message}`);
+      setError(`Error: ${error.message}`);
     } finally {
       setTestingConnection(false);
     }
@@ -50,136 +106,182 @@ export default function NewChatForm({ onSubmit, onCancel }) {
   return (
     <Card className="w-full max-w-md mx-auto mt-8 border border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <CardHeader>
-        <h2 className="text-2xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">New Chat</h2>
+        <h2 className="text-2xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
+          New Chat
+        </h2>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
+          {error && (
+            <Alert variant="destructive" className="mb-4">
+              <XCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          
           <div className="space-y-2">
-            <Label htmlFor="chatName" className="text-foreground/90">Chat Name</Label>
+            <Label htmlFor="chatName">Chat Name</Label>
             <Input
               id="chatName"
-              type="text"
               value={chatName}
-              onChange={(e) => setChatName(e.target.value)}
+              onChange={(e) => {
+                setChatName(e.target.value);
+                setError('');
+              }}
               placeholder="Enter a chat name"
-              required
-              className="w-full transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
+              className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
             />
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="dbType" className="text-foreground/90">Database Type</Label>
-            <Select id="dbType" value={dbType} onValueChange={setDbType}>
+            <Label htmlFor="dbType">Database Type</Label>
+            <Select 
+              value={dbType} 
+              onValueChange={(value) => {
+                setDbType(value);
+                setError('');
+                setDbInfo({
+                  host: '',
+                  user: '',
+                  password: '',
+                  database: '',
+                  uri: '',
+                  port: '',
+                  filename: ''
+                });
+              }}
+            >
               <SelectTrigger className="w-full transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30">
                 <SelectValue placeholder="Select database type" />
               </SelectTrigger>
-              <SelectContent className="bg-background/95 backdrop-blur-sm border-border/50">
+              <SelectContent>
                 <SelectItem value="mongodb">MongoDB</SelectItem>
                 <SelectItem value="mysql">MySQL</SelectItem>
-                <SelectItem value="postgreSQL">PostgreSQL</SelectItem>
+                <SelectItem value="postgresql">PostgreSQL</SelectItem>
                 <SelectItem value="sqlite">SQLite</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          {dbType === 'mysql' && (
-            <div className="space-y-4">
-              <Input
-                type="text"
-                value={dbInfo.host}
-                onChange={(e) => setDbInfo({ ...dbInfo, host: e.target.value })}
-                placeholder="MySQL Host"
-                required
-                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
-              />
-              <Input
-                type="text"
-                value={dbInfo.user}
-                onChange={(e) => setDbInfo({ ...dbInfo, user: e.target.value })}
-                placeholder="MySQL User"
-                required
-                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
-              />
-              <Input
-                type="password"
-                value={dbInfo.password}
-                onChange={(e) => setDbInfo({ ...dbInfo, password: e.target.value })}
-                placeholder="MySQL Password"
-                required
-                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
-              />
-              <Input
-                type="text"
-                value={dbInfo.database}
-                onChange={(e) => setDbInfo({ ...dbInfo, database: e.target.value })}
-                placeholder="MySQL Database"
-                required
-                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
-              />
-            </div>
-          )}
+
           {dbType === 'mongodb' && (
-            <Input
-              type="text"
-              value={dbInfo.uri}
-              onChange={(e) => setDbInfo({ ...dbInfo, uri: e.target.value })}
-              placeholder="MongoDB URI"
-              required
-              className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
-            />
-          )}
-          {dbType === 'sqlite' && (
-            <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="uri">MongoDB URI</Label>
               <Input
+                id="uri"
                 type="text"
-                value={dbInfo.host}
-                onChange={(e) => setDbInfo({ ...dbInfo, host: e.target.value })}
-                placeholder="SQLite Database Path"
-                required
+                value={dbInfo.uri}
+                onChange={(e) => {
+                  setDbInfo({ ...dbInfo, uri: e.target.value });
+                  setError('');
+                }}
+                placeholder="mongodb://username:password@host:port/database"
                 className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
             </div>
           )}
-          {dbType === 'postgreSQL' && (
+
+          {(dbType === 'mysql' || dbType === 'postgresql') && (
             <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="host">Host</Label>
+                  <Input
+                    id="host"
+                    type="text"
+                    value={dbInfo.host}
+                    onChange={(e) => {
+                      setDbInfo({ ...dbInfo, host: e.target.value });
+                      setError('');
+                    }}
+                    placeholder="localhost"
+                    className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="port">Port</Label>
+                  <Input
+                    id="port"
+                    type="text"
+                    value={dbInfo.port}
+                    onChange={(e) => {
+                      setDbInfo({ ...dbInfo, port: e.target.value });
+                      setError('');
+                    }}
+                    placeholder={dbType === 'mysql' ? '3306' : '5432'}
+                    className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="database">Database Name</Label>
+                <Input
+                  id="database"
+                  type="text"
+                  value={dbInfo.database}
+                  onChange={(e) => {
+                    setDbInfo({ ...dbInfo, database: e.target.value });
+                    setError('');
+                  }}
+                  placeholder="database_name"
+                  className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="user">Username</Label>
+                <Input
+                  id="user"
+                  type="text"
+                  value={dbInfo.user}
+                  onChange={(e) => {
+                    setDbInfo({ ...dbInfo, user: e.target.value });
+                    setError('');
+                  }}
+                  placeholder="username"
+                  className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={dbInfo.password}
+                  onChange={(e) => {
+                    setDbInfo({ ...dbInfo, password: e.target.value });
+                    setError('');
+                  }}
+                  placeholder="••••••••"
+                  className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
+                />
+              </div>
+            </div>
+          )}
+
+          {dbType === 'sqlite' && (
+            <div className="space-y-2">
+              <Label htmlFor="path">Database Path</Label>
               <Input
+                id="path"
                 type="text"
                 value={dbInfo.host}
-                onChange={(e) => setDbInfo({ ...dbInfo, host: e.target.value })}
-                placeholder="PostgreSQL Host"
-                required
-                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
-              />
-              <Input
-                type="text"
-                value={dbInfo.user}
-                onChange={(e) => setDbInfo({ ...dbInfo, user: e.target.value })}
-                placeholder="PostgreSQL User"
-                required
-                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
-              />
-              <Input
-                type="password"
-                value={dbInfo.password}
-                onChange={(e) => setDbInfo({ ...dbInfo, password: e.target.value })}
-                placeholder="PostgreSQL Password"
-                required
-                className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
-              />
-              <Input
-                type="text"
-                value={dbInfo.database}
-                onChange={(e) => setDbInfo({ ...dbInfo, database: e.target.value })}
-                placeholder="PostgreSQL Database"
-                required
+                onChange={(e) => {
+                  setDbInfo({ ...dbInfo, host: e.target.value, filename: e.target.value });
+                  setError('');
+                }}
+                placeholder="/path/to/database.db"
                 className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
             </div>
           )}
         </form>
       </CardContent>
+
       <CardFooter className="flex justify-end space-x-2">
         <Button 
           variant="ghost" 
-          type="button" 
           onClick={onCancel}
           className="hover:bg-blue-500/10"
         >
@@ -187,9 +289,8 @@ export default function NewChatForm({ onSubmit, onCancel }) {
         </Button>
         <Button
           variant="default"
-          type="submit"
-          disabled={testingConnection}
           onClick={handleSubmit}
+          disabled={testingConnection}
           className="w-32 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105"
         >
           {testingConnection ? (

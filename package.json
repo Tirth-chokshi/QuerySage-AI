@@ -59,6 +59,7 @@
     "next-connect": "^1.0.0",
     "next-themes": "^0.3.0",
     "node-fetch": "^2.7.0",
+    "pg": "^8.13.1",
     "radix-ui": "^1.0.1",
     "re-resizable": "^6.9.17",
     "react": "^18.3.1",

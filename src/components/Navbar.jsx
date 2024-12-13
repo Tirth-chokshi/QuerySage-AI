@@ -1,16 +1,16 @@
 "use client";
 
-import { useCallback } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { signOut, useSession } from "next-auth/react";
-import { MoonIcon, SunIcon, LogInIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useCallback } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { signOut, useSession } from "next-auth/react"
+import { MoonIcon, SunIcon, LogInIcon } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { useTheme } from "next-themes";
-import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
+import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet"
 import { Menu } from "lucide-react";
-import { ModeToggle } from "./ModeToggle";
-import { HoverBorderGradient } from "./ui/hover-border-gradient";
+import { ModeToggle } from "./ModeToggle"
+import { HoverBorderGradient } from "./ui/hover-border-gradient"
 
 const logo = "/logo.svg";
 
@@ -167,7 +167,7 @@ const Navbar = () => {
                       Sign out
                     </Button>
                   </div>
-                )}
+                )} 
               </div>
             </SheetContent>
           </Sheet>

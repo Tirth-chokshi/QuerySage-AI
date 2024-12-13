@@ -3,44 +3,60 @@ import { MongoClient } from 'mongodb'
 import mysql from 'mysql2/promise'
 import sqlite3 from 'sqlite3'
 import { open } from 'sqlite'
+import { Client } from 'pg'
 import dbConnect from '@/lib/dbConnect'
 import Message from '@/models/Message'
 import { generateMySQLDatabaseChunks } from '@/lib/action'
 import { generateMongoDBChunks } from '@/lib/action'
 import { generateSQLiteChunks } from '@/lib/action'
+import { generatePostgreSQLChunks } from '@/lib/action'
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     const { query, dbCredentials, dbType, chatId } = req.body
     const groq = new Groq({ apiKey: process.env.LLM_API })
-//comment
+
     try {
       await dbConnect()
       let fullResponse = ''
       let chunkGenerator
 
-      if (dbType === 'mysql') {
-        const connection = await mysql.createConnection({
-          host: dbCredentials.host,
-          user: dbCredentials.user,
-          password: dbCredentials.password,
-          database: dbCredentials.database,
-        })
-        chunkGenerator = generateMySQLDatabaseChunks(connection)
-      } else if (dbType === 'mongodb') {
-        const client = new MongoClient(dbCredentials.uri)
-        await client.connect()
-        const db = client.db()
-        chunkGenerator = generateMongoDBChunks(db)
-      } else if (dbType === 'sqlite') {
-        const connection = await open({
-          filename: dbCredentials.filename,
-          driver: sqlite3.Database
-        })
-        chunkGenerator = generateSQLiteChunks(connection)
-      }
-      else {
-        throw new Error(`Unsupported database type: ${dbType}`)
+      switch (dbType.toLowerCase()) {
+        case 'mysql':
+          const mysqlConnection = await mysql.createConnection({
+            host: dbCredentials.host,
+            user: dbCredentials.user,
+            password: dbCredentials.password,
+            database: dbCredentials.database,
+          })
+          chunkGenerator = generateMySQLDatabaseChunks(mysqlConnection)
+          break
+        case 'mongodb':
+          const client = new MongoClient(dbCredentials.uri)
+          await client.connect()
+          const db = client.db()
+          chunkGenerator = generateMongoDBChunks(db)
+          break
+        case 'sqlite':
+          const sqliteConnection = await open({
+            filename: dbCredentials.filename,
+            driver: sqlite3.Database
+          })
+          chunkGenerator = generateSQLiteChunks(sqliteConnection)
+          break
+        case 'postgresql':
+          const pgClient = new Client({
+            host: dbCredentials.host,
+            user: dbCredentials.user,
+            password: dbCredentials.password,
+            database: dbCredentials.database,
+            port: dbCredentials.port || 5432,
+          })
+          await pgClient.connect()
+          chunkGenerator = generatePostgreSQLChunks(pgClient)
+          break
+        default:
+          throw new Error(`Unsupported database type: ${dbType}`)
       }
 
       for await (const chunk of chunkGenerator) {
