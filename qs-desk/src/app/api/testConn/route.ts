@@ -28,7 +28,7 @@ interface TestDBConnectionRequest {
   dbType: string;
 }
 
-export async function testDBConnection(request: NextRequest) {
+async function testDBConnection(request: NextRequest) {
     try {
       const { host, user, password, database, dbType }: TestDBConnectionRequest = await request.json();
   
@@ -88,5 +88,8 @@ export async function testDBConnection(request: NextRequest) {
       );
     }
   }
-  
-export { testDBConnection as POST };
+
+// Export the POST handler directly
+export async function POST(request: NextRequest) {
+  return testDBConnection(request);
+}
