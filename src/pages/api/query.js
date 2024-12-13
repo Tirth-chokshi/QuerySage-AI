@@ -68,7 +68,7 @@ export default async function handler(req, res) {
             },
             { role: 'user', content: query },
           ],
-          model: 'llama3-8b-8192',
+          model: 'llama-3.3-70b-versatile',
           // max_tokens: 4096,
         })
 

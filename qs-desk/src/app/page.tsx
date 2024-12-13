@@ -12,11 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+import { Message } from '@/types/chat';
 
 interface DBCredentials {
   host: string;
@@ -173,7 +169,7 @@ export default function Home(): JSX.Element {
     setIsLoading(true);
     const newMessages: Message[] = [
       ...messages,
-      { role: "user", content: inputMessage },
+      { role: "user", content: inputMessage, timestamp: new Date().toISOString() },
     ];
     setMessages(newMessages);
     setInputMessage("");
@@ -192,6 +188,7 @@ export default function Home(): JSX.Element {
           },
           dbType,
           chatId: "default",
+          messages: messages,
         }),
       });
 
@@ -200,11 +197,8 @@ export default function Home(): JSX.Element {
         throw new Error(errorData.details || "Unknown error occurred");
       }
 
-      const data: { response: string } = await response.json();
-      setMessages([
-        ...newMessages,
-        { role: "assistant", content: data.response },
-      ]);
+      const data = await response.json();
+      setMessages(data.messages);
     } catch (error) {
       console.error("Error:", error);
       setMessages([
@@ -212,6 +206,7 @@ export default function Home(): JSX.Element {
         {
           role: "assistant",
           content: "An error occurred while processing your request.",
+          timestamp: new Date().toISOString(),
         },
       ]);
     } finally {

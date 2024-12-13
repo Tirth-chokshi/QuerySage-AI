@@ -1,2 +1,0 @@
-Fast api backend
-Nextjs Frontend 
