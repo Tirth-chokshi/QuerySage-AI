@@ -35,10 +35,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import logo from "@/components/logo.svg";
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation"
+import { redirect } from "next/navigation";
 import { ModeToggle } from "@/components/ModeToggle";
 import Footer from "@/components/footer";
-
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -141,7 +140,7 @@ export default function DashboardPage() {
                     </NavigationMenuItem>
                   ))}
                   <NavigationMenuItem>
-                    <ModeToggle/>
+                    <ModeToggle />
                   </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
@@ -165,7 +164,11 @@ export default function DashboardPage() {
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-background/95 backdrop-blur-sm" align="end" forceMount>
+                <DropdownMenuContent
+                  className="w-56 bg-background/95 backdrop-blur-sm"
+                  align="end"
+                  forceMount
+                >
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
                       <p className="text-sm font-medium leading-none">
@@ -181,7 +184,10 @@ export default function DashboardPage() {
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleLogout} className="hover:bg-blue-500/10">
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="hover:bg-blue-500/10"
+                  >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
@@ -196,21 +202,29 @@ export default function DashboardPage() {
           <main className="flex-1 overflow-y-auto p-6 relative">
             {/* Background gradient effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 blur-3xl pointer-events-none"></div>
-            
+
             <div className="relative">
               <h1 className="text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
                 Welcome to QuerySage AI
               </h1>
               <p className="text-xl mb-8 text-muted-foreground">
-                Interact with your data seamlessly. Choose a service to get started:
+                Interact with your data seamlessly. Choose a service to get
+                started:
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {features.map((feature) => (
-                  <Link href={feature.href} key={feature.name} className="relative">
+                  <Link
+                    href={feature.href}
+                    key={feature.name}
+                    className="relative"
+                  >
                     <Card className="group transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer border border-border/50 bg-background/50 backdrop-blur-sm hover:border-blue-500/50">
                       <CardHeader>
                         <CardTitle className="flex items-center">
-                          <feature.icon className="mr-2 group-hover:text-blue-500 transition-colors" size={24} />
+                          <feature.icon
+                            className="mr-2 group-hover:text-blue-500 transition-colors"
+                            size={24}
+                          />
                           <span>{feature.name}</span>
                         </CardTitle>
                       </CardHeader>
@@ -222,10 +236,17 @@ export default function DashboardPage() {
                             ? "Upload and analyze CSV files with AI-powered tools."
                             : "Explore and manipulate JSON data effortlessly."}
                         </p>
+                        {feature.name === "Analyze CSV Files" && (
+                          <div className="absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded bg-gradient-to-r from-indigo-500 to-cyan-500 text-black">
+                            Building
+                          </div>
+                        )}
+                        {feature.name === "Interact with JSON" && (
+                          <div className="absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded bg-gradient-to-r from-yellow-500 to-orange-500 text-black">
+                            Coming Soon
+                          </div>
+                        )}
                       </CardContent>
-                      {feature.name === "Interact with JSON" && (
-                        <div className="absolute top-2 right-2 text-xs font-bold px-2 py-1 rounded bg-gradient-to-r from-yellow-500 to-orange-500 text-black">Coming Soon</div>
-                      )}
                     </Card>
                   </Link>
                 ))}

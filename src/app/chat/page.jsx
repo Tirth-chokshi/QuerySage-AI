@@ -19,7 +19,7 @@ import logo from '@/components/logo.svg'
 import { Settings, LogOut, History, MessageCirclePlus } from 'lucide-react';
 import { signOut } from 'next-auth/react'
 
-export default function Dashboard() {
+export default function Chat() {
   const { toast } = useToast()
   const { data: session, status } = useSession()
   const [chatId, setChatId] = useState(null)
@@ -183,69 +183,80 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
-      <Toaster />
-      <aside className="w-16 flex-shrink-0 border-r border-border/10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="h-full flex flex-col">
-          <div className="border-b border-border/10 p-2">
-            <Link href="/" className="flex items-center justify-center">
-              <Image 
-                src={logo} 
-                alt="Logo" 
-                width={32} 
-                height={32} 
-                className="transition-all duration-300 hover:scale-110"
-              />
-            </Link>
-          </div>
-          <TooltipProvider>
-            <nav className="flex-1 flex flex-col justify-between p-2">
-              <div className="space-y-2">
-                <SidebarButton
-                  icon={<MessageCirclePlus className="size-5 transition-colors group-hover:text-blue-500" />}
-                  label="New Chat"
-                  onClick={() => setShowNewChatForm(true)}
-                />
-                <SidebarButton 
-                  icon={<History className="size-5 transition-colors group-hover:text-blue-500" />} 
-                  label="History" 
-                />
-              </div>
-              <div className="space-y-2">
-                <SidebarButton 
-                  icon={<Settings className="size-5 transition-colors group-hover:text-blue-500" />} 
-                  label="Settings" 
-                />
-                <SidebarButton
-                  icon={<LogOut className="size-5 transition-colors group-hover:text-blue-500" />}
-                  label="Logout"
-                  onClick={handleLogout}
-                />
-              </div>
-            </nav>
-          </TooltipProvider>
+    <div className="flex h-screen bg-[#0A0A0A]">
+      {/* Sidebar */}
+      <div className="w-64 border-r border-gray-800 flex flex-col">
+        <div className="p-4 border-b border-gray-800">
+          <select 
+            value={chatId || ''} 
+            onChange={(e) => setChatId(e.target.value)}
+            className="w-full bg-[#1C1C1C] text-white border border-gray-800 rounded-md p-2"
+          >
+            <option value="">Chat</option>
+            {chats.map((chat) => (
+              <option key={chat.id} value={chat.id}>
+                {chat.name}
+              </option>
+            ))}
+          </select>
         </div>
-      </aside>
-      <main className="flex-1 flex flex-col overflow-hidden bg-background relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 blur-3xl pointer-events-none"></div>
-        {showNewChatForm ? (
-          <div className="relative">
-            <NewChatForm onSubmit={handleCreateChat} onCancel={() => setShowNewChatForm(false)} />
+        
+        <div className="flex-1 overflow-auto">
+          <div className="p-4">
+            <Button
+              onClick={() => setShowNewChatForm(true)}
+              className="w-full bg-[#1C1C1C] hover:bg-gray-800 text-white border border-gray-800"
+            >
+              <MessageCirclePlus className="h-4 w-4 mr-2" />
+              New Chat
+            </Button>
           </div>
-        ) : (
-          <div className="relative flex-1">
-            <ChatArea
-              chatId={chatId}
-              messages={messages}
-              isLoading={isLoading}
-              input={input}
-              setInput={setInput}
-              handleSubmit={handleSubmit}
-              className="p-6 flex-1 overflow-y-auto"
-            />
+        </div>
+
+        {/* Bottom buttons */}
+        <div className="p-4 border-t border-gray-800">
+          <div className="flex flex-col gap-2">
+            {/* <Button
+              variant="ghost"
+              className="w-full justify-start text-gray-400 hover:text-white hover:bg-gray-800"
+              onClick={() =>}
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Settings
+            </Button> */}
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-gray-400 hover:text-white hover:bg-gray-800"
+              onClick={() => signOut()}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
           </div>
-        )}
-      </main>
+        </div>
+      </div>
+
+      {/* Main chat area */}
+      <div className="flex-1">
+        <ChatArea
+          chatId={chatId}
+          messages={messages}
+          isLoading={isLoading}
+          input={input}
+          setInput={setInput}
+          handleSubmit={handleSubmit}
+        />
+      </div>
+
+      {/* New chat form modal */}
+      {showNewChatForm && (
+        <NewChatForm
+          onClose={() => setShowNewChatForm(false)}
+          onSubmit={handleCreateChat}
+        />
+      )}
+      
+      <Toaster />
     </div>
   )
 }

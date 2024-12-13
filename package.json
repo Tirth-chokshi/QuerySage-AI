@@ -11,6 +11,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@ai-sdk/groq": "^1.0.8",
     "@auth/mongodb-adapter": "^3.4.2",
     "@cloudflare/next-on-pages": "^1.13.2",
     "@langchain/community": "^0.2.25",
@@ -34,6 +35,7 @@
     "@tsparticles/engine": "^3.5.0",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.5.0",
+    "ai": "^4.0.16",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
