@@ -36,6 +36,7 @@ export default function Chat() {
     database: '',
     uri: '',
     filename: '',
+    connectionString: '', // Added for Neon DB
   })
   useEffect(() => {
     if (status === "unauthenticated") {

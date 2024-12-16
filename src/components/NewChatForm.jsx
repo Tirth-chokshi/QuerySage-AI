@@ -19,7 +19,8 @@ export default function NewChatForm({ onSubmit, onCancel }) {
     database: '',
     uri: '',
     port: '',
-    filename: '' // Added to match Dashboard's expected format
+    filename: '',
+    connectionString: '', // Added for Neon DB
   });
   const [testingConnection, setTestingConnection] = useState(false);
 
@@ -37,6 +38,12 @@ export default function NewChatForm({ onSubmit, onCancel }) {
       case 'mongodb':
         if (!dbInfo.uri) {
           setError('Please enter MongoDB URI');
+          return false;
+        }
+        break;
+      case 'neondb':
+        if (!dbInfo.connectionString) {
+          setError('Please enter Neon DB connection string');
           return false;
         }
         break;
@@ -147,7 +154,8 @@ export default function NewChatForm({ onSubmit, onCancel }) {
                   database: '',
                   uri: '',
                   port: '',
-                  filename: ''
+                  filename: '',
+                  connectionString: '',
                 });
               }}
             >
@@ -155,10 +163,11 @@ export default function NewChatForm({ onSubmit, onCancel }) {
                 <SelectValue placeholder="Select database type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="mongodb">MongoDB</SelectItem>
                 <SelectItem value="mysql">MySQL</SelectItem>
+                <SelectItem value="mongodb">MongoDB</SelectItem>
                 <SelectItem value="postgresql">PostgreSQL</SelectItem>
                 <SelectItem value="sqlite">SQLite</SelectItem>
+                <SelectItem value="neondb">Neon DB</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -274,6 +283,21 @@ export default function NewChatForm({ onSubmit, onCancel }) {
                 placeholder="/path/to/database.db"
                 className="transition-all duration-200 border-border/50 focus:border-blue-500/50 hover:border-blue-500/30"
               />
+            </div>
+          )}
+
+          {dbType === 'neondb' && (
+            <div className="space-y-4">
+              <div className="grid w-full items-center gap-1.5">
+                <Label htmlFor="connectionString">Connection String</Label>
+                <Input
+                  type="text"
+                  id="connectionString"
+                  value={dbInfo.connectionString}
+                  onChange={(e) => setDbInfo({ ...dbInfo, connectionString: e.target.value })}
+                  placeholder="postgres://user:password@host/database"
+                />
+              </div>
             </div>
           )}
         </form>

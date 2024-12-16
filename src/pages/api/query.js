@@ -10,6 +10,7 @@ import { generateMySQLDatabaseChunks } from '@/lib/action'
 import { generateMongoDBChunks } from '@/lib/action'
 import { generateSQLiteChunks } from '@/lib/action'
 import { generatePostgreSQLChunks } from '@/lib/action'
+import { generateNeonDBChunks } from '@/lib/action'
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -54,6 +55,13 @@ export default async function handler(req, res) {
           })
           await pgClient.connect()
           chunkGenerator = generatePostgreSQLChunks(pgClient)
+          break
+        case 'neondb':
+          const neonClient = new Client({
+            connectionString: dbCredentials.connectionString,
+          })
+          await neonClient.connect()
+          chunkGenerator = generatePostgreSQLChunks(neonClient) // We can reuse PostgreSQL chunks generator since Neon is Postgres-compatible
           break
         default:
           throw new Error(`Unsupported database type: ${dbType}`)

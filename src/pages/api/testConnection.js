@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise';
 import { MongoClient } from 'mongodb';
+import { Client as PostgresClient } from 'pg';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -37,6 +38,44 @@ export default async function handler(req, res) {
       } catch (error) {
         console.error('MongoDB connection error:', error);
         res.status(500).json({ error: 'Failed to connect to MongoDB', details: error.message });
+      }
+    } else if (dbType === 'postgresql') {
+      if (!dbInfo.host || !dbInfo.user || !dbInfo.password || !dbInfo.database) {
+        return res.status(400).json({ error: 'Missing required PostgreSQL credentials' });
+      }
+
+      try {
+        const client = new PostgresClient({
+          host: dbInfo.host,
+          user: dbInfo.user,
+          password: dbInfo.password,
+          database: dbInfo.database,
+          port: dbInfo.port || 5432,
+        });
+        await client.connect();
+        await client.query('SELECT NOW()'); // Simple query to test connection
+        await client.end();
+        res.status(200).json({ message: 'PostgreSQL connection successful' });
+      } catch (error) {
+        console.error('PostgreSQL connection error:', error);
+        res.status(500).json({ error: 'Failed to connect to PostgreSQL database', details: error.message });
+      }
+    } else if (dbType === 'neondb') {
+      if (!dbInfo.connectionString) {
+        return res.status(400).json({ error: 'Missing required Neon DB connection string' });
+      }
+
+      try {
+        const client = new PostgresClient({
+          connectionString: dbInfo.connectionString,
+        });
+        await client.connect();
+        await client.query('SELECT 1');
+        await client.end();
+        res.status(200).json({ message: 'Neon DB connection successful' });
+      } catch (error) {
+        console.error('Neon DB connection error:', error);
+        res.status(500).json({ error: 'Failed to connect to Neon DB', details: error.message });
       }
     } else {
       res.status(400).json({ error: 'Invalid database type' });
