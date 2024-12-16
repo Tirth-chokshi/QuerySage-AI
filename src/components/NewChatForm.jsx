@@ -20,7 +20,7 @@ export default function NewChatForm({ onSubmit, onCancel }) {
     uri: '',
     port: '',
     filename: '',
-    connectionString: '', // Added for Neon DB
+    connectionString: '',
   });
   const [testingConnection, setTestingConnection] = useState(false);
 
