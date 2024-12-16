@@ -13,6 +13,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from '@/types/chat';
+import ReactMarkdown from 'react-markdown'
 
 interface DBCredentials {
   host: string;
@@ -318,7 +319,29 @@ export default function Home(): JSX.Element {
                       : "bg-gray-100 mr-auto max-w-[80%]"
                   }`}
                 >
-                  {message.content}
+                  <ReactMarkdown
+                  components={{
+                    code: ({ node, inline, className, children, ...props }: React.ComponentPropsWithoutRef<'code'> & {
+                      node?: any;
+                      inline?: boolean;
+                      className?: string;
+                    }) => {
+                      const match = /language-(\w+)/.exec(className || '');
+                      if (inline) {
+                        return <code className="bg-gray-800 rounded px-1" {...props}>{children}</code>
+                      }
+                      return (
+                        <div className="bg-[#1C1C1C] rounded-lg p-4 my-2">
+                          <code className="text-sm font-mono text-white" {...props}>
+                            {children}
+                          </code>
+                        </div>
+                      )
+                    }
+                  }}
+                >
+                    {message.content}
+                  </ReactMarkdown>
                 </div>
               ))}
             </div>

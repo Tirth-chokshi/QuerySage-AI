@@ -64,7 +64,7 @@ export default async function handler(req, res) {
           messages: [
             {
               role: 'system',
-              content: `You are an AI assistant that answers questions based on the following data:\n\n${chunk}\n\nIf you need more information to answer the question, say "I need more information."`,
+              content: `Your name is QuerySage.You are an AI assistant that answers questions based on the following data:\n\n${chunk}\n\nIf you need more information to answer the question, say "I need more information."`,
             },
             { role: 'user', content: query },
           ],
