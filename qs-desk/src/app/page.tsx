@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Message } from '@/types/chat';
-import ReactMarkdown from 'react-markdown'
+import { Message } from "@/types/chat";
+import ReactMarkdown from "react-markdown";
 
 interface DBCredentials {
   host: string;
@@ -28,7 +28,7 @@ interface DBCredentials {
 type DBType = "mysql" | "postgresql" | "mongodb" | "sqlite" | "neon" | "";
 
 export default function Home(): JSX.Element {
-  const { toast } = useToast()
+  const { toast } = useToast();
   const [dbType, setDbType] = useState<DBType>("");
   const [dbCredentials, setDbCredentials] = useState<DBCredentials>({
     host: "",
@@ -43,7 +43,8 @@ export default function Home(): JSX.Element {
   const [inputMessage, setInputMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [isTestingConnection, setIsTestingConnection] = useState<boolean>(false);
+  const [isTestingConnection, setIsTestingConnection] =
+    useState<boolean>(false);
 
   const handleCredentialChange = (
     field: keyof DBCredentials,
@@ -98,9 +99,13 @@ export default function Home(): JSX.Element {
       return false;
     }
 
-    if ((dbType === "mysql" || dbType === "postgresql") && 
-        (!dbCredentials.host || !dbCredentials.user || 
-         !dbCredentials.password || !dbCredentials.database)) {
+    if (
+      (dbType === "mysql" || dbType === "postgresql") &&
+      (!dbCredentials.host ||
+        !dbCredentials.user ||
+        !dbCredentials.password ||
+        !dbCredentials.database)
+    ) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields.",
@@ -143,9 +148,9 @@ export default function Home(): JSX.Element {
           dbType,
         }),
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         toast({
           title: "Connection Successful",
@@ -179,7 +184,11 @@ export default function Home(): JSX.Element {
     setIsLoading(true);
     const newMessages: Message[] = [
       ...messages,
-      { role: "user", content: inputMessage, timestamp: new Date().toISOString() },
+      {
+        role: "user",
+        content: inputMessage,
+        timestamp: new Date().toISOString(),
+      },
     ];
     setMessages(newMessages);
     setInputMessage("");
@@ -269,7 +278,9 @@ export default function Home(): JSX.Element {
               <Input
                 placeholder="SQLite Filename"
                 value={dbCredentials.filename}
-                onChange={(e) => handleCredentialChange("filename", e.target.value)}
+                onChange={(e) =>
+                  handleCredentialChange("filename", e.target.value)
+                }
               />
             )}
 
@@ -278,40 +289,52 @@ export default function Home(): JSX.Element {
                 <Input
                   placeholder="Host"
                   value={dbCredentials.host}
-                  onChange={(e) => handleCredentialChange("host", e.target.value)}
+                  onChange={(e) =>
+                    handleCredentialChange("host", e.target.value)
+                  }
                 />
                 <Input
                   placeholder="Port"
                   value={dbCredentials.port}
-                  onChange={(e) => handleCredentialChange("port", e.target.value)}
+                  onChange={(e) =>
+                    handleCredentialChange("port", e.target.value)
+                  }
                   type="number"
                 />
                 <Input
                   placeholder="Database"
                   value={dbCredentials.database}
-                  onChange={(e) => handleCredentialChange("database", e.target.value)}
+                  onChange={(e) =>
+                    handleCredentialChange("database", e.target.value)
+                  }
                 />
                 <Input
                   placeholder="Username"
                   value={dbCredentials.user}
-                  onChange={(e) => handleCredentialChange("user", e.target.value)}
+                  onChange={(e) =>
+                    handleCredentialChange("user", e.target.value)
+                  }
                 />
                 <Input
                   placeholder="Password"
                   type="password"
                   value={dbCredentials.password}
-                  onChange={(e) => handleCredentialChange("password", e.target.value)}
+                  onChange={(e) =>
+                    handleCredentialChange("password", e.target.value)
+                  }
                 />
               </>
             )}
           </div>
           <div className="mt-4">
-            <Button 
-              onClick={testConnection} 
+            <Button
+              onClick={testConnection}
               disabled={isTestingConnection}
               className="w-full"
             >
-              {isTestingConnection ? "Testing Connection..." : "Test Connection"}
+              {isTestingConnection
+                ? "Testing Connection..."
+                : "Test Connection"}
             </Button>
           </div>
         </Card>
@@ -319,11 +342,7 @@ export default function Home(): JSX.Element {
         <Card className="p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Database Chat</h2>
-            <Button
-              variant="outline"
-              onClick={handleDisconnect}
-              size="sm"
-            >
+            <Button variant="outline" onClick={handleDisconnect} size="sm">
               Disconnect
             </Button>
           </div>
@@ -339,26 +358,32 @@ export default function Home(): JSX.Element {
                   }`}
                 >
                   <ReactMarkdown
-                  components={{
-                    code: ({ node, inline, className, children, ...props }: React.ComponentPropsWithoutRef<'code'> & {
-                      node?: any;
-                      inline?: boolean;
-                      className?: string;
-                    }) => {
-                      const match = /language-(\w+)/.exec(className || '');
-                      if (inline) {
-                        return <code className="bg-gray-800 rounded px-1" {...props}>{children}</code>
-                      }
-                      return (
-                        <div className="bg-[#1C1C1C] rounded-lg p-4 my-2">
-                          <code className="text-sm font-mono text-white" {...props}>
-                            {children}
-                          </code>
-                        </div>
-                      )
-                    }
-                  }}
-                >
+                    components={{
+                      code: ({ className, children, ...props }) => {
+                        const match = /language-(\w+)/.exec(className || "");
+                        if (!className) {
+                          return (
+                            <code
+                              className="bg-yellow-500 rounded px-1"
+                              {...props}
+                            >
+                              {children}
+                            </code>
+                          );
+                        }
+                        return (
+                          <div className="bg-[#1C1C1C] rounded-lg p-4 my-2">
+                            <code
+                              className="text-sm font-mono text-white"
+                              {...props}
+                            >
+                              {children}
+                            </code>
+                          </div>
+                        );
+                      },
+                    }}
+                  >
                     {message.content}
                   </ReactMarkdown>
                 </div>
