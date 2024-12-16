@@ -84,14 +84,31 @@ export async function POST(request: NextRequest) {
         chunkGenerator = generateSQLiteChunks(sqliteConnection);
         break;
       }
-      case 'postgresql': {
-        const pgClient = new PostgresClient({
-          host: dbCredentials.host,
-          user: dbCredentials.user,
-          password: dbCredentials.password,
-          database: dbCredentials.database,
-          port: dbCredentials.port || 5432,
-        });
+      case 'postgresql':
+      case 'neon': {
+        let connectionConfig;
+        if (dbCredentials.uri) {
+          // Use connection string for Neon DB
+          connectionConfig = {
+            connectionString: dbCredentials.uri,
+            ssl: {
+              rejectUnauthorized: false
+            }
+          };
+        } else {
+          // Traditional PostgreSQL connection
+          connectionConfig = {
+            host: dbCredentials.host,
+            user: dbCredentials.user,
+            password: dbCredentials.password,
+            database: dbCredentials.database,
+            port: dbCredentials.port || 5432,
+            ssl: dbType === 'neon' ? {
+              rejectUnauthorized: false
+            } : undefined
+          };
+        }
+        const pgClient = new PostgresClient(connectionConfig);
         await pgClient.connect();
         chunkGenerator = generatePostgreSQLChunks(pgClient);
         break;

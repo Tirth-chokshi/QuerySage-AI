@@ -13,9 +13,6 @@ import {
   TooltipProvider
 } from "@/components/ui/tooltip";
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
-import Image from 'next/image'  
-import logo from '@/components/logo.svg'
 import { Settings, LogOut, History, MessageCirclePlus } from 'lucide-react';
 import { signOut } from 'next-auth/react'
 

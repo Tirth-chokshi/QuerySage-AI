@@ -25,7 +25,7 @@ interface DBCredentials {
   filename: string;
 }
 
-type DBType = "mysql" | "postgresql" | "mongodb" | "sqlite" | "";
+type DBType = "mysql" | "postgresql" | "mongodb" | "sqlite" | "neon" | "";
 
 export default function Home(): JSX.Element {
   const { toast } = useToast()
@@ -104,6 +104,15 @@ export default function Home(): JSX.Element {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return false;
+    }
+
+    if (dbType === "neon" && !dbCredentials.uri) {
+      toast({
+        title: "Validation Error",
+        description: "Please enter Neon Connection String.",
         variant: "destructive",
       });
       return false;
@@ -232,6 +241,7 @@ export default function Home(): JSX.Element {
                 <SelectContent>
                   <SelectItem value="mysql">MySQL</SelectItem>
                   <SelectItem value="postgresql">PostgreSQL</SelectItem>
+                  <SelectItem value="neon">Neon DB</SelectItem>
                   <SelectItem value="mongodb">MongoDB</SelectItem>
                   <SelectItem value="sqlite">SQLite</SelectItem>
                 </SelectContent>
@@ -243,6 +253,15 @@ export default function Home(): JSX.Element {
                 placeholder="MongoDB URI"
                 value={dbCredentials.uri}
                 onChange={(e) => handleCredentialChange("uri", e.target.value)}
+              />
+            )}
+
+            {dbType === "neon" && (
+              <Input
+                placeholder="Neon Connection String"
+                value={dbCredentials.uri}
+                onChange={(e) => handleCredentialChange("uri", e.target.value)}
+                type="password"
               />
             )}
 

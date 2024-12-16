@@ -26,11 +26,12 @@ interface TestDBConnectionRequest {
   password: string;
   database: string;
   dbType: string;
+  uri?: string;
 }
 
 async function testDBConnection(request: NextRequest) {
     try {
-      const { host, user, password, database, dbType }: TestDBConnectionRequest = await request.json();
+      const { host, user, password, database, dbType, uri }: TestDBConnectionRequest = await request.json();
   
       try {
           let connection;
@@ -47,12 +48,27 @@ async function testDBConnection(request: NextRequest) {
                   break;
   
               case 'postgresql':
-                  const pgClient = new PostgresClient({
-                      host,
-                      user,
-                      password,
-                      database,
-                  });
+              case 'neon':
+                  let connectionConfig;
+                  if (uri) {
+                      connectionConfig = {
+                          connectionString: uri,
+                          ssl: {
+                              rejectUnauthorized: false
+                          }
+                      };
+                  } else {
+                      connectionConfig = {
+                          host,
+                          user,
+                          password,
+                          database,
+                          ssl: dbType === 'neon' ? {
+                              rejectUnauthorized: false
+                          } : undefined
+                      };
+                  }
+                  const pgClient = new PostgresClient(connectionConfig);
                   await pgClient.connect();
                   await pgClient.end();
                   break;
