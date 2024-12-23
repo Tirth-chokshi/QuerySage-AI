@@ -14,18 +14,9 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Message } from "@/types/chat";
 import ReactMarkdown from "react-markdown";
+import { Textarea } from "@/components/ui/textarea";
+import { DBCredentials,DBType } from "@/types/db";
 
-interface DBCredentials {
-  host: string;
-  user: string;
-  password: string;
-  database: string;
-  port: string;
-  uri: string;
-  filename: string;
-}
-
-type DBType = "mysql" | "postgresql" | "mongodb" | "sqlite" | "neon" | "";
 
 export default function Home(): JSX.Element {
   const { toast } = useToast();
@@ -61,7 +52,7 @@ export default function Home(): JSX.Element {
     }
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+  const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
     setInputMessage(e.target.value);
   };
 
@@ -364,7 +355,7 @@ export default function Home(): JSX.Element {
                         if (!className) {
                           return (
                             <code
-                              className="bg-yellow-500 rounded px-1"
+                              className="bg-gradient-to-r from-blue-300 to-purple-300 rounded px-1"
                               {...props}
                             >
                               {children}
@@ -391,11 +382,10 @@ export default function Home(): JSX.Element {
             </div>
 
             <div className="flex gap-2">
-              <Input
+              <Textarea
                 value={inputMessage}
                 onChange={handleInputChange}
                 placeholder="Ask a question about your database..."
-                onKeyPress={handleKeyPress}
                 disabled={isLoading}
               />
               <Button onClick={() => void sendMessage()} disabled={isLoading}>
