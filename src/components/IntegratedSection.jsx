@@ -154,7 +154,7 @@ const DatabaseConnection = () => {
           </div>
           
           <div className="flex flex-col justify-center gap-3">
-            {[/* eslint-disable @typescript-eslint/no-unused-vars */
+            {[
               { ref: div1Ref, src: mongoDB, alt: "mongo" },
               { ref: div2Ref, src: mysql, alt: "mysql" },
               { ref: div3Ref, src: pg, alt: "postgres" },
@@ -168,7 +168,6 @@ const DatabaseConnection = () => {
           </div>
         </div>
 
-        {/* AnimatedBeams */}
         {[div1Ref, div2Ref, div3Ref, div4Ref, div5Ref].map((fromRef, index) => (
           <AnimatedBeam
             key={index}

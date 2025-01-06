@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Upload, FileText, BarChart2, MessageSquare, GitBranch } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import ReactMarkdown from 'react-markdown'
+import Image from 'next/image'
 
 const Spinner = () => (
   <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-gray-900"></div>
@@ -287,7 +288,16 @@ export default function Home() {
                   {loading ? <Spinner /> : "Generate Visualization"}
                 </Button>
               </div>
-              {image && <img src={`data:image/png;base64,${image}`} alt="Visualization" />}
+              {image && (
+                <div className="relative w-full h-[500px] mt-4">
+                  <Image 
+                    src={`data:image/png;base64,${image}`}
+                    alt="Visualization"
+                    fill
+                    style={{ objectFit: 'contain' }}
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -331,28 +341,16 @@ export default function Home() {
                   {loading ? <Spinner /> : "Generate Visualization"}
                 </Button>
               </div>
-              {/* {image && (
-                <div className="mt-4 border rounded-lg overflow-hidden">
-                  <img src={`data:image/png;base64,${image}`} alt="Visualization" className="w-full h-auto" />
-                </div>
-              )} */}
-              {/* {image && (
-                <div className="mt-4 border rounded-lg overflow-hidden">
-                  <div
-                    style={{
-                      backgroundImage: `url(data:image/png;base64,${image})`,
-                      backgroundSize: 'contain',
-                      backgroundPosition: 'center',
-                      backgroundRepeat: 'no-repeat',
-                      width: '100%',
-                      height: '400px', // Adjust this value as needed
-                    }}
+              {image && (
+                <div className="relative w-full h-[500px] mt-4">
+                  <Image 
+                    src={`data:image/png;base64,${image}`}
+                    alt="Visualization"
+                    fill
+                    style={{ objectFit: 'contain' }}
                   />
                 </div>
-              )} */}
-              {image && <img src={`data:image/png;base64,${image}`} alt="Visualization"
-                className="mt-4 w-auto h-auto"
-              />}
+              )}
             </CardContent>
           </Card>
         </TabsContent>
