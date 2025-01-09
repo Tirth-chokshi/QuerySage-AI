@@ -1,17 +1,18 @@
 "use client";
-
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { ArrowRightIcon } from "@radix-ui/react-icons";
 
 import Navbar from "@/components/Navbar";
 import Marquee from "@/components/ui/marquee";
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import Footer from "@/components/footer";
 import { BackgroundLines } from "@/components/ui/background-lines";
 import IntegratedFeatures from "@/components/IntegratedSection";
+import AnimatedShinyText from "@/components/ui/animated-shiny-text";
 
 const logos = [
   { src: "/logos/neonDB.png", alt: "Neon DB" },
@@ -31,6 +32,52 @@ const fadeIn = {
   transition: { duration: 0.6 },
 };
 
+const PrimaryButton = ({ children, className }) => (
+  <button 
+    className={cn(
+      "group relative px-8 py-4 overflow-hidden rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl",
+      "before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-600 before:to-purple-700 before:opacity-0 before:transition-opacity hover:before:opacity-100",
+      className
+    )}
+  >
+    <span className="relative z-10 flex items-center justify-center gap-2">
+      {children}
+      <ArrowRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+    </span>
+  </button>
+);
+
+const SecondaryButton = ({ children, className }) => (
+  <button 
+    className={cn(
+      "group relative px-8 py-4 overflow-hidden rounded-lg border border-white/20 bg-white/5 backdrop-blur-lg transition-all duration-300 hover:scale-105 hover:bg-white/10 hover:shadow-lg",
+      "before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-500/10 before:to-purple-600/10 before:opacity-0 before:transition-opacity hover:before:opacity-100",
+      className
+    )}
+  >
+    <span className="relative z-10 flex items-center justify-center gap-2">
+      {children}
+      <ArrowRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+    </span>
+  </button>
+);
+
+const FeatureCard = ({ title, description }) => (
+  <motion.div 
+    className="group relative p-8 rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500"
+    whileHover={{ y: -5 }}
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5 }}
+  >
+    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-600/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+    <div className="relative z-10">
+      <h3 className="text-xl font-semibold mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">{title}</h3>
+      <p className="text-gray-300">{description}</p>
+    </div>
+  </motion.div>
+);
+
 export default function Home() {
   const { data: session, status } = useSession();
 
@@ -41,150 +88,161 @@ export default function Home() {
   }, [status]);
 
   return (
-      <div className="min-h-screen bg-background text-foreground overflow-hidden">
-        <Navbar />
-        
-        {/* Hero Section */}
-        <BackgroundLines>
-          <section className="relative min-h-[90vh] px-4 flex items-center justify-center">
-            <motion.div
-              className="relative w-full max-w-7xl mx-auto py-12 md:py-20"
-              initial="initial"
-              animate="animate"
-              variants={fadeIn}
-            >
-              <div className="text-center space-y-6">
-                <motion.span 
-                  className="inline-block px-4 py-2 rounded-full bg-blue-500/10 text-blue-400 text-sm font-medium"
-                  variants={fadeIn}
-                >
-                  Revolutionizing Database Interactions
-                </motion.span>
-                
-                <motion.h1 
-                  className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight"
-                  variants={fadeIn}
-                >
-                  Make Your Database Interaction
-                  <br />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-                    {/* Powered by AI. */}
+    <div className="min-h-screen bg-background text-foreground overflow-hidden">
+      <Navbar />
+
+      <BackgroundLines>
+        <section className="relative min-h-[90vh] px-4 flex items-center justify-center">
+          <motion.div
+            className="relative w-full max-w-7xl mx-auto py-12 md:py-20"
+            initial="initial"
+            animate="animate"
+            variants={fadeIn}
+          >
+            <div className="text-center space-y-8">
+              <motion.div 
+                className="inline-block"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
+                <span className="inline-block group rounded-full border border-white/10 bg-white/5 backdrop-blur-xl transition-all duration-300 hover:bg-white/10">
+                  <AnimatedShinyText className="inline-flex items-center justify-center px-6 py-2 text-sm">
+                    <span>✨ Revolutionizing Database Interactions</span>
+                    <ArrowRightIcon className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </AnimatedShinyText>
+                </span>
+              </motion.div>
+
+              <motion.h1
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight"
+                variants={fadeIn}
+              >
+                Make Your Database Interaction
+                <br />
+                <span className="relative">
+                  {/* <span className="absolute -inset-1 blur-xl bg-gradient-to-r from-blue-600/30 to-purple-600/30" /> */}
+                  <span className="relative bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
                     Effortless.
                   </span>
-                </motion.h1>
-                
-                <motion.p 
-                  className="max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground"
-                  variants={fadeIn}
-                >
-                  Transform how you interact with databases using natural language. 
-                  Get instant insights, generate queries, and explore data effortlessly.
-                </motion.p>
-                
-                <motion.div 
-                  className="flex flex-col sm:flex-row gap-4 justify-center pt-8"
-                  variants={fadeIn}
-                >
-                  <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300">
-                    Start Free Trial
-                  </button>
-                  <button className="px-8 py-4 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-300">
-                    Watch Demo
-                  </button>
-                </motion.div>
-              </div>
-            </motion.div>
-          </section>
-        </BackgroundLines>
+                </span>
+              </motion.h1>
 
-                {/* Database Logos Section */}
-                <section className="py-12 sm:py-16 relative overflow-hidden border-t border-b border-border/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-center mb-2">
-              Works with Your Favorite Databases
-            </h2>
-            <p className="text-sm sm:text-base text-muted-foreground text-center">
-              Seamlessly connect with all major databases
-            </p>
-          </div>
-  
-          <div className="relative">
-            <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-r from-background to-transparent z-10" />
-            <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-24 bg-gradient-to-l from-background to-transparent z-10" />
-  
-            <Marquee className="py-4 sm:py-6" repeat={2}>
-              {logos.map((logo, index) => (
-                <div key={index} className="mx-4 sm:mx-8">
-                  <Image
-                    src={logo.src}
-                    alt={logo.alt}
-                    width={40}
-                    height={40}
-                    className="h-8 sm:h-12 w-auto grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
-                  />
-                </div>
-              ))}
-            </Marquee>
-          </div>
-        </section>
-        <IntegratedFeatures/>
-
-
-        {/* Features Grid Section - New Addition */}
-        <div className="max-w-7xl mx-auto px-4 mb-32">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                // icon: <Icons.sparkles className="h-8 w-8 text-blue-400" />,
-                title: "Natural Language Queries",
-                description: "Write queries in plain English and get instant results"
-              },
-              {
-                // icon: <Icons.shield className="h-8 w-8 text-blue-400" />,
-                title: "Enterprise Security",
-                description: "Bank-grade encryption and security measures"
-              },
-              {
-                // icon: <Icons.lightning className="h-8 w-8 text-blue-400" />,
-                title: "Real-time Analysis",
-                description: "Get insights and visualizations in milliseconds"
-              }
-            ].map((feature, index) => (
-              <div 
-                key={index}
-                className="p-6 rounded-2xl bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-300"
+              <motion.p
+                className="max-w-2xl mx-auto text-lg sm:text-xl text-gray-300"
+                variants={fadeIn}
               >
-                <div className="mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-  
-        {/* CTA Section */}
-        <section className="py-12 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 blur-3xl" />
-          <div className="relative">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600">
-              Ready to Transform Your Database Experience?
-            </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-300 mb-6 sm:mb-10 max-w-2xl mx-auto">
-              Join thousands of developers and analysts who are making database
-              interactions effortless with QuerySage.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105">
-                Get Started Free
-              </button>
-              <button className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-white/10 backdrop-blur-sm rounded-lg hover:bg-white/20 transition-all duration-300">
-                Schedule Demo
-              </button>
+                No SQL needed, connect your database and{" "}
+                <span className="relative">
+                  {/* <span className="absolute -inset-1 blur-sm bg-gradient-to-r from-blue-600/30 to-purple-600/30" /> */}
+                  <span className="relative bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-semibold">
+                    chat
+                  </span>
+                </span>{" "}
+                with your data
+              </motion.p>
+
+              <motion.div
+                className="flex flex-col sm:flex-row gap-6 justify-center pt-8"
+                variants={fadeIn}
+              >
+                <PrimaryButton>Start Free Trial</PrimaryButton>
+                <SecondaryButton>Watch Demo</SecondaryButton>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         </section>
-  
-        <Footer />
+      </BackgroundLines>
+
+      {/* Database Logos Section */}
+      <section className="py-16 relative overflow-hidden border-t border-b border-white/5">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-600/5" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+          <h2 className="text-3xl font-semibold text-center mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Works with Your Favorite Databases
+          </h2>
+          <p className="text-base text-gray-300 text-center">
+            Seamlessly connect with all major databases
+          </p>
+        </div>
+
+        <div className="relative">
+          <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10" />
+
+          <Marquee className="py-8" repeat={2}>
+            {logos.map((logo, index) => (
+              <motion.div 
+                key={index} 
+                className="mx-8"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Image
+                  src={logo.src}
+                  alt={logo.alt}
+                  width={48}
+                  height={48}
+                  className="h-12 w-auto grayscale opacity-70 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                />
+              </motion.div>
+            ))}
+          </Marquee>
+        </div>
+      </section>
+
+      <IntegratedFeatures />
+
+      {/* Features Grid Section */}
+      <div className="max-w-7xl mx-auto px-4 mb-32">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {[
+            {
+              title: "Natural Language Queries",
+              description: "Write queries in plain English and get instant results",
+            },
+            {
+              title: "Enterprise Security",
+              description: "Bank-grade encryption and security measures",
+            },
+            {
+              title: "Real-time Analysis",
+              description: "Get insights and visualizations in milliseconds",
+            },
+          ].map((feature, index) => (
+            <FeatureCard key={index} {...feature} />
+          ))}
+        </div>
       </div>
-    );
-  }
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 blur-3xl" />
+        <motion.div 
+          className="relative"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            Ready to Transform Your Database Experience?
+          </h2>
+          <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+            Join thousands of developers and analysts who are making database
+            interactions effortless with QuerySage.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-6">
+            <PrimaryButton className="w-full sm:w-auto">
+              Get Started Free
+            </PrimaryButton>
+            <SecondaryButton className="w-full sm:w-auto">
+              Schedule Demo
+            </SecondaryButton>
+          </div>
+        </motion.div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+}

@@ -1,5 +1,6 @@
-const MAX_TOKENS = 8000;
-const TOKENS_PER_CHAR = 0.25;
+// Optimized for Llama-3.3-70b-versatile with 128k context window
+const MAX_TOKENS = 32000 // Increased to match max output tokens while leaving room for prompt
+const TOKENS_PER_CHAR = 0.35 // Adjusted for more accurate token estimation
 
 // Type definitions
 type MySQLConnection = {
