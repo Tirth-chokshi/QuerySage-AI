@@ -40,8 +40,8 @@ const fadeIn = {
 const PrimaryButton = ({ children, className }) => (
   <button
     className={cn(
-      "group relative px-8 py-4 overflow-hidden rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl",
-      "before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-600 before:to-purple-700 before:opacity-0 before:transition-opacity hover:before:opacity-100",
+      "group relative px-8 py-4 overflow-hidden rounded-lg bg-gradient-to-r from-[#5b58eb] to-[#bb63ff] text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl",
+      "before:absolute before:inset-0 before:bg-gradient-to-r before:from-[#5b58eb] before:to-[#bb63ff] before:opacity-0 before:transition-opacity hover:before:opacity-100",
       className
     )}
     onClick={handleCTA}
@@ -57,9 +57,10 @@ const SecondaryButton = ({ children, className }) => (
   <button
     className={cn(
       "group relative px-8 py-4 overflow-hidden rounded-lg border border-white/20 bg-white/5 backdrop-blur-lg transition-all duration-300 hover:scale-105 hover:bg-white/10 hover:shadow-lg",
-      "before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-500/10 before:to-purple-600/10 before:opacity-0 before:transition-opacity hover:before:opacity-100",
+      "before:absolute before:inset-0 before:bg-gradient-to-r before:from-[#5b58eb]/10 before:to-[#bb63ff]/10 before:opacity-0 before:transition-opacity hover:before:opacity-100",
       className
     )}
+    onClick={handleCTA}
   >
     <span className="relative z-10 flex items-center justify-center gap-2">
       {children}
@@ -76,9 +77,9 @@ const FeatureCard = ({ title, description }) => (
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5 }}
   >
-    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-600/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#5b58eb]/20 to-[#bb63ff]/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
     <div className="relative z-10">
-      <h3 className="text-xl font-semibold mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+      <h3 className="text-xl font-semibold mb-3 bg-gradient-to-r from-[#5b58eb] to-[#bb63ff] bg-clip-text text-transparent">
         {title}
       </h3>
       <p className="text-gray-300">{description}</p>
@@ -128,24 +129,24 @@ export default function Home() {
                 Make Your Database Interaction
                 <br />
                 <span className="relative">
-                  {/* <span className="absolute -inset-1 blur-xl bg-gradient-to-r from-blue-600/30 to-purple-600/30" /> */}
-                  <span className="relative bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent">
+                  <span className="relative bg-gradient-to-r from-[#5b58eb] to-[#bb63ff] bg-clip-text text-transparent">
                     Effortless.
                   </span>
                 </span>
               </motion.h1>
 
               <motion.p
-                className="max-w-2xl mx-auto text-lg sm:text-xl text-gray-300"
+                className="max-w-2xl mx-auto text-lg sm:text-xl text-muted-foreground"
                 variants={fadeIn}
               >
                 No SQL needed, connect your database and{" "}
                 <span className="relative">
                   {/* <span className="absolute -inset-1 blur-sm bg-gradient-to-r from-blue-600/30 to-purple-600/30" /> */}
-                  <span className="relative bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent font-semibold">
+                  <span className="relative bg-gradient-to-r from-[#5b58eb] to-[#bb63ff] bg-clip-text text-transparent font-semibold">
                     chat
                   </span>
                 </span>{" "}
+
                 with your data
               </motion.p>
 
@@ -163,9 +164,9 @@ export default function Home() {
 
       {/* Database Logos Section */}
       <section className="py-16 relative overflow-hidden border-t border-b border-white/5">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-600/5" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#5b58eb]/5 to-[#bb63ff]/5" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-          <h2 className="text-3xl font-semibold text-center mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h2 className="text-3xl font-semibold text-center mb-3 bg-gradient-to-r from-[#5b58eb] to-[#bb63ff] bg-clip-text text-transparent">
             Works with Your Favorite Databases
           </h2>
           <p className="text-base text-gray-300 text-center">
@@ -235,7 +236,7 @@ export default function Home() {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-[#5b58eb] to-[#bb63ff] bg-clip-text text-transparent">
             Ready to Transform Your Database Experience?
           </h2>
           <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
@@ -243,11 +244,8 @@ export default function Home() {
             interactions effortless with QuerySage.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-6">
-            <PrimaryButton className="w-full sm:w-auto">
-              Get Started Free
-            </PrimaryButton>
             <SecondaryButton className="w-full sm:w-auto">
-              Schedule Demo
+              Get Started Free
             </SecondaryButton>
           </div>
         </motion.div>

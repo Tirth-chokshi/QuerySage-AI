@@ -56,7 +56,7 @@ const Navbar = () => {
               priority
               className="w-7 h-7 sm:w-8 sm:h-8"
             />
-            <span className="font-bold text-lg sm:text-xl bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-600">
+            <span className="font-bold text-lg sm:text-xl bg-clip-text text-transparent bg-gradient-to-r from-[#5b58eb] to-[#bb63ff]">
               QuerySage AI
             </span>
           </Link>
@@ -75,7 +75,7 @@ const Navbar = () => {
                 className="text-sm font-medium transition-colors hover:text-primary relative group px-3 py-2"
               >
                 {item.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-600 transition-all group-hover:w-full"></span>
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#5b58eb] to-[#bb63ff] transition-all group-hover:w-full"></span>
               </Link>
             ))}
           </div>
@@ -98,7 +98,7 @@ const Navbar = () => {
                 <HoverBorderGradient
                   containerClassName="rounded-full"
                   as="button"
-                  className="flex bg-gradient-to-r from-blue-500 to-purple-600 items-center space-x-2 text-sm"
+                  className="flex bg-gradient-to-r from-[#5b58eb] to-[#bb63ff] items-center space-x-2 text-sm"
                 >
                   Dashboard
                 </HoverBorderGradient>
@@ -108,7 +108,7 @@ const Navbar = () => {
                 <HoverBorderGradient
                   containerClassName="rounded-full"
                   as="button"
-                  className="flex bg-gradient-to-r from-blue-500 to-purple-600 items-center space-x-2 text-sm"
+                  className="flex bg-gradient-to-r from-[#5b58eb] to-[#bb63ff] items-center space-x-2 text-sm"
                 >
                   Get Started Free
                 </HoverBorderGradient>
@@ -145,7 +145,7 @@ const Navbar = () => {
                       className="text-sm font-medium transition-colors hover:text-primary relative group px-3 py-2"
                     >
                       {item.name}
-                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-600 transition-all group-hover:w-full"></span>
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-[#5b58eb] to-[#bb63ff] transition-all group-hover:w-full"></span>
                     </Link>
                   ))}
                 </div>
@@ -181,7 +181,7 @@ const Navbar = () => {
                   </Button>
 
                   {/* Get Started */}
-                  <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:opacity-90 transition-opacity">
+                  <Button className="w-full bg-gradient-to-r from-[#5b58eb] to-[#bb63ff] text-white hover:opacity-90 transition-opacity">
                     <Link href="/dashboard" className="w-full">
                       Get Started Free
                     </Link>

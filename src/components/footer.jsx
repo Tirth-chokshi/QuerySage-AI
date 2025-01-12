@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="flex items-center space-x-4">
             <Link href="/" className="flex items-center space-x-2">
               <Image src="/logo.svg" alt="Logo" width={32} height={32} />
-              <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-600">
+              <span className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-[#5b58eb] to-[#bb63ff]">
                 QuerySage AI
               </span>
             </Link>

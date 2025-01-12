@@ -37,7 +37,7 @@ function AIIntegration() {
           Powered by AI
         </span>
         <h2 className="text-2xl font-bold mb-2">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5b58eb] to-[#bb63ff]">
             Multi-Model AI Integration
           </span>
         </h2>
@@ -128,7 +128,7 @@ const DatabaseConnection = () => {
           Universal Compatibility
         </span>
         <h2 className="text-2xl font-bold mb-2">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#5b58eb] to-[#bb63ff]">
             Connect Any Database
           </span>
         </h2>
