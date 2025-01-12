@@ -2,7 +2,6 @@
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ArrowRightIcon } from "@radix-ui/react-icons";
@@ -13,6 +12,8 @@ import Footer from "@/components/footer";
 import { BackgroundLines } from "@/components/ui/background-lines";
 import IntegratedFeatures from "@/components/IntegratedSection";
 import AnimatedShinyText from "@/components/ui/animated-shiny-text";
+import Contact from "@/components/Contact";
+import FAQ from "@/components/FAQ";
 
 const logos = [
   { src: "/logos/neonDB.png", alt: "Neon DB" },
@@ -26,6 +27,10 @@ const logos = [
   { src: "/logos/oracledb.png", alt: "Oracle DB" },
 ];
 
+const handleCTA = () => {
+  window.location.href = "/login";
+}
+
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
@@ -33,12 +38,13 @@ const fadeIn = {
 };
 
 const PrimaryButton = ({ children, className }) => (
-  <button 
+  <button
     className={cn(
       "group relative px-8 py-4 overflow-hidden rounded-lg bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl",
       "before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-600 before:to-purple-700 before:opacity-0 before:transition-opacity hover:before:opacity-100",
       className
     )}
+    onClick={handleCTA}
   >
     <span className="relative z-10 flex items-center justify-center gap-2">
       {children}
@@ -48,7 +54,7 @@ const PrimaryButton = ({ children, className }) => (
 );
 
 const SecondaryButton = ({ children, className }) => (
-  <button 
+  <button
     className={cn(
       "group relative px-8 py-4 overflow-hidden rounded-lg border border-white/20 bg-white/5 backdrop-blur-lg transition-all duration-300 hover:scale-105 hover:bg-white/10 hover:shadow-lg",
       "before:absolute before:inset-0 before:bg-gradient-to-r before:from-blue-500/10 before:to-purple-600/10 before:opacity-0 before:transition-opacity hover:before:opacity-100",
@@ -63,7 +69,7 @@ const SecondaryButton = ({ children, className }) => (
 );
 
 const FeatureCard = ({ title, description }) => (
-  <motion.div 
+  <motion.div
     className="group relative p-8 rounded-2xl bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-500"
     whileHover={{ y: -5 }}
     initial={{ opacity: 0, y: 20 }}
@@ -72,7 +78,9 @@ const FeatureCard = ({ title, description }) => (
   >
     <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-600/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
     <div className="relative z-10">
-      <h3 className="text-xl font-semibold mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">{title}</h3>
+      <h3 className="text-xl font-semibold mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+        {title}
+      </h3>
       <p className="text-gray-300">{description}</p>
     </div>
   </motion.div>
@@ -100,7 +108,7 @@ export default function Home() {
             variants={fadeIn}
           >
             <div className="text-center space-y-8">
-              <motion.div 
+              <motion.div
                 className="inline-block"
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
@@ -145,8 +153,8 @@ export default function Home() {
                 className="flex flex-col sm:flex-row gap-6 justify-center pt-8"
                 variants={fadeIn}
               >
-                <PrimaryButton>Start Free Trial</PrimaryButton>
-                <SecondaryButton>Watch Demo</SecondaryButton>
+                <PrimaryButton>Get Started for Free</PrimaryButton>
+                <SecondaryButton>Explore Querysage</SecondaryButton>
               </motion.div>
             </div>
           </motion.div>
@@ -171,8 +179,8 @@ export default function Home() {
 
           <Marquee className="py-8" repeat={2}>
             {logos.map((logo, index) => (
-              <motion.div 
-                key={index} 
+              <motion.div
+                key={index}
                 className="mx-8"
                 whileHover={{ scale: 1.1 }}
                 transition={{ duration: 0.3 }}
@@ -190,7 +198,9 @@ export default function Home() {
         </div>
       </section>
 
-      <IntegratedFeatures />
+      <section id="features">
+        <IntegratedFeatures />
+      </section>
 
       {/* Features Grid Section */}
       <div className="max-w-7xl mx-auto px-4 mb-32">
@@ -198,7 +208,8 @@ export default function Home() {
           {[
             {
               title: "Natural Language Queries",
-              description: "Write queries in plain English and get instant results",
+              description:
+                "Write queries in plain English and get instant results",
             },
             {
               title: "Enterprise Security",
@@ -217,7 +228,7 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center relative">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10 blur-3xl" />
-        <motion.div 
+        <motion.div
           className="relative"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -241,7 +252,8 @@ export default function Home() {
           </div>
         </motion.div>
       </section>
-
+      <FAQ />
+      <Contact />
       <Footer />
     </div>
   );

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { AnimatedBeam } from "@/components/magicui/animated-beam";
 import Image from "next/image";
 import { mysql, pg, mongo, mongoDB, oracleDB, oracle, neonDB, metaAI2, mixtral, gemma } from "@/components/logo";
+import { CLIENT_STATIC_FILES_RUNTIME_REACT_REFRESH } from "next/dist/shared/lib/constants";
 
 const Circle = forwardRef(({ className, children }, ref) => {
   return (
@@ -190,12 +191,14 @@ const DatabaseConnection = () => {
 
 export default function IntegratedFeatures() {
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="flex flex-col lg:flex-row">
-        <AIIntegration />
-        <DatabaseConnection />
+    <section id="features">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row">
+          <AIIntegration />
+          <DatabaseConnection />
+        </div>
       </div>
-    </div>
+    </section>
   );
 }
 

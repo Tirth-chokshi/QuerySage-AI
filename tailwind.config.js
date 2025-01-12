@@ -1,7 +1,6 @@
 const {
   default: flattenColorPalette,
 } = require("tailwindcss/lib/util/flattenColorPalette");
-const { fontFamily } = require("tailwindcss/defaultTheme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -15,6 +14,11 @@ module.exports = {
   prefix: "",
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: [
+  				'var(--font-exo2)'
+  			]
+  		},
   		colors: {
   			border: 'hsl(var(--border))',
   			input: 'hsl(var(--input))',

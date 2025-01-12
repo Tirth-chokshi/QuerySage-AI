@@ -31,68 +31,25 @@ import {
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import logo from "@/components/logo.svg";
 import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { ModeToggle } from "@/components/ModeToggle";
-import Footer from "@/components/footer";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
-
   const navItems = [
     { name: "Home", href: "/" },
     { name: "About", href: "/about" },
-    { name: "Docs", href: "/docs" },
   ];
 
   const features = [
     { name: "Interact with Database", href: "/chat", icon: Database },
     { name: "Analyze CSV Files", href: "/csvtest", icon: FileSpreadsheet },
-    { name: "Interact with JSON", href: "/json", icon: FileJson },
+    { name: "Interact with JSON", href: "", icon: FileJson },
   ];
 
-  // Dummy chat history data
-  const chatHistory = [
-    {
-      id: 1,
-      title: "Database Query Analysis",
-      date: "2024-09-19",
-      preview: "Analyzed user engagement trends...",
-    },
-    {
-      id: 2,
-      title: "CSV Data Exploration",
-      date: "2024-09-18",
-      preview: "Explored sales data from Q3...",
-    },
-    {
-      id: 3,
-      title: "JSON Structure Review",
-      date: "2024-09-17",
-      preview: "Reviewed API response structure...",
-    },
-    {
-      id: 4,
-      title: "Performance Optimization",
-      date: "2024-09-16",
-      preview: "Optimized database queries for...",
-    },
-    {
-      id: 5,
-      title: "Data Visualization",
-      date: "2024-09-15",
-      preview: "Created charts for monthly sales...",
-    },
-    // Add more items to see scrolling effect
-  ];
 
   if (status === "loading") {
     return <p>Loading...</p>;

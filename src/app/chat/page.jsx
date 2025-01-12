@@ -1,7 +1,8 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { redirect } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
+import Link from 'next/link'
 import ChatArea from '@/components/ChatArea'
 import NewChatForm from '@/components/NewChatForm'
 import { useToast } from "@/components/ui/use-toast"
@@ -15,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Settings, LogOut, History, MessageCirclePlus } from 'lucide-react';
 import { signOut } from 'next-auth/react'
-
+const logo = "/logo.svg";
 export default function Chat() {
   const { toast } = useToast()
   const { data: session, status } = useSession()
@@ -183,24 +184,29 @@ export default function Chat() {
   return (
     <div className="flex h-screen bg-[#0A0A0A]">
       {/* Sidebar */}
-      <div className="w-64 border-r border-gray-800 flex flex-col">
-        <div className="p-4 border-b border-gray-800">
-          <select 
-            value={chatId || ''} 
-            onChange={(e) => setChatId(e.target.value)}
-            className="w-full bg-[#1C1C1C] text-white border border-gray-800 rounded-md p-2"
-          >
-            <option value="">Chat</option>
-            {chats.map((chat) => (
-              <option key={chat.id} value={chat.id}>
-                {chat.name}
-              </option>
-            ))}
-          </select>
+      <div className="w-16 md:w-64 border-r border-gray-800 flex flex-col flex-shrink-0">
+        <div className="p-2 md:p-4 border-b border-gray-800 flex items-center gap-2">
+          <Link href="/dashboard" className="flex-shrink-0">
+            <img src={logo} alt="QuerySage Logo" className="h-6 md:h-8 w-auto" />
+          </Link>
+          <div className="hidden md:block flex-1">
+            <select 
+              value={chatId || ''} 
+              onChange={(e) => setChatId(e.target.value)}
+              className="w-full bg-[#1C1C1C] text-white border border-gray-800 rounded-md p-2"
+            >
+              <option value="">Chat</option>
+              {chats.map((chat) => (
+                <option key={chat.id} value={chat.id}>
+                  {chat.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         
-        <div className="flex-1 overflow-auto">
-          <div className="p-4">
+        <div className="flex-1 overflow-auto hidden md:block">
+          <div className="p-2 md:p-4">
             <Button
               onClick={() => setShowNewChatForm(true)}
               className="w-full bg-[#1C1C1C] hover:bg-gray-800 text-white border border-gray-800"
@@ -212,7 +218,7 @@ export default function Chat() {
         </div>
 
         {/* Bottom buttons */}
-        <div className="p-4 border-t border-gray-800">
+        <div className="mt-auto p-2 md:p-4 border-t border-gray-800">
           <div className="flex flex-col gap-2">
             {/* <Button
               variant="ghost"

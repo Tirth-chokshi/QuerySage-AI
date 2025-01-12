@@ -1,16 +1,16 @@
 "use client";
 
-import { useCallback } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { signOut, useSession } from "next-auth/react"
-import { MoonIcon, SunIcon, LogInIcon } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { useCallback } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
+import { MoonIcon, SunIcon, LogInIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
-import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet"
+import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
 import { Menu } from "lucide-react";
-import { ModeToggle } from "./ModeToggle"
-import { HoverBorderGradient } from "./ui/hover-border-gradient"
+import { ModeToggle } from "./ModeToggle";
+import { HoverBorderGradient } from "./ui/hover-border-gradient";
 
 const logo = "/logo.svg";
 
@@ -27,20 +27,35 @@ const Navbar = () => {
     window.location.href = "/";
   }, []);
 
-  const navigation = [
-    { name: "Features", href: "/#features" },
-    { name: "Solutions", href: "/#solutions" },
-    { name: "Testimonials", href: "/#testimonials" },
-    { name: "FAQ", href: "/#faq" },
-  ];
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+    const targetId = href.replace("/#", "");
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
+  const navigation = [
+    { name: "Features", href: "/#features", isHashLink: true },
+    { name: "About Us", href: "/about", isHashLink: false },
+    { name: "Contact", href: "/#contact", isHashLink: true },
+    { name: "FAQ", href: "/#faq", isHashLink: true },
+  ];
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container flex h-14 sm:h-16 items-center justify-between">
         {/* Logo and Brand */}
         <div className="flex items-center gap-2 sm:gap-6">
           <Link href="/" className="flex items-center space-x-2">
-            <Image src={logo} alt="Logo" width={28} height={28} priority className="w-7 h-7 sm:w-8 sm:h-8" />
+            <Image
+              src={logo}
+              alt="Logo"
+              width={28}
+              height={28}
+              priority
+              className="w-7 h-7 sm:w-8 sm:h-8"
+            />
             <span className="font-bold text-lg sm:text-xl bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-blue-600">
               QuerySage AI
             </span>
@@ -52,6 +67,11 @@ const Navbar = () => {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={
+                  item.isHashLink
+                    ? (e) => handleNavClick(e, item.href)
+                    : undefined
+                }
                 className="text-sm font-medium transition-colors hover:text-primary relative group px-3 py-2"
               >
                 {item.name}
@@ -110,16 +130,22 @@ const Navbar = () => {
                   <Image src={logo} alt="Logo" width={24} height={24} />
                   <span className="font-bold">QuerySage AI</span>
                 </Link>
-                
+
                 {/* Mobile Navigation */}
                 <div className="flex flex-col space-y-1 mt-4">
                   {navigation.map((item) => (
                     <Link
                       key={item.name}
                       href={item.href}
-                      className="text-sm font-medium transition-colors hover:text-primary px-2 py-2 rounded-md hover:bg-accent"
+                      onClick={
+                        item.isHashLink
+                          ? (e) => handleNavClick(e, item.href)
+                          : undefined
+                      }
+                      className="text-sm font-medium transition-colors hover:text-primary relative group px-3 py-2"
                     >
                       {item.name}
+                      <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-purple-500 to-blue-600 transition-all group-hover:w-full"></span>
                     </Link>
                   ))}
                 </div>
@@ -132,24 +158,30 @@ const Navbar = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                    onClick={() =>
+                      setTheme(theme === "dark" ? "light" : "dark")
+                    }
                     className="w-full justify-start px-2"
                   >
                     <SunIcon className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
                     <MoonIcon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span className="ml-2">{theme === "dark" ? "Light" : "Dark"} mode</span>
+                    <span className="ml-2">
+                      {theme === "dark" ? "Light" : "Dark"} mode
+                    </span>
                   </Button>
 
                   {/* Sign In */}
-                  <Button variant="ghost" className="w-full justify-start" onClick={handleSignIn}>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-start"
+                    onClick={handleSignIn}
+                  >
                     <LogInIcon className="h-5 w-5 mr-2" />
                     Sign in
                   </Button>
 
                   {/* Get Started */}
-                  <Button 
-                    className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:opacity-90 transition-opacity"
-                  >
+                  <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:opacity-90 transition-opacity">
                     <Link href="/dashboard" className="w-full">
                       Get Started Free
                     </Link>
@@ -159,15 +191,15 @@ const Navbar = () => {
                 {/* Additional Info */}
                 {status === "authenticated" && (
                   <div className="mt-auto pt-4 border-t border-border/40">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       onClick={handleSignOut}
                       className="w-full justify-start text-red-500 hover:text-red-600 hover:bg-red-50/10"
                     >
                       Sign out
                     </Button>
                   </div>
-                )} 
+                )}
               </div>
             </SheetContent>
           </Sheet>
