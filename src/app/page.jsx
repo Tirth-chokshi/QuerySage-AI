@@ -50,7 +50,7 @@ const PrimaryButton = ({ children, className }) => (
       {children}
       <ArrowRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
     </span>
-  </button>
+  </button> 
 );
 
 const SecondaryButton = ({ children, className }) => (

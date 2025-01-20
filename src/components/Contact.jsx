@@ -58,10 +58,6 @@ const Contact = () => {
                       />
                     </svg>
                   </div>
-                  <div className="ml-3">
-                    <p className="font-medium">Phone</p>
-                    <p className="">+91 6351240714</p>
-                  </div>
                 </div>
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
