@@ -23,7 +23,7 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
   }
 
   return (
-    <div className="flex flex-col h-full relative bg-[#0A0A0A] text-white">
+    <div className="flex flex-col h-full relative">
       <div className="flex-1 overflow-hidden">
         <ScrollArea className="h-[calc(100vh-140px)]">
           <div className="flex flex-col gap-6 p-6">
@@ -31,9 +31,9 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
               <div key={index} className="flex gap-3">
                 <div className="w-8 h-8 rounded-full flex items-center justify-center">
                   {message.sender === 'user' ? (
-                    <User className="h-5 w-5 text-gray-400" />
+                    <User className="h-5 w-5" />
                   ) : (
-                    <Bot className="h-5 w-5 text-blue-400" />
+                    <Bot className="h-5 w-5" />
                   )}
                 </div>
                 <div className="flex-1">
@@ -42,11 +42,11 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
                       components={{
                         code: ({ node, inline, className, children, ...props }) => {
                           if (inline) {
-                            return <code className="bg-gray-800 rounded px-1" {...props}>{children}</code>
+                            return <code className="rounded px-1" {...props}>{children}</code>
                           }
                           return (
-                            <div className="bg-[#1C1C1C] rounded-lg p-4 my-2">
-                              <code className="text-sm font-mono text-white" {...props}>
+                            <div className=" rounded-lg p-4 my-2">
+                              <code className="text-sm font-mono" {...props}>
                                 {children}
                               </code>
                             </div>
@@ -101,13 +101,13 @@ export default function ChatArea({ chatId, messages, isLoading, input, setInput,
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Send a message..."
-            className="flex-1 bg-[#1C1C1C] border-gray-800 focus:border-blue-500 text-white"
+            className="flex-1 "
             rows={1}
           />
           <Button 
             type="submit" 
             disabled={isLoading || !input.trim()}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            className=""
           >
             <Send className="h-4 w-4" />
           </Button>

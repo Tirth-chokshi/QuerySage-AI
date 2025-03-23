@@ -182,10 +182,10 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex h-screen bg-[#0A0A0A]">
+    <div className="flex h-screen">
       {/* Sidebar */}
-      <div className="w-16 md:w-64 border-r border-gray-800 flex flex-col flex-shrink-0">
-        <div className="p-2 md:p-4 border-b border-gray-800 flex items-center gap-2">
+      <div className="w-16 md:w-64 border-r flex flex-col flex-shrink-0">
+        <div className="p-2 md:p-4 border-b flex items-center gap-2">
           <Link href="/dashboard" className="flex-shrink-0">
             <img src={logo} alt="QuerySage Logo" className="h-6 md:h-8 w-auto" />
           </Link>
@@ -193,7 +193,7 @@ export default function Chat() {
             <select 
               value={chatId || ''} 
               onChange={(e) => setChatId(e.target.value)}
-              className="w-full bg-[#1C1C1C] text-white border border-gray-800 rounded-md p-2"
+              className="w-full rounded-md p-2"
             >
               <option value="">Chat</option>
               {chats.map((chat) => (
@@ -209,7 +209,7 @@ export default function Chat() {
           <div className="p-2 md:p-4">
             <Button
               onClick={() => setShowNewChatForm(true)}
-              className="w-full bg-[#1C1C1C] hover:bg-gray-800 text-white border border-gray-800"
+              className="w-full"
             >
               <MessageCirclePlus className="h-4 w-4 mr-2" />
               New Chat
@@ -218,7 +218,7 @@ export default function Chat() {
         </div>
 
         {/* Bottom buttons */}
-        <div className="mt-auto p-2 md:p-4 border-t border-gray-800">
+        <div className="mt-auto p-2 md:p-4 border-t">
           <div className="flex flex-col gap-2">
             {/* <Button
               variant="ghost"
@@ -230,7 +230,7 @@ export default function Chat() {
             </Button> */}
             <Button
               variant="ghost"
-              className="w-full justify-start text-gray-400 hover:text-white hover:bg-gray-800"
+              className="w-full justify-start"
               onClick={() => signOut()}
             >
               <LogOut className="h-4 w-4 mr-2" />
