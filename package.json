@@ -78,7 +78,8 @@
     "tabler": "^1.0.0-alpha.8",
     "tailwind-merge": "^2.4.0",
     "tailwind-scrollbar": "^3.1.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^1.1.2"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.2",
