@@ -4,6 +4,7 @@ import GoogleProvider from 'next-auth/providers/google'
 import { MongoDBAdapter } from "@auth/mongodb-adapter"
 import clientPromise from '@/lib/mongodb'
 import User from '@/models/User'
+import dbConnect from '@/lib/dbConnect'
 
 export const authOptions = {
   providers: [
@@ -19,33 +20,25 @@ export const authOptions = {
   pages: {
     signIn: '/login',
   },
-  session: async ({ session, user }) => {
-    if (session?.user) {
-      session.user.id = user.id || user._id;
-    }
-    return session;
-  },
-    async signIn({ user, account, profile }) {
-      if (account.provider === "google" || account.provider === "github") {
-        const { name, email } = user;
-        try {
-          await User.findOneAndUpdate(
-            { email },
-            { 
-              firstName: name.split(' ')[0],
-              lastName: name.split(' ').slice(1).join(' '),
-              email,
-              authProviderId: account.providerAccountId
-            },
-            { upsert: true, new: true, runValidators: true }
-          );
-          return true;
-        } catch (error) {
-          console.error("Error saving user:", error);
-          return false; // or return true if you want to allow sign-in despite the error
-        }
+  callbacks: {
+    async session({ session, user }) {
+      if (session?.user) {
+        session.user.id = user.id || user._id;
       }
-      return true;
+      return session;
+    },
+  },
+  events: {
+    // Runs after the adapter has created/linked the user, so this only enriches that doc.
+    // (As a signIn callback it would create the doc first and trigger OAuthAccountNotLinked for new users.)
+    async signIn({ user, account }) {
+      const [firstName, ...rest] = (user.name || '').split(' ');
+      await dbConnect();
+      await User.updateOne(
+        { email: user.email },
+        { firstName, lastName: rest.join(' '), authProviderId: account.providerAccountId }
+      );
+    },
   },
   adapter: MongoDBAdapter(clientPromise),
   secret: process.env.AUTH_SECRET,

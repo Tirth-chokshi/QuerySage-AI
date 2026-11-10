@@ -211,22 +211,13 @@ export default function Chat() {
     
     // Load chat messages here if you want to persist them
     try {
-      const response = await fetch(`/api/getChatMessages?chatId=${id}`, {
+      const response = await fetch(`/api/getChatHistory?chatId=${id}`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
       })
-      
+
       if (response.ok) {
-        const data = await response.json()
-        if (data.messages && data.messages.length > 0) {
-          setMessages(data.messages)
-        }
-        
-        // Also load DB credentials for this chat
-        if (data.dbInfo) {
-          setDbCredentials(data.dbInfo)
-          setDbType(data.dbType)
-        }
+        setMessages(await response.json())
       }
     } catch (error) {
       console.error('Error loading chat:', error)
